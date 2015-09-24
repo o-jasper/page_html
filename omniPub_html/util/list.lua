@@ -7,6 +7,7 @@ local function list(next, first)
       insert(ret, v)
       k,v = next(k)
    end
+   insert(ret, v)
    return ret
 end
 
