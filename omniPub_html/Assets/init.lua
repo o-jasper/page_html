@@ -1,6 +1,6 @@
-local split = require "OmniPub_html.util.split"
-local pkgs  = require "OmniPub_html.util.pkgs"
-local list  = require "OmniPub_html.util.list"
+local split = require "omniPub_html.util.split"
+local pkgs  = require "omniPub_html.util.pkgs"
+local list  = require "omniPub_html.util.list"
 
 local function open_asset(path, search_in)
    for _, dir in pairs(search_in) do
