@@ -17,8 +17,11 @@ function This:output(state, ...)
       pat = self:repl_pattern(state)
    elseif type(self.repl_pattern) == "string" then
       pat = self.repl_pattern
-   else         
-      pat = ld:load((not state.whole and "body" .. "/" or "") .. self.name .. ".html")
+   else
+      local asset_path = (not state.whole and "body" .. "/" or "") .. self.name .. ".html"
+      pat = ld:load(asset_path)
+      assert(pat, string.format([[Couldnt get pattern, was left up to asset that wasnt found.
+Asset path: %s]], asset_path))
    end
 
    -- Note: forced to layer them a bit, in case :repl returns a metatable itself.
@@ -28,7 +31,7 @@ function This:output(state, ...)
       rawset(itself, key, got)
       return got
    end
-   return apply_subst(pat, setmetatable({}, {__index = index}))
+   return apply_subst(pat, setmetatable({ page_name = self.name }, {__index = index}))
 end
 
 function This:repl() return {} end
