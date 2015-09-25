@@ -1,4 +1,5 @@
 return function(str, subst)
+   assert(type(str) == "string")
    local fail_n = 0
    local function fun(key)
       if subst[key] then
