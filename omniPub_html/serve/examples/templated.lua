@@ -24,6 +24,7 @@ return {
 <p id="serverlike">Not serverlike/javascript disabled</p>
 
 <script src="/{%page_name}/js.js"></script>
+{%unfindable}
 ]]
       end
    end,
