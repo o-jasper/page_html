@@ -4,7 +4,7 @@ local list  = require "omniPub_html.util.list"
 
 local function open_asset(path, search_in)
    for _, dir in pairs(search_in) do
-      local fd = io.open(dir .. path, "r")
+      local fd = io.open(dir .. "/" .. path, "r")
       if fd then  -- Found it.
          return fd, dir
       end
@@ -24,18 +24,23 @@ local Assets = {}
 Assets.__index = Assets
 
 Assets.__name = "omniPub_html.Assets"
+Assets.prefix = "assets/"
 
 Assets.memoize = {}
 
 -- NOTE: this breaks with package.path changes after.
 -- (doing that is not wise in the first place)
-Assets.search_from = list(pkgs(package.path))
+Assets.search_from = {}
+
+for _, path in pkgs(package.path) do
+   table.insert(Assets.search_from, string.sub(path, 1, -7))
+end
 
 function Assets:new(new)
    new = setmetatable(new or {}, self)
    if new.memoize == true then new.memoize = nil end
-   assert(new.memoize == false or type(new.memorize) == "table")
-   new.where = new.where or {"assets/"}
+   assert(new.memoize == false or type(new.memoize) == "table")
+   new.where = new.where or {"/"}
    return new
 end
 
@@ -52,6 +57,7 @@ end
 
 -- Search asset, return opened if exists.
 function Assets:open(path)
+   path = self.prefix .. path
    for _, where_path in pairs(self.where) do
       -- * Indicates to search parents of the directory aswel afterwards.
       if string.match(where_path, "^[*]") then
@@ -65,9 +71,9 @@ function Assets:open(path)
             table.remove(splitpath)
          end
       else
-         local got, _ = open_asset(where_path ..path, self.search_from)
+         local got, _ = open_asset(where_path .. path, self.search_from)
          if got then
-            return got, where_path ..path
+            return got, where_path .. "/" .. path
          end
       end
    end

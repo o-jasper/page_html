@@ -1,5 +1,8 @@
 return {
    name = "direct",
+
+   where = {},
+
 --   where = { "omniPub_html/html/examples/assets" },
    output = function(self)
       return [[<p>Direct, no replacements.</p><hr>

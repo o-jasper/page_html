@@ -8,6 +8,9 @@ This.__index = This
 This.__name = "omniPub_html.html.Suggest"
 
 function This:output(state, ...)
+   -- It might be used w/o derivation..
+   local ld = (self.load and self) or Assets:new{where=self.where}
+
    state.conf = state.conf or {}
    local pat
    if type(self.repl_pattern) == "function" then
@@ -15,17 +18,17 @@ function This:output(state, ...)
    elseif type(self.repl_pattern) == "string" then
       pat = self.repl_pattern
    else         
-      pat = self:load((not state.whole and "body" .. "/" or "") .. self.name .. ".html")
+      pat = ld:load((not state.whole and "body" .. "/" or "") .. self.name .. ".html")
    end
 
+   -- Note: forced to layer them a bit, in case :repl returns a metatable itself.
    local repl = self:repl(state)
-
-   if asset_fun then
-      local function index(_, key) return repl[key] or self:load(path) end
-      return apply_subst(pat, setmetatable({}, {__index = index}))
-   else
-      return apply_subst(pat, repl)
+   local function index(itself, key)
+      local got = repl[key] or ld:load(key)
+      rawset(itself, key, got)
+      return got
    end
+   return apply_subst(pat, setmetatable({}, {__index = index}))
 end
 
 function This:repl() return {} end

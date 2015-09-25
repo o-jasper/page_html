@@ -55,5 +55,5 @@ return {
                all_conf = all_conf, all_conf_cnt = m }
    end,
 
-   where = {"omniPub_html/serve/examples/assets/"}
+   where = {"omniPub_html/serve/examples/"}
 }
