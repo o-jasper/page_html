@@ -9,7 +9,7 @@ This.__name = "omniPub_html.html.Suggest"
 
 function This:output(state, ...)
    -- It might be used w/o derivation..
-   local ld = (self.load and self) or Assets:new{where=self.where}
+   local ld = (self.load and self) or Assets:new{ where= state.where or self.where }
 
    state.conf = state.conf or {}
    local pat
@@ -25,7 +25,7 @@ Asset path: %s]], asset_path))
    end
 
    -- Note: forced to layer them a bit, in case :repl returns a metatable itself.
-   local repl = self:repl(state)
+   local repl = self:repl(state, ...)
    local function index(itself, key)
       local got = repl[key] or ld:load(key)
       rawset(itself, key, got)
