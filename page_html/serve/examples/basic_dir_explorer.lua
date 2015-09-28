@@ -2,7 +2,7 @@ local lfs = require "lfs"
 
 return {
    name = "basic_dir_explorer",
-   where = {"omniPub_html/serve/examples/"},
+   where = {"page_html/serve/examples/"},
    to_js = {},
    --repl_pattern="{%dir.html}",
    repl = function(self, meta)

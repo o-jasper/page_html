@@ -1,11 +1,11 @@
-local apply_subst = require "omniPub_html.util.apply_subst"
-local Assets = require "omniPub_html.Assets"
+local apply_subst = require "page_html.util.apply_subst"
+local Assets = require "page_html.Assets"
 
 local This = {}
 for k, v in pairs(Assets) do This[k] = v end
 This.__index = This
 
-This.__name = "omniPub_html.html.Suggest"
+This.__name = "page_html.html.Suggest"
 
 function This:output(state, ...)
    -- It might be used w/o derivation..
@@ -21,7 +21,8 @@ function This:output(state, ...)
       local asset_path = (not state.whole and "body" .. "/" or "") .. self.name .. ".html"
       pat = ld:load(asset_path)
       assert(pat, string.format([[Couldnt get pattern, was left up to asset that wasnt found.
-Asset path: %s]], asset_path))
+Asset path: %s
+Where: %s]], asset_path, table.concat(ld.where, ";")))
    end
 
    -- Note: forced to layer them a bit, in case :repl returns a metatable itself.

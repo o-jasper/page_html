@@ -1,6 +1,6 @@
-local split = require "omniPub_html.util.split"
-local pkgs  = require "omniPub_html.util.pkgs"
-local list  = require "omniPub_html.util.list"
+local split = require "page_html.util.split"
+local pkgs  = require "page_html.util.pkgs"
+local list  = require "page_html.util.list"
 
 local function open_asset(path, search_in)
    for _, dir in pairs(search_in) do
@@ -23,7 +23,7 @@ end
 local Assets = {}
 Assets.__index = Assets
 
-Assets.__name = "omniPub_html.Assets"
+Assets.__name = "page_html.Assets"
 Assets.prefix = "assets/"
 
 Assets.memoize = {}

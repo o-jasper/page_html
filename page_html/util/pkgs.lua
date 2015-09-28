@@ -1,4 +1,4 @@
-local split = require "omniPub_html.util.split"
+local split = require "page_html.util.split"
 
 local function pkgs(package_path)
    local snext = split(package_path or package.path, ";")

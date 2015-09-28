@@ -1,12 +1,12 @@
 return function(startfun)
    -- local PegasusJs = require "PegasusJs" -- Really will need it..
    
-   local Suggest = require "omniPub_html.serve.Suggest"
+   local Suggest = require "page_html.serve.Suggest"
    
    local This = {}
    This.__index = This
    
-   This.__name = "omniPub_html.html.pegasus"
+   This.__name = "page_html.html.pegasus"
    
    function This:new(new)
       new = setmetatable(new or {}, self)

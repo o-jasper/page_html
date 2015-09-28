@@ -1,5 +1,5 @@
-local split = require "omniPub_html.util.split"
-local list = require "omniPub_html.util.list"
+local split = require "page_html.util.split"
+local list = require "page_html.util.list"
 
 local function string_split(str, by) return list(split(str, by)) end
 
