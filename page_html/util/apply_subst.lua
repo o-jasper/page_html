@@ -3,12 +3,11 @@ return function(str, subst)
    local fail_n = 0
    local function fun(key, args)
       local got = subst[key]
-      if not got then
-         fail_n = fail_n + 1
-      elseif type(got) == "function" then
-         return got(args)
-      else
+      if type(got) == "function" then got = got(args) end
+      if got ~= nil then
          return got
+      else
+         fail_n = fail_n + 1
       end
    end
 
