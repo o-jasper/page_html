@@ -18,12 +18,12 @@ This.db_filename = ":memory:"
 function This:init()
    self.dir_sql = self.Dir:new{filename=self.db_filename}
    assert(self.dir_sql)
-   self:to_dir(self.at_path)
+   self:to_dir(self.at_dir)
 end
 
 function This:to_dir(path)
-   local path = path or self.at_path or os.getenv("HOME")
-   self.at_path = path
+   local path = path or self.at_dir or os.getenv("HOME")
+   self.at_dir = path
    self.dir_sql:update_directory(path)
 
    -- NOTE wont update html out there until they update themselves.
@@ -57,10 +57,13 @@ local info_on  = require "page_html.info_on"
 function rpc_js:search()
    assert(self.dir_sql)
    return function(term, state, ...)
-      state.to_dir = state.to_dir or self.at_dir
+      state.to_dir = state.to_dir or self.at_dir or os.getenv("HOME")
       self:to_dir(state.to_dir)
 
-      local list = search(self.dir_sql, self.Formulator, self.allow_direct)(term, state, ...)
+      local form = search(self.Formulator, self.allow_direct)(term, state, ...)
+      form:equal("dir", state.to_dir)
+
+      local list = self.dir_sql:exec(form:sql_pattern(), unpack(form:sql_values()))
       local info_list = info_on.list(list, self, self.info_ons)
 
       -- TODO might want to select higher-priority ones for each entry.

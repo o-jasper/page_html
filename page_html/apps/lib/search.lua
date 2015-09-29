@@ -7,7 +7,7 @@ local default_allow_direct = {
    limit = 2,
  }
 
-local function search(sql, Formulator, allow_direct)
+local function search(Formulator, allow_direct)
    allow_direct = allow_direct or default_allow_direct
 
    return function(search_term, info)  -- This intended for rpc input.
@@ -22,8 +22,7 @@ local function search(sql, Formulator, allow_direct)
          end
       end
 
-      form:finish()
-      return sql:exec(form:sql_pattern(), unpack(form:sql_values()))
+      return form
    end
 end
 
