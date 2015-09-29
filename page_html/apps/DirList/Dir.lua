@@ -62,7 +62,13 @@ function This:update_file(dir, file)  -- NOTE is this right..?
 end
 
 function This:update_directory(directory)
-   for file in lfs.dir(directory) do self:update_file(directory, file) end
+   local fd = io.open(directory)
+   if fd then
+      fd:close()
+      for file in lfs.dir(directory) do
+         self:update_file(directory, file)
+      end
+   end
 end
 
 return This
