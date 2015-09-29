@@ -1,26 +1,26 @@
 return function(startfun)
    -- local PegasusJs = require "PegasusJs" -- Really will need it..
-   
+
    local Suggest = require "page_html.serve.Suggest"
-   
+
    local This = {}
    This.__index = This
-   
+
    This.__name = "page_html.html.pegasus"
-   
+
    function This:new(new)
       new = setmetatable(new or {}, self)
       new.pages = new.pages or {}
       new.pages_js = new.pages_js or {}
       return new
    end
-   
+
    function This:add(...)
       for i, page in ipairs{...} do
          self.pages[page.name] = page
       end
    end
-   
+
    function This:_ensure_js(page)
       -- Make the javascript interfacing, as needed..
       local js = self.pages_js[page.name]
@@ -37,7 +37,7 @@ return function(startfun)
       end
       return js
    end
-   
+
    function This:start()
       -- Lists chromes and stuff if not found.
       local function help_if_not_found(args)
@@ -58,7 +58,6 @@ return function(startfun)
          end
          return html .. "</table>"
       end
-      
       -- TODO/NOTE: fairly messy, 
       startfun(function(req, rep)
             -- Get at information.
@@ -66,11 +65,10 @@ return function(startfun)
             if not page_name then
                page_name = string.match(req:path(), "^/(.+)")
             end
-            
             local args = {
                page_name = page_name,
                rest_path = rest,
-               
+
                path = req:path(),
                whole = true,
             }
@@ -91,6 +89,5 @@ return function(startfun)
             end
       end)
    end
-   
    return This
 end
