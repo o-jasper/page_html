@@ -23,8 +23,8 @@ end
 
 function This:to_dir(path)
    local path = path or self.at_dir or os.getenv("HOME")
-   self.at_dir = path
    self.dir_sql:update_directory(path)
+   self.at_dir = path
 
    -- NOTE wont update html out there until they update themselves.
 end
@@ -74,7 +74,11 @@ function rpc_js:search()
 end
 
 function This:repl(state)
-   self:to_dir(state.rest_path)
+   local path = state.rest_path
+   if not string.find(path, "^/") then
+      path = os.getenv("HOME") .. "/" .. path
+   end
+   self:to_dir(path)
    return {}
 end
 
