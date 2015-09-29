@@ -2,14 +2,12 @@ local apply_subst = require "page_html.util.apply_subst"
 local Assets = require "page_html.Assets"
 
 local This = {}
-for k, v in pairs(Assets) do This[k] = v end
 This.__index = This
-
 This.__name = "page_html.html.Suggest"
 
 function This:output(state, ...)
    -- It might be used w/o derivation..
-   local ld = (self.load and self) or Assets:new{ where= state.where or self.where }
+   local ld = Assets:new{ where= state.where or self.where }
 
    state.conf = state.conf or {}
    local pat
@@ -18,7 +16,7 @@ function This:output(state, ...)
    elseif type(self.repl_pattern) == "string" then
       pat = self.repl_pattern
    else
-      local asset_path = (not state.whole and "body" .. "/" or "") .. self.name .. ".html"
+      local asset_path = (not state.whole and "parts" .. "/" or "") .. self.name .. ".html"
       pat = ld:load(asset_path)
       assert(pat, string.format([[Couldnt get pattern, was left up to asset that wasnt found.
 Asset path: %s
