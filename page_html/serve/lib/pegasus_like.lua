@@ -63,7 +63,7 @@ return function(startfun)
             -- Get at information.
             local page_name, rest = string.match(req:path() or "", "^/([^/]+)/(.*)")
             if not page_name then
-               page_name = string.match(req:path(), "^/(.+)")
+               page_name = string.match(req:path() or "couldnt-figure-path", "^/(.+)")
             end
             local args = {
                page_name = page_name,
