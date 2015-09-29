@@ -72,7 +72,7 @@ function This:update_directory(directory)
       table.remove(update_times, 1)
    end
    for _, el in ipairs(update_times) do
-      if el[2] == directory then return end  -- In there, fresh.
+      if el[2] == directory then return true end  -- In there, fresh.
    end
    table.insert(update_times, {gettime(), directory})
 
@@ -82,6 +82,7 @@ function This:update_directory(directory)
       for file in lfs.dir(directory) do
          self:update_file(directory, file)
       end
+      return true
    end
 end
 
