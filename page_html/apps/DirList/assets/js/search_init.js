@@ -1,1 +1,1 @@
-search_update("", 0, 20);
+do_search();
