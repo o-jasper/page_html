@@ -25,14 +25,16 @@ Asset path: %s
 Where: %s]], asset_path, table.concat(ld.where, ";")))
    end
 
+   local alts = { title= "page_html: " .. self.name }
    -- Note: forced to layer them a bit, in case :repl returns a metatable itself.
    local repl = self:repl(state, ...)
    local function index(itself, key)
       local got = repl[key] or ld:load(key)
       rawset(itself, key, got)
-      return got
+      return (got~=nil and got) or alts[key]
    end
-   return apply_subst(pat, setmetatable({ page_name = self.name }, {__index = index}))
+   return apply_subst(pat, setmetatable({ page_name = self.name, inject_js=state.inject_js },
+                         {__index = index}))
 end
 
 function This:repl() return {} end
