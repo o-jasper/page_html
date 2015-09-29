@@ -23,9 +23,6 @@ local function search(sql, Formulator, allow_direct)
       end
 
       form:finish()
-
-      print(form:sql_pattern())
-      print(unpack(form:sql_values()))
       return sql:exec(form:sql_pattern(), unpack(form:sql_values()))
    end
 end
