@@ -11,18 +11,18 @@ This.values = {
    
    idname = "id",
    row_names = {"id", "dir", "file", "mode",
-                "size", "time_access", "time_modified"},
+                "size", "access", "modification"},
    
-   time = "time_modified", timemul = 1000,
-   order_by = "time_modified",
+   time = "modification", timemul = 1000,
+   order_by = "modification",
    textlike = {"dir", "file"},
 
    textable   = {"dir", "file", "mode"},
-   comparable = {"size", "time_access", "time_modified"},
-   timable    = {"time_access", "time_modified"},
+   comparable = {"size", "access", "modification"},
+   timable    = {"access", "modification"},
 
    string_els = {"dir", "file", "mode"},
-   int_els = {"id", "size", "time_access", "time_modified"},
+   int_els = {"id", "size", "access", "modification"},
 }
 
 function This:dir_eq(dir)
@@ -38,8 +38,10 @@ local mf = {}
 This.match_funs = mf
 for k,v in pairs(Formulator.match_funs or {}) do mf[k] = v end
 
-This.matchable = {"limit:", "order:", "sort:", "orderby:" }
+This.matchable = {"limit:", "order:", "sort:", "orderby:"}
 
 require("Searcher.Formulator.auto_add")(This.values, mf, This.matchable)
+
+-- TODO add onto `dir=` goes to specific directory.
 
 return This

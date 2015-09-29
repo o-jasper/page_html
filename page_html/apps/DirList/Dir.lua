@@ -18,8 +18,8 @@ function This:init()
      mode TEXT NOT NULL,
 
      size INTEGER NOT NULL,  
-     time_access INTEGER NOT NULL,
-     time_modification INTEGER NOT NULL
+     access INTEGER NOT NULL,
+     modification INTEGER NOT NULL
    );
 ]]
 end
@@ -42,7 +42,7 @@ cmd_strs.enter       = "INSERT INTO {%table_name} VALUES (NULL, ?,?,?, ?,?,?)"
 
 function This:enter(entry)
    -- Delete pre-existing.
---   self:cmd("delete_path")(entry.dir, entry.file)
+   self:cmd("delete_path")(entry.dir, entry.file)
    if entry then
       assert(not entry.id) -- Re enter.,
       self:cmd("enter")(entry.dir, entry.file, entry.mode,
