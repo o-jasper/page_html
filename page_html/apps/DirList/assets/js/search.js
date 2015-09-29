@@ -1,13 +1,24 @@
+var search_busy = false;
+var waiting_search = false;
+
 function rawsearch(str, info, cb) {
+    search_busy = true
     callback_search([str, info], cb);
 }
 
+var last_search = "";
 function do_search() {
-    ge("list").innerHTML = ""
-    search_update(ge("search_input").value, 0, 20)
+    var cur = ge("search_input").value
+    if( last_search != cur ) {
+        if( search_busy ) {
+            ge("waiting").textContent = cur;
+            waiting_search = cur;
+        } else {
+            search_update(cur, 0, 20)
+        }
+        last_search = cur
+    }
 }
-
-function touch_search() { do_search(); }
 
 function search_update(str, fr, to) {
     rawsearch(str, { html_list:true, direct:{ limit:[fr, to] },
@@ -18,12 +29,20 @@ function search_update(str, fr, to) {
                   if(ret.html_raw) {
                       list_el.innerHTML = ret.html_raw
                   } else {
+                      list_el.hidden = true  // Maybe it helps..
+                      list_el.innerHTML = ""
                       for(i in ret.html_list) {
                           var html = ret.html_list[i]
                           var el = document.createElement("TR");
                           el.innerHTML = html;
                           list_el.appendChild(el);
                       }
+                      list_el.hidden = false
                   }
+                  search_busy = false;
               });
+    if(waiting_search){
+        waiting_search = false;
+        search_update(ge("search_input").value, 0, 20)
+    }
 }
