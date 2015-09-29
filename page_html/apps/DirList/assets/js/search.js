@@ -29,15 +29,12 @@ function search_update(str, fr, to) {
                   if(ret.html_raw) {
                       list_el.innerHTML = ret.html_raw
                   } else {
-                      list_el.hidden = true  // Maybe it helps..
-                      list_el.innerHTML = ""
+                      // TODO kindah want a mode where they can be added w/o resetting.
+                      var html = ""
                       for(i in ret.html_list) {
-                          var html = ret.html_list[i]
-                          var el = document.createElement("TR");
-                          el.innerHTML = html;
-                          list_el.appendChild(el);
+                          html = html + ret.html_list[i]
                       }
-                      list_el.hidden = false
+                      list_el.innerHTML = html
                   }
                   search_busy = false;
               });

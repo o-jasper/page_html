@@ -1,2 +1,13 @@
-<!-- TODO make this nicer -->
-<td>{%mode} {%dir} {%file} {%time|resay}</td>
+{%time|resay}
+<tr>
+<td>
+  <span class="time">{%time|hour}:{%time|min}</span>
+</td>
+<td>
+  <span class="minor">{%mode|letter}</span>
+  {%size|gist}
+</td>
+<td>
+  <a href="{%go_there_uri}" class="it_title">{%dir}/{%file}</a>
+</td>
+</tr>

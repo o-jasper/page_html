@@ -82,8 +82,8 @@ end
 function Public.resay(state, ms_t, dontupdate)
    local tm = state.resay_timemarks
    local timemarks = (state.config or {}).timemarks or
-      { {"year", [[<<tr><td colspan="2"><span class="year_change">Newyear {%year}<br><hr></span></td></tr>]]},
-        {"yday", [[<tr><tr><td colspan="2"><span class="day_change">{%dayname} {%day}
+      { {"year", [[<<tr><td colspan="{%resay_colspan}"><span class="year_change">Newyear {%year}<br><hr></span></td></tr>]]},
+         {"yday", [[<tr><tr><td colspan="{%resay_colspan}"><span class="day_change">{%dayname} {%day}
 {%monthname}<br><hr></span></td></tr>]]},
         --{"hour", [[</tr><tr><td class="hour_change">at {%hour}:{%min}</td>]]},
         init = " ", nochange = " ",
