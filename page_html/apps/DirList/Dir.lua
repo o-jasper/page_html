@@ -22,6 +22,7 @@ function This:init()
      modification INTEGER NOT NULL
    );
 ]]
+   self.update_times = {}
 end
 
 This.__name = "page_html.apps.DirList.Dir"
@@ -61,7 +62,20 @@ function This:update_file(dir, file)  -- NOTE is this right..?
    end
 end
 
+This.fresh_time = 3   -- How long a directory stays fresh enough.
+local gettime = require("socket").gettime
+
 function This:update_directory(directory)
+   local update_times = self.update_times
+   -- Remove gone stale.
+   while #update_times > 0 and update_times[1][1] - gettime() > self.fresh_time do
+      table.remove(update_times, 1)
+   end
+   for _, el in ipairs(update_times) do
+      if el[2] == directory then return end  -- In there, fresh.
+   end
+   table.insert(update_times, {gettime(), directory})
+
    local fd = io.open(directory)
    if fd then
       fd:close()
