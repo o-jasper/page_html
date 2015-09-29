@@ -14,6 +14,7 @@ This.__index = This
 assert(This.init)
 
 This.name = "info_on/file"
+This.parent_name = "DirList"
 
 function This:priority()
    return (string.match(self.file, "^[.]#.+") and -2) or 0
@@ -49,6 +50,7 @@ function This:repl(state)
          return size
       end
    end
+   repl.go_there_uri = string.format("/%s/%s/%s", self.parent_name, self.dir, self.file)
    repl.resay_colspan = 3
    return repl
 end
