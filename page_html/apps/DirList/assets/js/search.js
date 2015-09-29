@@ -6,16 +6,17 @@ function rawsearch(str, info, cb) {
     callback_search([str, info], cb);
 }
 
-var last_search = "";
+var last_search = false;  // Beware; `false == ""` !
 function do_search() { search(ge("search_input").value); }
 
 function search(cur) {
-    if( last_search != cur ) {
+    if( !last_search || last_search != cur ) {
         if( search_busy ) {
             ge("waiting").textContent = cur;
             waiting_search = cur;
             ge("search_working").textContent = "W";
         } else {
+            ge("search_working").textContent = "X";
             search_update(cur, 0, 20)
         }
         last_search = cur
@@ -23,9 +24,7 @@ function search(cur) {
 }
 
 function search_update(str, fr, to) {
-    ge("search_working").textContent = "X";
-    rawsearch(str, { html_list:true, direct:{ limit:[fr, to] },
-                     to_dir:"/home/jasper/proj/decentreddit/page_html/page_html" },
+    rawsearch(str, { html_list:true, direct:{ limit:[fr, to] } },
               function(ret) {
                   ge("cnt").textContent = ret.cnt + " results;";
                   var list_el = ge("list")

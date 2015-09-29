@@ -1,1 +1,1 @@
-do_search();
+search("");
