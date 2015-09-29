@@ -14,6 +14,7 @@ end
 
 This.db_filename = ":memory:"
 
+-- TODO only really do anything if staler-than..
 function This:init()
    self.dir_sql = self.Dir:new{filename=self.db_filename}
    assert(self.dir_sql)
@@ -37,7 +38,8 @@ local search = require "page_html.apps.lib.search"
 
 This.thresh = -1
 This.info_ons = {
-   require "page_html.apps.DirList.info_on.basic_file"
+   --require "page_html.apps.DirList.info_on.basic_file"
+   require "page_html.apps.DirList.info_on.file"
 }
 
 local rpc_js = {}
@@ -54,16 +56,17 @@ local info_on  = require "page_html.info_on"
 -- TODO defaultly need a current_directory..
 function rpc_js:search()
    assert(self.dir_sql)
-   return function(term, info, ...)
-      if info.to_dir then
-         self:to_dir(info.to_dir)
+   return function(term, state, ...)
+      if state.to_dir then
+         self:to_dir(state.to_dir)
       end
-      local list = search(self.dir_sql, self.Formulator, self.allow_direct)(term, info, ...)
-
-      --local list = self.dir_sql:exec("SELECT * FROM files")
-      -- Highest-priority one.
+      local list = search(self.dir_sql, self.Formulator, self.allow_direct)(term, state, ...)
       local info_list = info_on.list(list, self, self.info_ons)
-      return ret_list(info_list, info)
+
+      -- TODO might want to select higher-priority ones for each entry.
+
+      state.where = self.where
+      return ret_list(info_list, state)
    end
 end
 
