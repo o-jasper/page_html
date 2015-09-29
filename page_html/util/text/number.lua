@@ -29,6 +29,8 @@ function Public.int_to_string(i, base, symbs)
 end
 
 function Public.int_w_numcnt(x, sub)
+   if x == 0 then return tostring(x) end
+
    sub = sub or 2
    local pow = math.floor(math.log(x, 10)) - sub
    return string.format("%dE%d", math.floor(x/10^pow + 0.5), pow)
