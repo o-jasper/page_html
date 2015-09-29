@@ -22,7 +22,7 @@ function This:init()
 end
 
 function This:to_dir(path)
-   local path = path or "/home/jasper/proj/decentreddit/page_html/page_html" --os.getenv("HOME")
+   local path = path or self.at_path or os.getenv("HOME")
    self.at_path = path
    self.dir_sql:update_directory(path)
 
@@ -57,9 +57,9 @@ local info_on  = require "page_html.info_on"
 function rpc_js:search()
    assert(self.dir_sql)
    return function(term, state, ...)
-      if state.to_dir then
-         self:to_dir(state.to_dir)
-      end
+      state.to_dir = state.to_dir or self.at_dir
+      self:to_dir(state.to_dir)
+
       local list = search(self.dir_sql, self.Formulator, self.allow_direct)(term, state, ...)
       local info_list = info_on.list(list, self, self.info_ons)
 
@@ -70,7 +70,8 @@ function rpc_js:search()
    end
 end
 
-function This:repl()
+function This:repl(state)
+   self:to_dir(state.rest_path)
    return {}
 end
 
