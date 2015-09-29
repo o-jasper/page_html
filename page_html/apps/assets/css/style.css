@@ -1,0 +1,59 @@
+a{text-decoration:none}
+
+input{ width:50%; font-weight:bold; }
+button{ font-weight:bold; width:6.5em; }
+button.smaller{ font-weight:bold; width:2em; }
+button.delete_entry{ font-weight:bold; width:3em; }
+
+h1,h2 {
+  text-indent:10%;
+  margin-bottom: 1em;
+}
+
+h3, h4, h5, h6 { margin-bottom:0.5em;margin-top:0.5em; }
+
+td{padding:0.4em 0.7em ; vertical-align: text-top; align:left}
+
+.msg_tag{ background-color:#DDF; border-radius: 0.6em; border: 0.14em solid #88F;
+          padding:0.1em 0.1em; font-size:80%
+}
+
+.it_title{ font-weight:bold }
+
+.greened{ color:green }
+.warn{ color:red }
+.wrong{ color:red }
+.invalid{ color:red }
+
+.important{ font-weight:bold; }
+.note{ color:#777 }
+.minor{color:#666; font-size:70%;}
+.hint{ color:#444 }
+
+.live{ background-color:#8F8; }
+.dead {background-color:#FFF; color:#555 }
+
+.selected{ background-color:#CCF; }
+.main_selected{ background-color:#ECF; }
+
+.sql_minor{ font-family:"Lucida Console", Monaco, monospace;
+background-color:#EEE; color:#999}
+.sql_live{ font-family:"Lucida Console", Monaco, monospace;
+background-color:#8F8; }
+.sql_dead{ font-family:"Lucida Console", Monaco, monospace;
+background-color:#FFF; color:#555 }
+
+.time{color:#555;font-size:80%}
+.delta_time{color:#383;font-size:60%}
+.year_change{margin-left:10%; font-weight:bold;}
+.day_change{margin-left:10%; font-weight:bold;}
+.hour_change{font-size:70%}
+
+.timeunit{color:#080; font-size:60%; font-weight:bold; align:left;}
+.timemark{font-weight:bold}
+
+.index{font-weight:bold}
+
+.desc{text-indent:1em;}
+
+{%css/more.css}
