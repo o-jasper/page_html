@@ -1,14 +1,14 @@
-local path = "/home/jasper/.lualibs/"
+return function(http)
+   --local http = require "http"  -- For some reason not allowed here..
 
-package.path = package.path .. ";" .. path .. "?.lua;" .. path .. "?/init.lua"
-print(package.path)
+   -- Cant seem to load my stuff, no cigar..
+   local harness = require "page_html.serve.luvit.harness"
 
-local http = require "http"
+   local function starter(responder)
+      return http.createServer(harness(responder)):listen(8080)
+   end
 
--- Cant seem to load my stuff, no cigar..
-local harness = require "OmniPub_html.serve.luvit.harness"
+   require("page_html.serve.lib.pegasus_like")(starter):start()
 
-local function starter(responder)
-   return http.createServer(harness(responder)):listen(8080)
+   print("stopped?")
 end
-return require("page_html.serve.lib.pegasus_like")(starter)

@@ -1,7 +1,8 @@
-local http = require "http"
+-- Modifies things such that (hopefully) luvit can do it.
 
 local function harness(responder)
    return function(req, res)
+      print("CMON", req, res)
       local request = {
          path = function() return req.url end
       }
@@ -15,6 +16,9 @@ local function harness(responder)
             }
          end,
       }
-      return request, response
+      print("bleep")
+      return responder(request, response)
    end
 end
+
+return harness
