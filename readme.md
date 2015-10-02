@@ -97,4 +97,22 @@ The different implementations depend on their respective thing.
 
 * Luakit for `luakit_chrome`
 
-* Pegagus and PegasusJs for the pegasus variant.
+* Pegagus and [PegasusJs](https://github.com/o-jasper/PegasusJs)
+  for the [pegasus](http://evandrolg.github.io/pegasus.lua/) variant.
+
+## Lua Ring
+
+* [lua_Searcher](https://github.com/o-jasper/lua_Searcher) sql formulator including
+  search term, and Sqlite bindings.
+
+* [page_html](https://github.com/o-jasper/page_html) provide some methods on an object,
+  get a html page.(with js)
+
+* [storebin](https://github.com/o-jasper/storebin) converts trees to binary, same
+  interfaces as json package.(plus `file_encode`, `file_decode`)
+  
+* [PegasusJs](https://github.com/o-jasper/PegasusJs), easily RPCs javascript to
+  lua. In pegasus.
+
+* [tox_comms](https://github.com/o-jasper/tox_comms/), lua bindings to Tox and
+  bare bot.
