@@ -1,6 +1,4 @@
 -- Shows readme functions and/or 
-
-local c = require "o_jasper_common"
 local lfs = require "lfs"
 
 local This = {}
