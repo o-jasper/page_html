@@ -1,14 +1,16 @@
-return function(startfun)
+return function(Prior)
    -- local PegasusJs = require "PegasusJs" -- Really will need it..
 
    local Suggest = require "page_html.serve.Suggest"
 
    local This = {}
+   for k, v in pairs(Prior) do This[k] = v end
    This.__index = This
 
    This.__name = "page_html.html.pegasus"
 
    function This:new(new)
+      new = Prior:new(new)
       new = setmetatable(new or {}, self)
       new.pages = new.pages or {}
       new.pages_js = new.pages_js or {}
@@ -38,7 +40,7 @@ return function(startfun)
       return js
    end
 
-   function This:start()
+   function This:loopfun()
       -- Lists chromes and stuff if not found.
       local function help_if_not_found(args)
          --html = string.format("<p>Try.. %d</p> %s %s %s <p>%s %s</p>", k, req.path,
@@ -58,36 +60,50 @@ return function(startfun)
          end
          return html .. "</table>"
       end
-      -- TODO/NOTE: fairly messy, 
-      startfun(function(req, rep)
-            -- Get at information.
-            local page_name, rest = string.match(req:path() or "", "^/([^/]+)/(.*)")
-            if not page_name then
-               page_name = string.match(req:path() or "couldnt-figure-path", "^/(.+)")
-            end
-            local args = {
-               page_name = page_name,
-               rest_path = rest,
 
-               path = req:path(),
-               whole = true,
-            }
-            -- Figure the page, if not, give help.
-            local page = self.pages[page_name]
-            if not page then  -- Cant find the page..
-               rep:addHeader('Content-Type', 'text/html'):write(help_if_not_found(args))
-            else
-               -- Response from javascript might be sufficient.
-               if self:_ensure_js(page):respond(req, rep) then return end
-               -- Injection of the javascript needed to interface.
-               args.inject_js = string.format(
-                  [[<script type="text/javascript" src="/%s/PegasusJs/index.js"></script>]],
-                  page_name
-               )
-               local html = (page.output or Suggest.output)(page, args)
-               rep:addHeader('Content-Type', 'text/html'):write(html)
+      return function(req, rep)
+         -- Get at information.
+         local page_name, rest = string.match(req:path() or "", "^/([^/]+)/(.*)")
+         if not page_name then
+            page_name = string.match(req:path() or "couldnt-figure-path", "^/(.+)")
+         end
+         local args = {
+            page_name = page_name,
+            rest_path = rest,
+
+            path = req:path(),
+            whole = true,
+         }
+         -- Figure the page, if not, give help.
+         local page = self.pages[page_name]
+         if not page then  -- Cant find the page..
+            rep:addHeader('Content-Type', 'text/html'):write(help_if_not_found(args))
+         else
+            -- Response from javascript might be sufficient.
+            if self:_ensure_js(page):respond(req, rep) then return end
+            -- Injection of the javascript needed to interface.
+            args.inject_js = string.format(
+               [[<script type="text/javascript" src="/%s/PegasusJs/index.js"></script>]],
+               page_name
+            )
+            local html = (page.output or Suggest.output)(page, args)
+            rep:addHeader('Content-Type', 'text/html'):write(html)
+         end
+      end
+   end
+
+   if Prior.prepare then
+      function This:prepare(callback)
+         local loopfun = self:loopfun()
+         if callback then
+            local function cb(req, rep)
+               return callback(req, rep) or loopfun(req, rep)
             end
-      end)
+            Prior.prepare(self, cb)
+         else
+            Prior.prepare(self, loopfun)
+         end
+      end
    end
    return This
 end
