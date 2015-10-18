@@ -5,6 +5,14 @@ local This = {}
 This.__index = This
 This.__name = "page_html.html.Suggest"
 
+function This:new(new)
+   new = setmetatable(new, self)
+   new:init()
+   return new
+end
+
+function This:init() end
+
 function This:output(state, ...)
    -- It might be used w/o derivation..
    local ld = Assets:new{ where= state.where or self.where }
