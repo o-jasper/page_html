@@ -33,7 +33,12 @@ return function(Prior)
          local funs = (type(page.rpc_js) == "function" and page:rpc_js()) or
             page.rpc_js or {}
          local add_funs = {}
-         for k,v in pairs(funs) do add_funs[k] = v(page) end
+         for k,v in pairs(funs) do
+            local fun = v(page)
+            assert(type(fun) == "function",
+                   "rpc_js members supposed to return the function needed!")
+            add_funs[k] = fun
+         end
          js:add(add_funs)
          self.pages_js[page.name] = js
       end
