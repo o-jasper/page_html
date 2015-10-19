@@ -31,9 +31,7 @@ return {
    
    rpc_js = { 
       get_str = function() 
-         return function() 
-            return "Will enter javascript functions for you"
-         end
+         return "Will enter javascript functions for you"
       end,
    },
    

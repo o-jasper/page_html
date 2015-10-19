@@ -15,7 +15,7 @@ function This:init() end
 
 function This:output(state, ...)
    -- It might be used w/o derivation..
-   local ld = Assets:new{ where= state.where or self.where }
+   local ld = Assets:new{ where = state.where or self.where }
 
    state.conf = state.conf or {}
    local pat
