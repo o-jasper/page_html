@@ -21,14 +21,17 @@ function This:output(state, ...)
    local pat
    if type(self.repl_pattern) == "function" then
       pat = self:repl_pattern(state)
-   elseif type(self.repl_pattern) == "string" then
-      pat = self.repl_pattern
-   else
-      local asset_path = (not state.whole and "parts" .. "/" or "") .. self.name .. ".html"
-      pat = ld:load(asset_path)
-      assert(pat, string.format([[Couldnt get pattern, was left up to asset that wasnt found.
+   end
+   if not pat then
+      if type(self.repl_pattern) == "string" then
+         pat = self.repl_pattern
+      else
+         local asset_path = (not state.whole and "parts" .. "/" or "") .. self.name .. ".html"
+         pat = ld:load(asset_path)
+         assert(pat, string.format([[Couldnt get pattern, was left up to asset that wasnt found.
 Asset path: %s
 Where: %s]], asset_path, table.concat(ld.where, ";")))
+      end
    end
 
    local alts = { title= "page_html: " .. self.name }
