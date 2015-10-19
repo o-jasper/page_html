@@ -3,7 +3,7 @@ return function(str, subst, max_tries)
    local fail_n = 0
    local function fun(key, args)
       local got = subst[key]
-      if type(got) == "function" then got = got(args) end
+      if type(got) == "function" then got = got(subst, args) end
 
       if got == nil then fail_n = fail_n + 1 end
       return got
