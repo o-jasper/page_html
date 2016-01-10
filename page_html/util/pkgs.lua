@@ -1,5 +1,6 @@
 local split = require "page_html.util.split"
 
+-- Produces iterator for packages.
 local function pkgs(package_path)
    local snext = split(package_path or package.path, ";")
    local function next(prev, str)

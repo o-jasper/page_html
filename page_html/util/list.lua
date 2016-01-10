@@ -1,5 +1,6 @@
 local insert = table.insert
 
+-- Turns iterator into a list.
 local function list(next, first)
    local k,v = next(first)
    local ret = {}
