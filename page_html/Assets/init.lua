@@ -38,10 +38,14 @@ end
 
 function Assets:new(new)
    new = setmetatable(new or {}, self)
-   if new.memoize == true then new.memoize = nil end
-   assert(new.memoize == false or type(new.memoize) == "table")
-   new.where = new.where or {"/"}
+   new:init()
    return new
+end
+
+function Assets:init()
+   if self.memoize == true then self.memoize = nil end
+   assert(self.memoize == false or type(self.memoize) == "table")
+   self.where = self.where or {"/"}
 end
 
 -- Load asset directly, dont search.(path needs to be exact)
