@@ -19,6 +19,7 @@ return function(Prior)
    function This:add(...)
       for i, page in ipairs{...} do
          self.pages[page.name] = page
+         self:add(unpack(page.extra_list and page:extra_list() or {}))
       end
    end
 
