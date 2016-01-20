@@ -1,3 +1,5 @@
+local apply_subst = require "page_html.util.apply_subst"
+
 -- This is the recommended way.
 return {
    name = "templated",
@@ -29,12 +31,14 @@ return {
       end
    end,
    
-   rpc_js = { 
-      get_str = function() 
-         return "Will enter javascript functions for you"
-      end,
-   },
-   
+   rpc_js = function(self)
+      return { 
+         get_str = function() 
+            return "Will enter javascript functions for you"
+         end,
+      }
+   end,
+
    repl = function(self, args)
       local all_arg, n = "", 0
       for k, v in pairs(args) do
@@ -43,7 +47,7 @@ return {
          n = n + 1
       end
       local all_conf, m = "", 0
-      for k, v in pairs(args.conf) do
+      for k, v in pairs(args.conf or {}) do
          all_conf = string.format("%s<tr><td>%s=</td><td>%s</td></tr>",
                                   all_conf, k, v)
          m = m + 1
@@ -52,6 +56,10 @@ return {
                page_name = self.name, date = os.date(),
                all_arg = all_arg,   all_arg_cnt = n,
                all_conf = all_conf, all_conf_cnt = m }
+   end,
+
+   output = function(self, args)
+      return apply_subst(self:repl_pattern(args), self:repl(args))
    end,
 
    where = {"page_html/serve/examples/"}

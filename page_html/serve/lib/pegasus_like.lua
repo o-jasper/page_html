@@ -1,8 +1,7 @@
+local apply_subst = require "page_html.util.apply_subst"
+
 return function(Prior)
    -- local PegasusJs = require "PegasusJs" -- Really will need it..
-
-   local Suggest = require "page_html.serve.Suggest"
-
    local This = {}
    for k, v in pairs(Prior) do This[k] = v end
    This.__index = This
@@ -27,16 +26,11 @@ return function(Prior)
       -- Make the javascript interfacing, as needed..
       local js = self.pages_js[page.name]
       if not js then
-         local PegasusJs = require "PegasusJs"
-         
-         js = PegasusJs.new{string.format("/%s/PegasusJs", page.name)}
-         local funs = (type(page.rpc_js) == "function" and page:rpc_js()) or
-            page.rpc_js or {}
-         local add_funs = {}
-         for k,v in pairs(funs) do
-            add_funs[k] = function(...) return v(page, ...) end
+         js = require("PegasusJs").new{string.format("/%s/PegasusJs", page.name)}
+         local rpc_js = page.rpc_js and page:rpc_js()
+         if rpc_js then
+            js:add(rpc_js)
          end
-         js:add(add_funs)
          self.pages_js[page.name] = js
       end
       return js
@@ -44,24 +38,34 @@ return function(Prior)
 
    function This:loopfun()
       -- Lists chromes and stuff if not found.
-      local function help_if_not_found(args)
-         --html = string.format("<p>Try.. %d</p> %s %s %s <p>%s %s</p>", k, req.path,
-         -- t, t2, args.page, args.path)
-         local html = "Dont have this..<h4>args:</h4><table>"
-         for k, v in pairs(args) do
-            html = html .. string.format("<tr><td>%s =</td><td>%s</td></tr>", k,v)
-         end
-         html = html .. "</table>" ..
-            string.format("<h4>Dont have page %s, to have pages:</h4><table>",
-                          chrome_name)
-         for k, v in pairs(self.pages) do
-            local val = v.name == k  and v.name or
-               string.format("%s != %s", k, v.name)
-            html = html .. string.format([[<tr><td><a href="/%s/">%s</a></td></tr>]],
-               val, val)
-         end
-         return html .. "</table>"
-      end
+      local page_not_found = {
+         name = "page_not_found",
+         new = function(s, args)
+            s.args = args
+            return s
+         end,
+         output = function(s)
+            local patt = [[
+Dont have this..<h4>args:</h4>
+<table>{%list}</table>
+<h4>Dont have page %s, to have pages:</h4>
+<table>{%page_list}</table>
+]]
+            local list, page_list = {}, {}
+            for k, v in pairs(s.args) do
+               table.insert(list, string.format("<tr><td>%s =</td><td>%s</td></tr>", k,v))
+            end
+            for k, v in pairs(self.pages) do
+               local val = v.name == k  and v.name or string.format("%s != %s", k, v.name)
+               table.insert(page_list,
+                            string.format([[<tr><td><a href="/%s/">%s</a></td></tr>]],
+                               val, val))
+            end
+
+            return apply_subst(patt, {list=table.concat(list, "\n"),
+                                      page_list=table.concat(page_list, "\n")})
+         end,
+      }
 
       return function(req, rep)
          -- Get at information.
@@ -77,19 +81,10 @@ return function(Prior)
             whole = true,
          }
          -- Figure the page, if not, give help.
-         local page = self.pages[page_name]
-         if not page then  -- Cant find the page..
-            rep:addHeader('Content-Type', 'text/html'):write(help_if_not_found(args))
-         else
-            -- Response from javascript might be sufficient.
-            if self:_ensure_js(page):respond(req, rep) then return end
-            -- Injection of the javascript needed to interface.
-            args.inject_js = string.format(
-               [[<script type="text/javascript" src="/%s/PegasusJs/index.js"></script>]],
-               page_name
-            )
-            local html = (page.output or Suggest.output)(page, args)
-            rep:addHeader('Content-Type', 'text/html'):write(html)
+         local page = self.pages[page_name] or page_not_found:new(args)
+         -- Response from javascript might be sufficient.
+         if not self:_ensure_js(page):respond(req, rep) then
+            rep:addHeader('Content-Type', 'text/html'):write(page:output(args))
          end
       end
    end
