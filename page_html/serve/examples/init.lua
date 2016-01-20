@@ -16,6 +16,6 @@ end
 p:add(require "page_html.serve.examples.direct")
 p:add(require "page_html.serve.examples.templated")
 p:add(require "page_html.serve.examples.basic_dir_explorer")
-p:add(require("page_html.SimplePage"):new{name="simple", "supersimplepage"})
+p:add(require("page_html.StaticPage"):new{name="simple", "supersimplepage"})
 
 p:start()
