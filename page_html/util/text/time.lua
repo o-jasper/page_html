@@ -135,7 +135,7 @@ end
 function Public.instructed(instruction, state, ms_t, dontupdate)
    instruction = instruction or "%c"
    assert(type(instruction) == "string", instruction)
-   local key = string.match(instruction, "[%w]+")
+   local key = string.match(instruction, "[%w_]+")
    local got = Public[key] or Public.instruct_alt[key]
    if key and not disallowed[key] and got then
       return got(state, ms_t, dontupdate)
