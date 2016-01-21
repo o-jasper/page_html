@@ -17,7 +17,7 @@ function This:output(args)
         })[tp] or "text/html"
    if self.repl == true then
       local function index(_,k) return args[k] or self[k] end
-      return apply_subset(str, setmetatable({}, {__index= index})), tp
+      return apply_subst(str, setmetatable({}, {__index= index})), tp
    else
       return str, tp
    end

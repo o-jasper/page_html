@@ -22,6 +22,17 @@ function This:init()
    }
 end
 
+This.table_wid = 5
+
+function This:el_repl(el, state)
+   local ret = ListView.el_repl(self, el, state)
+   -- TODO add the "smalter quantities" stuff
+
+   ret.smode = el.mode == "directory" and "dir" or el.mode
+   ret.path  = el.dir .. el.file
+   return ret
+end
+
 function This:repl(args)
    self.lister.db:update_directory(args.rest_path or "/")
    return ListView.repl(self)

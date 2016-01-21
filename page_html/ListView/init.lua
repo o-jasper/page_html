@@ -28,7 +28,7 @@ This.table_wid = 3
 This.limit = {0, 50}
 
 function This:el_repl(el, state)
-   local alt = { i = state.i, at_i=self.limit[1] + self.limit[2] }
+   local alt = { name=self.name, i = state.i, at_i=self.limit[1] + self.limit[2] }
    local function add_alt(list) for k,v in pairs(list) do alt[k] = v end end
 
    if self.Formulator.values.time then
@@ -81,7 +81,6 @@ function This:output(...)
    return apply_subst(self.assets:load("page/list.htm"), self:repl(...))
 end
 
-
 local StaticPage = require "page_html.StaticPage"
 
 function This:static_list(set)
@@ -98,11 +97,12 @@ function This:extra_list()
    return self:static_list{
       ["style.css"]    = {"style.css"},
       ["js/common.js"] = {"js/common.js"},
-      ["js/page.js"]   = {"js/page.js", at_i = self.limit[2], search_term="", step_cnt=3},
+      ["js/page.js"]   = {"js/page.js", repl=true,
+                          at_i = self.limit[2], search_term="", step_cnt=3},
    }
 end
 
-function This:js()
+function This:rpc_js()
    return {  -- Produces a bunch of results.
       rpc_search = function(search_term, state, limit)
          local limit = limit or self.limit
