@@ -40,48 +40,13 @@ end
 
 function This:loopfun()
    -- Lists chromes and stuff if not found.
-   local page_not_found = {
-      name = "page_not_found",
-      new = function(s, args)
-         s.args = args
-         return s
-      end,
-      output = function(s)
-         local patt = [[
-Dont have this..<h4>args:</h4>
-<table>{%list}</table>
-<h4>Dont have page %s, to have pages:</h4>
-<table>{%page_list}</table>
-]]
-         local list, page_list = {}, {}
-         for k, v in pairs(s.args) do
-            table.insert(list, string.format("<tr><td>%s</td><td>=</td><td>%s</td></tr>", k,v))
-         end
-         for k, v in pairs(self.pages) do
-            local val = v.name == k  and v.name or string.format("%s != %s", k, v.name)
-            table.insert(page_list,
-                         string.format([[<tr><td><a href="/%s/">%s</a></td></tr>]],
-                            val, val))
-         end
-         
-         return apply_subst(patt, {list=table.concat(list, "\n"),
-                                   page_list=table.concat(page_list, "\n")})
-      end,
-   }
-   
-   local function find_dir(page_name, rest, dirs)
-      while dirs[page_name] do
-         dirs = dirs[page_name]
-         page_name, rest = string.match(req:path() or "", "^/([^/]+)/(.*)")
-      end
-   end
-   
    return function(req, rep)
       -- Get at information.
       local page_name, rest = string.match(req:path() or "", "^/([^/]+)/(.*)")
       if not page_name then
          page_name = string.match(req:path() or "couldnt-figure-path", "^/(.+)")
       end
+
       local rest = rest or ""
       local args = {
          page_name = page_name,
@@ -89,10 +54,12 @@ Dont have this..<h4>args:</h4>
          
          path = req:path(),
          whole = true,
+
+         pages = self.pages,
       }
       -- Figure the page, if not, give help.
       local page = self.pages[page_name] or self.pages[page_name .. "/" .. rest]
-         or page_not_found:new(args)
+         or require("page_html.serve.NotFound"):new(args)
 
       -- Response from javascript might be sufficient.
       if not self:_ensure_js(page):respond(req, rep) then
