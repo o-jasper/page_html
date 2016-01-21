@@ -1,0 +1,30 @@
+local ListView = require "page_html.ListView"
+
+local This = {}
+for k,v in pairs(ListView) do This[k] = v end
+
+This.__index = This
+
+This.name = "DirList2"
+
+This.db_file = ":memory:"
+This.Formulator = require "page_html.apps.DirList2.Formulator"
+This.Db = require "page_html.apps.DirList2.Dir"
+
+This.where = {"page_html/ListView/", "page_html/apps/DirList2/"}
+This.assets_arg =  { where = This.where }
+
+function This:init()
+   self.assets = self.Assets:new(self.assets_arg)
+   self.lister = require("Searcher.ProduceList"):new{
+      Formulator = self.Formulator,
+      db         = self.Db:new{ filename = self.db_file }
+   }
+end
+
+function This:repl(args)
+   self.lister.db:update_directory(args.rest_path or "/")
+   return ListView.repl(self)
+end
+
+return This
