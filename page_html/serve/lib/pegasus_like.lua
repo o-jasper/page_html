@@ -85,7 +85,8 @@ Dont have this..<h4>args:</h4>
          local page = self.pages[page_name] or page_not_found:new(args)
          -- Response from javascript might be sufficient.
          if not self:_ensure_js(page):respond(req, rep) then
-            rep:addHeader('Content-Type', 'text/html'):write(page:output(args))
+            local str, tp = page:output(args)
+            rep:addHeader('Content-Type', tp or 'text/html'):write(str)
          end
       end
    end
