@@ -44,7 +44,7 @@ function This:loopfun()
       -- Get at information.
       local page_name, rest = string.match(req:path() or "", "^/([^/]+)/(.*)")
       if not page_name then
-         page_name = string.match(req:path() or "couldnt-figure-path", "^/(.+)")
+         page_name = string.match(req:path() or "/couldnt-figure-path", "^/(.+)")
       end
 
       local rest = rest or ""
