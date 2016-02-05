@@ -1,5 +1,5 @@
 return function(str, subst, max_tries)
-   assert(type(str) == "string")
+   assert(type(str) == "string", string.format("Subst not string instead: %s", str))
    local fail_n = 0
    local function fun(key, args)
       local got = subst[key]

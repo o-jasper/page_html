@@ -1,3 +1,10 @@
+--  Copyright (C) 05-02-2016 Jasper den Ouden.
+--
+--  This is free software: you can redistribute it and/or modify
+--  it under the terms of the Afrero GNU General Public License as published
+--  by the Free Software Foundation, either version 3 of the License, or
+--  (at your option) any later version.
+
 -- Simple page(potentially substition and asset use.
 
 local apply_subst = require "page_html.util.apply_subst"

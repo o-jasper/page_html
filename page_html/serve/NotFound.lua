@@ -1,3 +1,10 @@
+--  Copyright (C) 05-02-2016 Jasper den Ouden.
+--
+--  This is free software: you can redistribute it and/or modify
+--  it under the terms of the Afrero GNU General Public License as published
+--  by the Free Software Foundation, either version 3 of the License, or
+--  (at your option) any later version.
+
 local This = {}
 
 local StaticPage = require "page_html.StaticPage"
