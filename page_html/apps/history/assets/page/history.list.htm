@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{%title}</title>
+    <link rel="stylesheet" href="/style.css">
+    <!--<script type="text/javascript" src="page.js"></script> -->
+</head>
+<body>
+
+<h3>History (<span id="cnt">{%cnt}</span>)</h3>
+<input type="text" id="pre_search">
+<input type="text" id="search">
+<textinput id="sql" hidden="true"></textinput>
+
+<table id="list"><tr>
+{%list}
+</tr></table>
+
+</body>
+</html>
