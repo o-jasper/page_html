@@ -25,9 +25,9 @@ function This:init()
    self.update_times = {}
 end
 
-This.__name = "page_html.apps.DirList.Dir"
+This.__name = "page_html.apps.DirList2.Dir"
 
-This.Formulator = require "page_html.apps.DirList.Formulator"
+This.Formulator = require "page_html.apps.DirList2.Formulator"
 
 This.repl = { table_name = "files" }
 
