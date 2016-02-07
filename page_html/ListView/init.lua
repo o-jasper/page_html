@@ -76,11 +76,15 @@ end
 function This:list_html(...) return table.concat(self:list_html_list(...), "\n") end
 
 function This:repl()
-   local list = self.lister:produce()
+   local _list  -- Hmm, memoized too much work this way.
+   local function list()
+      _list = _list or self.lister:produce()
+      return _list
+   end
    return {
       name  = self.name, title = self.name,
-      list  = self:list_html(list),
-      cnt = #list,
+      list  = function() return self:list_html(list()) end,
+      cnt = #list(),
    }
 end
 

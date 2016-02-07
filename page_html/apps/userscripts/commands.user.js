@@ -309,7 +309,7 @@ funs.vid = cmd_vid;
 // Keydown listener.
 
 (window.opera ? document.body : document).addEventListener('keydown', function(ev) {
-    if( ev.keyCode == 59 ) { // Thats ;.
+    if( ev.ctrlKey && ev.keyCode == 59 ) { // Thats control-;.
         toggle_commandpanel(!ev.shiftKey);
     } else if( command_element && !command_element.hidden ){
         if( ev.keyCode == 27 ) { // Escape.
