@@ -16,10 +16,8 @@ function search_extend(search_term, cnt) {
                                 cur.done = false;
                                 list_el.innerHTML += list[i];
                             }
+                            cur.last_el = list_el.children[list_el.children.length - 1];
                         });
-
-    cur.last_el = list_el.children[list_el.children.length - 1];
-
     cur.at_i += cnt
 }
 
@@ -47,6 +45,7 @@ search_continuous = false;
 
 ge('search').onkeydown = function(ev){ if( ev.keyCode == 13 ){ gui_search(); } };
 
+// Why the hell not?
 (window.opera ? document.body : document).addEventListener('onscroll', function(ev) {
     update_visibility();
-})
+}, !window.opera);
