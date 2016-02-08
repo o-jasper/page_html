@@ -118,7 +118,7 @@ function This:rpc_js()
       rpc_search = function(search_term, state, limit)
          local limit = limit or self.limit
          local list = self.lister:produce(search_term, state, limit)
-         return self:list_html_list(list, self.limit[1])
+         return self:list_html_list(list, limit[1])
       end,
    }
 end
