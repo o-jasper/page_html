@@ -9,16 +9,20 @@ var step_cnt = {%step_cnt};
 function search_extend(search_term, cnt) {
     var cnt = cnt || step_cnt;
 
-    callback_rpc_search([search_term, null, [cur.at_i, cur.at_i + cnt]],
-                        function(list) {
-                            cur.done = true;
-                            for(var i in list){
-                                cur.done = false;
-                                list_el.innerHTML += list[i];
-                            }
-                            cur.last_el = list_el.children[list_el.children.length - 1];
-                        });
-    cur.at_i += cnt
+    if( !cur.locked ) {
+        cur.locked = true;
+        callback_rpc_search([search_term, null, [cur.at_i, cnt]],
+                            function(list) {
+                                cur.done = true;
+                                for(var i in list){
+                                    cur.done = false;
+                                    list_el.innerHTML += list[i];
+                                }
+                                cur.at_i += cnt
+                                cur.last_el = list_el.children[list_el.children.length - 1];
+                                cur.locked = false;
+                            });
+    }
 }
 
 function search_anew(search_term, cnt) {
