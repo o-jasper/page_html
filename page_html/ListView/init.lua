@@ -122,18 +122,64 @@ function This:extra_list()
    return self:static_list{
       ["css/style.css"]    = {"css/style.css"},
       ["css/ListView.css"] = {"css/ListView.css"},
-      ["js/common.js"] = {"js/common.js"},
+      ["js/common.js"]     = {"js/common.js"},
+      ["js/manual_sql.js"] = {"js/manual_sql.js"},
       ["js/page.js"]   = {"js/page.js", repl=true,
                           at_i = self.limit[2], search_term="", step_cnt=3},
    }
 end
+
+local function list_html_rawdata(list, pattern, m, sn)
+   if #list == 0 then return {} end
+
+   local ret, ksort = {}, {}
+   for k in pairs(list[1]) do table.insert(ksort, k) end
+   table.sort(ksort)
+
+   local raw_1 = [[<td class="raw"><span class="rawkey">{%key}</span>:<span class="rawval">{%val}</span></td>]]
+
+-- self.assets:load("parts/raw.el.1.htm")
+
+   for i,el in ipairs(list) do
+      local n, parts = sn or 2, {{}}
+      for _, k in ipairs(ksort) do
+         table.insert(parts[1], apply_subst(raw_1, {key=k, val=el[k]}))
+         n = n + 1
+         if n == m then
+            table.insert(parts, 1, {})
+            n = 1
+         end
+      end
+      local repl = { i = i,
+                     first = table.concat(table.remove(parts)),
+      }
+
+      local rest_parts = {}
+      for _, el in ipairs(parts) do table.insert(rest_parts, table.concat(el)) end
+      repl.rest = table.concat(rest_parts, "</tr><tr>")
+      
+      table.insert(ret, apply_subst(pattern, repl))
+   end
+   return ret
+end
+
+This.rpc_sql_enabled = true
 
 function This:rpc_js()
    return {  -- Produces a bunch of results.
       rpc_search = function(search_term, state, limit)
          local limit = limit or self.limit
          local list, form = self.lister:produce(search_term, state, limit)
-         return {self:list_html_list(list, limit[1]), form:sql()}
+         return { self:list_html_list(list, limit[1]), form:sql() }
+      end,
+
+      rpc_sql = function(sql_code)
+         print("]]", sql_code)
+         if self.rpc_sql_enabled then
+            local pattern = self.assets:load("parts/raw.el.htm")
+            local list = self.lister.db:exec(sql_code)
+            return list_html_rawdata(list, pattern, self.table_wid)
+         end
       end,
    }
 end

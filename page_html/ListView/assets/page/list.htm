@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="/css/style.css">
     <script type="text/javascript" src="/{%name}/PegasusJs/index.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
+
+    <script type="text/javascript" src="/js/manual_sql.js"></script>
 </head>
 <body>
 
 <h3>{%title} (<span id="cnt">{%cnt}</span>)</h3>
 <input type="text" id="search" onsubmit="gui_search();" onchange="if(search_continuous){ gui_search();}"> 
 <button id="search_button" onclick="gui_search();">Go</button>
+<button id="visible_sql" onclick="visible_sql(ge('sql').hidden)">Sql off</button>
+<button id="sql_button" onclick="gui_sql_command();">Run Sql</button>
 
 <br><textarea id="sql">{%sql}</textarea>
 
