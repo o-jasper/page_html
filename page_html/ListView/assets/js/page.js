@@ -12,7 +12,10 @@ function search_extend(search_term, cnt) {
     if( !cur.locked ) {
         cur.locked = true;
         callback_rpc_search([search_term, null, [cur.at_i, cnt]],
-                            function(list) {
+                            function(ret) {
+                                ge("sql").textContent = ret[1];
+
+                                var list = ret[0];
                                 cur.done = true;
                                 for(var i in list){
                                     cur.done = false;

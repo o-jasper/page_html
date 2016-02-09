@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>{%title}</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/css/ListView.css">
+    <link rel="stylesheet" href="/css/style.css">
     <script type="text/javascript" src="/{%name}/PegasusJs/index.js"></script>
     <script type="text/javascript" src="/js/common.js"></script>
 </head>
@@ -13,7 +14,7 @@
 <input type="text" id="search" onsubmit="gui_search();" onchange="if(search_continuous){ gui_search();}"> 
 <button id="search_button" onclick="gui_search();">Go</button>
 
-<br><textarea id="sql" style="width:95%">{%sql}</textarea>
+<br><textarea id="sql">{%sql}</textarea>
 
 <table id="list">{%list}</table>
 <button onclick="search_extend(cur.search_term, 50);">MOAR</button>

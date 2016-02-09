@@ -120,7 +120,8 @@ end
 
 function This:extra_list()
    return self:static_list{
-      ["style.css"]    = {"style.css"},
+      ["css/style.css"]    = {"css/style.css"},
+      ["css/ListView.css"] = {"css/ListView.css"},
       ["js/common.js"] = {"js/common.js"},
       ["js/page.js"]   = {"js/page.js", repl=true,
                           at_i = self.limit[2], search_term="", step_cnt=3},
@@ -131,8 +132,8 @@ function This:rpc_js()
    return {  -- Produces a bunch of results.
       rpc_search = function(search_term, state, limit)
          local limit = limit or self.limit
-         local list = self.lister:produce(search_term, state, limit)
-         return self:list_html_list(list, limit[1])
+         local list, form = self.lister:produce(search_term, state, limit)
+         return {self:list_html_list(list, limit[1]), form:sql()}
       end,
    }
 end
