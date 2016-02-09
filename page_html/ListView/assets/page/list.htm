@@ -13,7 +13,7 @@
 <input type="text" id="search" onsubmit="gui_search();" onchange="if(search_continuous){ gui_search();}"> 
 <button id="search_button" onclick="gui_search();">Go</button>
 
-<textinput id="sql" hidden="true"></textinput>
+<br><textarea id="sql" style="width:95%">{%sql}</textarea>
 
 <table id="list">{%list}</table>
 <button onclick="search_extend(cur.search_term, 50);">MOAR</button>

@@ -14,14 +14,14 @@ end
 This.__index = This
 
 This.Assets = require "page_html.Assets"
--- This.assets_arg = {where = {"althist/history/"}}
+-- This.assets_arg = {where = {"first_dir/", "second_dir/"}}
 
--- TODO absolute..
---This.data_dir = "/home/jasper/iso/firefox/userscript/althist/data/"
+--This.data_dir = "/some/dir/"
 --This.db_file  = This.data_dir .. "history.db"
 This.name = "noname"
 
 function This:init()
+   assert(self.assets_arg)
    self.assets = self.Assets:new(self.assets_arg)
    self.lister = require("Searcher.ProduceList"):new{
       Formulator = self.Formulator,
@@ -76,20 +76,34 @@ end
 function This:list_html(...) return table.concat(self:list_html_list(...), "\n") end
 
 function This:repl()
-   local _list  -- Hmm, memoized too much work this way.
+   local _form, _list  -- Hmm, memoized too much work this way.
+   local function form()
+      _form = _form or self.lister:form()
+      return _form
+   end
    local function list()
-      _list = _list or self.lister:produce()
+      if not _list then
+         local form = form()
+         form:finish()
+         pcall(function()
+               _list = self.lister.db:exec(form:sql_pattern(), unpack(form:sql_values()))
+         end)
+      end
+      assert(_list)
       return _list
    end
    return {
       name  = self.name, title = self.name,
       list  = function() return self:list_html(list()) end,
       cnt = #list(),
+      sql = function() return form():sql() end
    }
 end
 
+This.page_path = "page/list.htm"
+
 function This:output(...)
-   return apply_subst(self.assets:load("page/list.htm"), self:repl(...))
+   return apply_subst(self.assets:load(self.page_path), self:repl(...))
 end
 
 local StaticPage = require "page_html.StaticPage"
