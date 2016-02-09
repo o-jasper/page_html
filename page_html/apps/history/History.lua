@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS history (
 ]]
 end
 
-This.__name = "althist.AltHist"
+This.__name = "page_html.apps.history.History"
 
-This.Formulator = require "althist.history.Formulator"
+This.Formulator = require "page_html.apps.history.Formulator"
 
 This.repl = { table_name = "history" }
 
