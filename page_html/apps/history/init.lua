@@ -16,10 +16,10 @@ This.__index = This
 
 This.name = "history"
 
-This.Formulator = require "althist.history.Formulator"
-This.Db         = require "althist.history.History"
+This.Formulator = require "page_html.apps..history.Formulator"
+This.Db         = require "page_html.apps.history.History"
 
-This.where      = {"althist/history/", "page_html/ListView/"}
+This.where      = {"page_html/apps/history/", "page_html/ListView/"}
 This.assets_arg = {where = This.where}
 
 -- TODO absolute..
