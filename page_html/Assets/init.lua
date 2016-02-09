@@ -99,10 +99,16 @@ function Assets:path(path)
    end   
 end
 
+function Assets:if_not_found(path)
+   print(string.format("Asset not found: %s\n", path))
+end
+
 function Assets:load(path)
    local got, at_path = self:open(path)
    if got then
       return read_and_close(got, at_path, self.memorize)
+   else
+      self:if_not_found(path)
    end
 end
 
