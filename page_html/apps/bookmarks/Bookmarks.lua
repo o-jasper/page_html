@@ -43,9 +43,9 @@ CREATE TABLE IF NOT EXISTS bookmark_tags (
 ]]
 end
 
-This.__name = "althist.Bookmarks"
+This.__name = "page_html.apps.bookmarks.Bookmarks"
 
-This.Formulator = require "althist.bookmarks.Formulator"
+This.Formulator = require "page_html.apps.bookmarks.Formulator"
 
 This.repl = { table_name = "bookmarks" }
 
@@ -57,9 +57,9 @@ cmd_strs.enter_tag = "INSERT INTO bookmark_tags VALUES (NULL, ?,?);"
 
 cmd_strs.del       = "DELETE FROM bookmarks WHERE id == ?;"
 
-cmd_strs.get_tags         = "SELECT name WHERE to_id == ?;"
-cmd_strs.get_tags_sorterd = "SELECT name WHERE to_id == ?;"
-cmd_strs.get              = "SELECT * WHERE id == ?"
+cmd_strs.get_tags        = "SELECT name FROM bookmark_tags WHERE to_id == ?;"
+cmd_strs.get_tags_sorted = "SELECT name FROM bookmark_tags WHERE to_id == ? ORDER BY name;"
+cmd_strs.get             = "SELECT * FROM bookmarks WHERE id == ?"
 
 This.last_time = 0
 

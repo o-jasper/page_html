@@ -4,4 +4,7 @@
 
 .day_change{font-weight:bold}
 
-blockquote.bm{color:#555 ; margin:0.1em; margin-left:0.5em }
+.bm_quote{background-color:#BBB ; }
+blockquote.bm_quote{margin:0.0em 0.0em 0.1em 2em}
+
+tag{font-weight:bold} /* TODO surround with them things*/

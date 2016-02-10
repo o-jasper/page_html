@@ -14,15 +14,17 @@ This.__index = This
 
 This.name = "bookmarks"
 
-This.Formulator = require "althist.bookmarks.Formulator"
-This.Db         = require "althist.bookmarks.Bookmarks"
+This.Formulator = require "page_html.apps.bookmarks.Formulator"
+This.Db         = require "page_html.apps.bookmarks.Bookmarks"
 
-This.where      = {"althist/bookmarks/", "page_html/ListView/"}
+This.where      = {"page_html/apps/bookmarks/", "page_html/ListView/"}
 This.assets_arg = {where = This.where}
 
 -- TODO absolute..
 This.data_dir = "/home/jasper/iso/newiso/server/althist/data/"
 This.db_file  = This.data_dir .. "history.db"
+
+This.table_wid = 4
 
 -- TODO extend the alt-list with position-percentages.
 -- TODO also want tags to show.
@@ -31,6 +33,32 @@ function This:el_repl(el, state)
 
    repl.xp = math.floor(100*repl.x + 0.5)
    repl.yp = math.floor(100*repl.y + 0.5)
+
+   local _tag_list
+   local function tag_list()
+      if not _tag_list then
+         _tag_list = {}
+         local list = self.lister.db:cmd("get_tags")(el.id)
+         print(#list)
+         for k,v in pairs(list) do print(k,v) end
+         for _, entry in ipairs(list) do
+            table.insert(_tag_list, entry.name)
+         end
+      end
+      return _tag_list
+   end
+
+   local function tag_fun(b, m, e)
+      return function()
+         if #tag_list() > 0 then
+            return b .. table.concat(tag_list(), e .. m .. b) .. e
+         else
+            return " "
+         end
+      end
+   end
+   repl.tag_html = tag_fun([[<span class="tag">]], ",", "</span>")
+   repl.tag_text = tag_fun("", ",", "")
 
    return repl
 end
@@ -43,7 +71,7 @@ function This:rpc_js()
       print(title, text, quote, #tag_list, unpack(pos_frac))
 
       self.lister.db:enter{
-         uri=uri, title=title, text=text, quote=quote, tag_list=tag_list,
+         uri=uri, title=title, text=text, quote=quote, tags=tag_list,
          x=pos_frac[1], y=pos_frac[2], creator="self",
          }
       return "OK"
