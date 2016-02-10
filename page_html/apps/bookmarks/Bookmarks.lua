@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   y INTEGER,
 
   root_hash TEXT
-);
-
+);]]
+   self:exec [[
 CREATE TABLE IF NOT EXISTS bookmark_tags (
   id    INTEGER PRIMARY KEY,
   to_id INTEGER NOT NULL,
