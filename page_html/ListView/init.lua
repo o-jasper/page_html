@@ -20,10 +20,12 @@ This.Assets = require "page_html.Assets"
 --This.db_file  = This.data_dir .. "history.db"
 This.name = "noname"
 
+This.ProduceList = require "Searcher.ProduceList"
+
 function This:init()
    assert(self.assets_arg)
    self.assets = self.Assets:new(self.assets_arg)
-   self.lister = require("Searcher.ProduceList"):new{
+   self.lister = self.ProduceList:new{
       Formulator = self.Formulator,
       db         = self.Db:new{ filename = self.db_file }
    }
@@ -64,8 +66,8 @@ function This:el_html(el, state)
                       self:el_repl(el, state))
 end
 
-function This:list_html_list(list, si)
-   local ret, state = {}, {}
+function This:list_html_list(list, state, si)
+   local ret, state = {}, state or {}
    for i, el in ipairs(list) do
       state.i = (si or 0) + i
       table.insert(ret, self:el_html(el, state))
@@ -93,10 +95,10 @@ function This:repl()
       return _list
    end
    return {
-      name  = self.name, title = self.name,
-      list  = function() return self:list_html(list()) end,
-      cnt = #list(),
-      sql = function() return form():sql() end
+      name = self.name, title = self.name,
+      list = function() return self:list_html(list()) end,
+      cnt  = #list(),
+      sql  = function() return form():sql() end
    }
 end
 
@@ -165,16 +167,17 @@ end
 
 This.rpc_sql_enabled = true
 
+function This:search(search_term, state)
+   state.search_term = state.search_term or search_term or self.search_term
+
+   local list, form = self.lister:produce(search_term, state)
+   return { self:list_html_list(list, state, limit[1]), form:sql() }
+end
+
 function This:rpc_js()
    return {  -- Produces a bunch of results.
-      rpc_search = function(search_term, state, limit)
-         local limit = limit or self.limit
-         local list, form = self.lister:produce(search_term, state, limit)
-         return { self:list_html_list(list, limit[1]), form:sql() }
-      end,
-
+      rpc_search = function(...) return self:search(...) end,
       rpc_sql = function(sql_code)
-         print("]]", sql_code)
          if self.rpc_sql_enabled then
             local pattern = self.assets:load("parts/raw.el.htm")
             local list = self.lister.db:exec(sql_code)

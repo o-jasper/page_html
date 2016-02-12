@@ -21,7 +21,7 @@ function search_extend(search_term, cnt) {
 
     if( !cur.locked ) {
         cur.locked = true;
-        callback_rpc_search([search_term, null, [cur.at_i, cnt]],
+        callback_rpc_search([search_term, {limit:[cur.at_i, cnt]}],
                             function(ret) {
                                 ge("sql").textContent = ret[1];
                                 list_extend(ret[0], cnt);
