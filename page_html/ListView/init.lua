@@ -171,7 +171,7 @@ function This:search(search_term, state)
    state.search_term = state.search_term or search_term or self.search_term
 
    local list, form = self.lister:produce(search_term, state)
-   return { self:list_html_list(list, state, limit[1]), form:sql() }
+   return { self:list_html_list(list, state, state.limit[1]), form:sql() }
 end
 
 function This:rpc_js()
