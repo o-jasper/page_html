@@ -49,6 +49,35 @@ function maybe_ge(el) {
     return (typeof(el) == 'string' && ge(el)) || el; 
 }
 
+function textarea_update(te, after_keydown) {
+    var te = maybe_ge(te);
+    te.rows = Math.max(te.value.split("\n").length, 0);
+    te.cols = GM_getValue("reasonable_width", 80);
+
+    te.onkeydown = function(ev){
+        te.rows = Math.max(te.value.split("\n").length, 0);
+        if(after_keydown){ after_keydown(ev); }
+    }
+}
+
+function next_prev(next, prev, need_shift, left, right) {
+    var next = maybe_ge(next), prev = maybe_ge(prev);
+    return function(ev) {
+        if( need_shift && !ev.shiftKey ){ return; }
+        if( next && ev.keyCode == 13 ) {
+            next.focus();
+        } else if( next && ev.keyCode == 40 ) {
+            next.focus();
+        } else if( prev && ev.keyCode == 38 ) {
+            prev.focus();
+        } else if( left && ev.keyCode == 37 ) {
+            left.focus();
+        } else if( right && ev.keyCode == 39 ) {
+            right.focus();
+        }
+    }
+}
+
 // -- end libs (TOOD extract libs..)
 
 var command_element;
@@ -152,33 +181,8 @@ GM_registerMenuCommand("Command Panel", toggle_commandpanel);
 
 var funs = {};
 
-function textarea_update(te, after_keydown) {
-    var te = maybe_ge(te);
-    te.rows = Math.max(te.value.split("\n").length, 0);
-    te.cols = GM_getValue("reasonable_width", 80);
-
-    te.onkeydown = function(ev){
-        te.rows = Math.max(te.value.split("\n").length, 0);
-        if(after_keydown){ after_keydown(ev); }
-    }
-}
-
-function next_prev(next, prev, need_shift) {
-    var next = maybe_ge(next), prev = maybe_ge(prev);
-    return function(ev) {
-        if( need_shift && !ev.shiftKey ){ return; }
-        if( next && ev.keyCode == 13 ) {
-            next.focus();
-        } else if( next && ev.keyCode == 40 ) {
-            next.focus();
-        } else if( prev && ev.keyCode == 38 ) {
-            prev.focus();
-        }
-    }
-}
-
 // ---- Bookmarks.
-// TODO feel like maybe want bare tag-uri too?
+// TODO feel like maybe want bare tag-uri too? (just immediately select the tag?)
 
 function bookmark() {
     var h = "<span style='font-size:150%; text-weight:bold'>Bookmark</span><table>";
@@ -229,6 +233,8 @@ function bookmark() {
     var ct = ge('cmd_bm_tags');
     ct.onkeydown = function(ev){
         if( ev.keyCode == 13 ) {
+            // TODO shift-enter should focus-and-submit, otherwise,
+            //  just select the button-to-submit.(currently not so..)
             if( ct.value.length == 0 ){ cs.focus(); return; }
 
             // Add a button signifying the tag, clicking removes.
