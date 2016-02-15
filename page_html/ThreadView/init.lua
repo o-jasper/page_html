@@ -17,11 +17,14 @@ function This:select_thread(form, el)
    form:equal_1(self.thread_name, el[self.thread_name])   
 end
 
+This.pats = { subthread_row = "<tr><td colspan={%table_wid}>{%subthread}</td></tr>" }
+
 function This:el_repl(el, state)
    local ret = ListView.el_repl(self, el, state)
 
-   ret.subthread = function()
-      if state.thread_depth < self.max_thread_depth then
+   local _list
+   local function list()
+      if not _list then
          -- NOTE: complete sub instance
          local sub = (self.SubInstance or getmetatable(self)):new()
          local form = sub.lister:form(state.search_term, state)
@@ -29,10 +32,19 @@ function This:el_repl(el, state)
          --  i.e. the lister should already have selected the comments "worthy of seeing"
          self:select_thread(form, el)
          form:finish()
-         local list = sub.lister.db:exec(form:sql_pattern(), unpack(form:sql_values()))
+         _list = sub.lister.db:exec(form:sql_pattern(), unpack(form:sql_values()))
+      end
+      return _list
+   end
 
+   ret.subthread_row = function()
+      return #list() > 0 and self.pats.subthread_row or " "
+   end
+
+   ret.subthread = function()
+      if state.thread_depth < self.max_thread_depth then
          -- Things are marked in the state in here too.(each entry once)
-         return sub:list_html(list, state)
+         return sub:list_html(list(), state)
       else
          return "{%max_depth_reached}"
       end
