@@ -113,6 +113,7 @@ local StaticPage = require "page_html.StaticPage"
 function This:static_list(set)
    local ret = {}
    for k,v in pairs(set) do
+      if v == true then v = {} end
       v.where = self.where
       v.name = k
       table.insert(ret, StaticPage:new(v))
@@ -122,12 +123,14 @@ end
 
 function This:extra_list()
    return self:static_list{
-      ["css/style.css"]    = {"css/style.css"},
-      ["css/ListView.css"] = {"css/ListView.css"},
-      ["js/common.js"]     = {"js/common.js"},
-      ["js/manual_sql.js"] = {"js/manual_sql.js"},
-      ["js/page.js"]   = {"js/page.js", repl=true,
-                          at_i = self.limit[2], search_term="", step_cnt=3},
+      ["css/style.css"]    = true,
+      ["css/ListView.css"] = true,
+      ["js/common.js"]     = true,
+      ["js/manual_sql.js"] = true,
+      ["js/page.js"]   = true,
+      ["js/data.js"]   = {repl=true,
+                          at_i = self.limit[2], search_term="", step_cnt=3,
+                          table_wid=self.table_wid},
    }
 end
 

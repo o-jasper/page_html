@@ -1,10 +1,5 @@
 
-var initial_cnt = {%at_i};
 var list_el = ge("list");
-
-var cur = { at_i:initial_cnt, search_term:"{%search_term}" };
-
-var step_cnt = {%step_cnt};
 
 function list_extend(by_list, cnt) {
     cur.done = true;
@@ -21,9 +16,14 @@ function search_extend(search_term, cnt) {
 
     if( !cur.locked ) {
         cur.locked = true;
+        list_el.innerHTML = a.working_row + list_el.innerHTML;
+
+        ge("search_button").textContent = "(w)";
         callback_rpc_search([search_term, {limit:[cur.at_i, cnt]}],
                             function(ret) {
                                 ge("sql").textContent = ret[1];
+                                ge("search_button").textContent = "Go";
+                                list_el.innerHTML = "";
                                 list_extend(ret[0], cnt);
                                 cur.locked = false;
                             });
@@ -33,7 +33,6 @@ function search_extend(search_term, cnt) {
 function search_anew(search_term, cnt) {
     var cnt = cnt || initial_cnt;
     cur = { at_i:0, search_term:search_term, done:false };
-    list_el.innerHTML = "";
 
     search_extend(search_term, cnt);
     cur.search_term = search_term;
