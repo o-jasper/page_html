@@ -19,9 +19,8 @@ end
 
 function This:el_repl(el, state)
    local ret = ListView.el_repl(self, el, state)
-   local alt = getmetatable(ret).__index
 
-   alt.subthread = function()
+   ret.subthread = function()
       if state.thread_depth < self.max_thread_depth then
          -- NOTE: complete sub instance
          local sub = (self.SubInstance or getmetatable(self)):new()

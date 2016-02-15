@@ -28,6 +28,8 @@ This.db_file  = This.data_dir .. "history.db"
 
 This.table_wid = 4
 
+This.pats = Bookmarks.pats
+
 function This:el_repl(el, state)
    return Bookmarks._el_repl(self, el, state, ThreadView.el_repl(self, el, state))
 end

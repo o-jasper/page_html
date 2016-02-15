@@ -36,14 +36,16 @@ local time_resay = require("page_html.util.text.time").resay
 This.table_wid = 3
 This.limit = {0, 50}
 
+local html_escape = require "page_html.util.text.html_escape"
+
 function This:el_repl(el, state)
-   local alt = { name=self.name, i = state.i, at_i=self.limit[1] + self.limit[2] }
-   local function add_alt(list) for k,v in pairs(list) do alt[k] = v end end
+   local ret = { name=self.name, i = state.i, at_i=self.limit[1] + self.limit[2] }
+   local function add_ret(list) for k,v in pairs(list) do ret[k] = v end end
 
    if self.Formulator.values.time then
       local time = el[self.Formulator.values.time]
       local date_nums = os.date("*t", time)
-      add_alt{ time_resay=time_resay(state, 1000*time),
+      add_ret{ time_resay=time_resay(state, 1000*time),
                table_wid = self.table_wid,
                resay_colspan=self.table_wid,
                hour_min = os.date("%H:%M", time),
@@ -52,13 +54,17 @@ function This:el_repl(el, state)
    end
 
    if el.uri and (not el.title or el.title == "") then
-      add_alt{ linked_title = string.format([[(<a href="%s">%s</a>)]], el.uri, el.uri),
-               ensure_title = "(" .. el.uri .. ")" }
+      add_ret{ linked_title = string.format([[(<a href="%s">%s</a>)]], el.uri, el.uri),
+               ensure_title = "(" .. html_escape(el.uri) .. ")" }
    else
-      add_alt{ linked_title = string.format([[<a href="%s">%s</a>]], el.uri, el.title),
-               ensure_title = el.title }
+      add_ret{ linked_title =
+                  string.format([[<a href="%s">%s</a>]], el.uri, html_escape(el.title)),
+               ensure_title = html_escape(el.title) }
    end
-   return setmetatable(el, {__index = alt})
+
+   for k,v in pairs(el) do ret[k] = html_escape(v) end
+
+   return ret
 end
 
 local apply_subst = require "page_html.util.apply_subst"
