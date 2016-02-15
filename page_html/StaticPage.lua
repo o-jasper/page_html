@@ -14,9 +14,11 @@ for k,v in pairs(require "page_html.Assets") do This[k] = v end
 This.__index = This
 
 function This:output(args)
-   local str = self.where and self:load(self[1]) or self[1]
+   assert(not self[1] and self.name)
+   local name = self[1] or self.name
+   local str = self.where and self:load(name) or name
 
-   local tp = self.where and string.match(self[1], "[.]([%w]+)$")
+   local tp = self.where and string.match(name, "[.]([%w]+)$")
    tp = ({ js = "text/javascript",
            css = "text/css",
            htm = "text/html",
