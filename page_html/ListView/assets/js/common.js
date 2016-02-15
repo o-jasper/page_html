@@ -3,6 +3,17 @@ function ge(id) {
     return document.getElementById(id) || {};
 }
 
+// TODO put maybe_ge here? (put all common js together)
+
+function prepend_child(to_el, add_el) {
+    if(to_el.childNodes[0]) {
+        to_el.insertBefore(add_el, to_el.childNodes[0]);
+    } else {
+        to_el.appendChild(add_el);
+    }
+}
+
+// -- TODO not used.
 function set_ids(idvals) {
     if(idvals) for( k in idvals ) {
         if( k == "sql_input" ){  // TODO block at right time.

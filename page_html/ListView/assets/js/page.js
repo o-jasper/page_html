@@ -1,14 +1,12 @@
 
-var list_el = ge("list");
-
 function list_extend(by_list, cnt) {
     cur.done = true;
-    for(var i in by_list){
+    for(var i in by_list){  // TODO might be nicer to .AppendChild(but the outer TR...)
         cur.done = false;
-        list_el.innerHTML += by_list[i];
+        ge('list').innerHTML += by_list[i];
     }
     if(cnt){ cur.at_i += cnt }
-    cur.last_el = list_el.children[list_el.children.length - 1];
+    cur.last_el = ge('list').children[ge('list').children.length - 1];
 }
 
 function search_extend(search_term, cnt) {
@@ -16,14 +14,14 @@ function search_extend(search_term, cnt) {
 
     if( !cur.locked ) {
         cur.locked = true;
-        list_el.innerHTML = a.working_row + list_el.innerHTML;
+        prepend_child(ge('list'), a.working_row_el());
 
         ge("search_button").textContent = "(w)";
         callback_rpc_search([search_term, {limit:[cur.at_i, cnt]}],
                             function(ret) {
                                 ge("sql").textContent = ret[1];
                                 ge("search_button").textContent = "Go";
-                                list_el.innerHTML = "";
+                                ge('list').innerHTML = "";
                                 list_extend(ret[0], cnt);
                                 cur.locked = false;
                             });
