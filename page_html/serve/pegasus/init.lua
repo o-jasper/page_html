@@ -5,8 +5,6 @@
 --  by the Free Software Foundation, either version 3 of the License, or
 --  (at your option) any later version.
 
-local apply_subst = require "page_html.util.apply_subst"
-
 local Pegasus = require "pegasus"
 
 -- local PegasusJs = require "PegasusJs" -- Really will need it..
