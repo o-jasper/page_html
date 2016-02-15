@@ -43,7 +43,9 @@ function This:el_repl(el, state)
    if self.Formulator.values.time then
       local time = el[self.Formulator.values.time]
       local date_nums = os.date("*t", time)
-      add_alt{ time_resay=time_resay(state, 1000*time), resay_colspan=self.table_wid,
+      add_alt{ time_resay=time_resay(state, 1000*time),
+               table_wid = self.table_wid,
+               resay_colspan=self.table_wid,
                hour_min = os.date("%H:%M", time),
                day_frac = (date_nums.hour*3600 + date_nums.min*60 + date_nums.sec)/864.0
       }
