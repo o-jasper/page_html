@@ -45,6 +45,10 @@ function send(on_name, data, onload) {
 // TODO var id_random = "066e8ceaf0fcdaaf5cec9a3bb7" _at_least_part_ random for-each-time.
 function ge(id){ return document.getElementById(id); }
 
+function maybe_ge(el) {
+    return (typeof(el) == 'string' && ge(el)) || el; 
+}
+
 // -- end libs (TOOD extract libs..)
 
 var command_element;
@@ -148,12 +152,28 @@ GM_registerMenuCommand("Command Panel", toggle_commandpanel);
 
 var funs = {};
 
-function textarea_update(te) {
+function textarea_update(te, after_keydown) {
+    var te = maybe_ge(te);
     te.rows = Math.max(te.value.split("\n").length, 0);
     te.cols = GM_getValue("reasonable_width", 80);
 
     te.onkeydown = function(ev){
         te.rows = Math.max(te.value.split("\n").length, 0);
+        if(after_keydown){ after_keydown(ev); }
+    }
+}
+
+function next_prev(next, prev, need_shift) {
+    var next = maybe_ge(next), prev = maybe_ge(prev);
+    return function(ev) {
+        if( need_shift && !ev.shiftKey ){ return; }
+        if( next && ev.keyCode == 13 ) {
+            next.focus();
+        } else if( next && ev.keyCode == 40 ) {
+            next.focus();
+        } else if( prev && ev.keyCode == 38 ) {
+            prev.focus();
+        }
     }
 }
 
@@ -175,6 +195,11 @@ function bookmark() {
 
     // NOTE: otherwise need to escape stuff.(which would be silly)
     ge('cmd_bm_title').value = document.title;
+    ge('cmd_bm_title').style.width = "100%";
+
+    ge('cmd_bm_title').onkeydown = next_prev('cmd_bm_text');
+    textarea_update('cmd_bm_text',  next_prev('cmd_bm_quote', 'cmd_bm_title', true));
+    textarea_update('cmd_bm_quote', next_prev('cmd_bm_tags',  'cmd_bm_text',  true));
 
     var cs = ge('cmd_bm_submit');
     cs.onclick = function() {
@@ -201,10 +226,6 @@ function bookmark() {
         // else if( ev.keyCode == 13 ){ cs.onclick(); }  // Already automatically so.
     }
 
-    textarea_update(ge('cmd_bm_text'));
-    textarea_update(ge('cmd_bm_quote'));
-    ge('cmd_bm_title').style.width = "100%";
-
     var ct = ge('cmd_bm_tags');
     ct.onkeydown = function(ev){
         if( ev.keyCode == 13 ) {
@@ -223,6 +244,7 @@ function bookmark() {
             ge('cmd_bm_taglist').appendChild(button);
             ct.value = "";
         }
+        next_prev(false, 'cmd_bm_quote')(ev);
     }
 
     ge('cmd_bm_text').focus();
