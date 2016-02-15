@@ -2,6 +2,8 @@ local lfs = require "lfs"
 local Assets = require "page_html.Assets"
 local apply_subst = require "page_html.util.apply_subst"
 
+local html_escape = require "page_html.util.text.html_escape"
+
 return {
    name = "basic_dir_explorer",
    where = {"page_html/serve/examples/"},
@@ -19,7 +21,7 @@ return {
          ret.what = "Directory"
          for k,v in lfs.dir(ret.directory) do
             local attr = lfs.attributes(ret.directory .. "/" .. k)
-            local add = "<tr>"
+            local k, add = html_escape(k), "<tr>"
             add = string.format(
                [[<td><a href="/{%%page_name}/{%%directory}/%s">%s%s</a></td>]],
                k, k, attr and attr.mode == "directory" and "/" or " ")
@@ -40,7 +42,7 @@ return {
          end
          ret.list = ret.list .. "</table>"
       end
-      ret.title = self.name .. ": " .. ret.directory
+      ret.title = html_escape(self.name .. ": " .. ret.directory)
       return ret
    end,
 
