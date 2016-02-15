@@ -14,7 +14,7 @@ for k,v in pairs(require "page_html.Assets") do This[k] = v end
 This.__index = This
 
 function This:output(args)
-   assert(not self[1] and self.name)
+   --assert(not self[1] and self.name)
    local name = self[1] or self.name
    local str = self.where and self:load(name) or name
 

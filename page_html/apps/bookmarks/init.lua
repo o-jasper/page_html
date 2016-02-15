@@ -29,8 +29,10 @@ This.table_wid = 4
 -- TODO extend the alt-list with position-percentages.
 -- TODO also want tags to show.
 function This:el_repl(el, state)
-   local repl = ListView.el_repl(self, el, state)
+   return self:_el_repl(el, state, ListView.el_repl(self, el, state))
+end
 
+function This:_el_repl(el, state, repl)
    repl.xp = math.floor(100*repl.x + 0.5)
    repl.yp = math.floor(100*repl.y + 0.5)
 
