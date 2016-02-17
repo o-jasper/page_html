@@ -15,28 +15,8 @@
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
-// Where to send information.
-var server_url = GM_getValue('server', "http://localhost:9090/");
-
-function send(on_name, data, onload) {
-    var path = on_name.split("/")
-    var last = path.pop()
-
-    var full_url = server_url + path.join("/") + "/PegasusJs/" + last;
-    var send_data = JSON.stringify({d:data});
-
-    GM_xmlhttpRequest({
-        method: 'POST',
-        url: full_url,
-        data: send_data,
-        headers: {
-            'Content-Type': "application/x-www-form-urlencoded"
-        },
-        onload: onload
-    });
-}
-
-// -- end libs (TOOD extract libs..)
+=a=js/pegasus_send.js
+=s=figure_server.js
 
 send('history/.collect', [document.documentURI, document.title || ""],
      function(response_data) {

@@ -27,3 +27,34 @@ function in_viewport(el) {
     var bottom = el.offsetTop;
     return top > 0 ? top <= height : (bottom > 0 && bottom <= height);
 }
+
+// Fits the length constantly.
+function textarea_update(te, after_keydown) {
+    var te = maybe_ge(te);
+    te.rows = Math.max(te.value.split("\n").length, 0);
+    te.cols = GM_getValue("reasonable_width", 80);
+
+    te.onkeydown = function(ev){
+        te.rows = Math.max(te.value.split("\n").length, 0);
+        if(after_keydown){ after_keydown(ev); }
+    }
+}
+
+// Adds next/prev, left/right functionality.
+function next_prev(next, prev, need_shift, left, right) {
+    var next = maybe_ge(next), prev = maybe_ge(prev);
+    return function(ev) {
+        if( need_shift && !ev.shiftKey ){ return; }
+        if( next && ev.keyCode == 13 ) {
+            next.focus();
+        } else if( next && ev.keyCode == 40 ) {
+            next.focus();
+        } else if( prev && ev.keyCode == 38 ) {
+            prev.focus();
+        } else if( left && ev.keyCode == 37 ) {
+            left.focus();
+        } else if( right && ev.keyCode == 39 ) {
+            right.focus();
+        }
+    }
+}
