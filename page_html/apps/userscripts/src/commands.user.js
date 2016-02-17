@@ -18,67 +18,8 @@
 // @grant       GM_openInTab
 // ==/UserScript==
 
-// TODO annoying that essentially all the commands need to be here..
-
-// Where to send information.
-
-var server_url = GM_getValue('server', "http://localhost:9090/");
-
-function send(on_name, data, onload) {
-    var path = on_name.split("/")
-    var last = path.pop()
-
-    var full_url = server_url + path.join("/") + "/PegasusJs/" + last;
-    var send_data = JSON.stringify({d:data});
-
-    GM_xmlhttpRequest({
-        method: 'POST',
-        url: full_url,
-        data: send_data,
-        headers: {
-            'Content-Type': "application/x-www-form-urlencoded"
-        },
-        onload: onload
-    });
-}
-
-// TODO var id_random = "066e8ceaf0fcdaaf5cec9a3bb7" _at_least_part_ random for-each-time.
-function ge(id){ return document.getElementById(id); }
-
-function maybe_ge(el) {
-    return (typeof(el) == 'string' && ge(el)) || el; 
-}
-
-function textarea_update(te, after_keydown) {
-    var te = maybe_ge(te);
-    te.rows = Math.max(te.value.split("\n").length, 0);
-    te.cols = GM_getValue("reasonable_width", 80);
-
-    te.onkeydown = function(ev){
-        te.rows = Math.max(te.value.split("\n").length, 0);
-        if(after_keydown){ after_keydown(ev); }
-    }
-}
-
-function next_prev(next, prev, need_shift, left, right) {
-    var next = maybe_ge(next), prev = maybe_ge(prev);
-    return function(ev) {
-        if( need_shift && !ev.shiftKey ){ return; }
-        if( next && ev.keyCode == 13 ) {
-            next.focus();
-        } else if( next && ev.keyCode == 40 ) {
-            next.focus();
-        } else if( prev && ev.keyCode == 38 ) {
-            prev.focus();
-        } else if( left && ev.keyCode == 37 ) {
-            left.focus();
-        } else if( right && ev.keyCode == 39 ) {
-            right.focus();
-        }
-    }
-}
-
-// -- end libs (TOOD extract libs..)
+=a=js/pegasus_send.js
+=s=figure_server.js
 
 var command_element;
 
