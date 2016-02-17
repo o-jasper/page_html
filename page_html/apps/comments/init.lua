@@ -19,7 +19,7 @@ This.Formulator = require "page_html.apps.bookmarks.Formulator"
 This.Db         = require "page_html.apps.bookmarks.Bookmarks"
 
 This.where      = {"page_html/apps/comments/",
-                   "page_html/apps/bookmarks/", "page_html/ListView/"}
+                   "page_html/apps/bookmarks/", "page_html/ListView/", "page_html/"}
 This.assets_arg = {where = This.where}
 
 -- TODO absolute..

@@ -11,7 +11,7 @@ This.db_file = ":memory:"
 This.Formulator = require "page_html.apps.DirList2.Formulator"
 This.Db = require "page_html.apps.DirList2.Dir"
 
-This.where = {"page_html/ListView/", "page_html/apps/DirList2/"}
+This.where = {"page_html/ListView/", "page_html/apps/DirList2/", "page_html/"}
 This.assets_arg =  { where = This.where }
 
 function This:init()

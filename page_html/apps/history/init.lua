@@ -19,7 +19,7 @@ This.name = "history"
 This.Formulator = require "page_html.apps..history.Formulator"
 This.Db         = require "page_html.apps.history.History"
 
-This.where      = {"page_html/apps/history/", "page_html/ListView/"}
+This.where      = {"page_html/apps/history/", "page_html/ListView/", "page_html/"}
 This.assets_arg = {where = This.where}
 
 -- TODO absolute..
