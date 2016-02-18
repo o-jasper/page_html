@@ -6,10 +6,10 @@
 --
 -- Note: this gsub thing might be silly..
 
-local Public = {}
-
 -- character table string.
 local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+local Public = { chars = b }
 
 -- encoding
 function Public.enc(data)
@@ -45,7 +45,7 @@ end
 -- decoding
 function Public.dec(data, fix)
    local data = fix and string.gsub(data, '[^'..b..'=]', '') or data
-   assert( string.match(data, "^[" .. b .. "]=?=?"), "Invalid base64 encoding ")
+   assert( string.match(data, "^[" .. b .. "]*=?=?"), "Invalid base64 encoding ")
 
    return (data:gsub('.', function(x)  -- Encode to base-4
         if (x == '=') then return '' end

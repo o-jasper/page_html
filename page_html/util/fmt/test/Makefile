@@ -5,18 +5,21 @@ all: base64 escapeless
 base64:
 	sh base64.sh | head
 
-escapeless: escapeless_0 escapeless_1 escapeless_2 escapeless_3 escapeless_n
+escapeless: escapeless_inp escapeless_0 escapeless_1 escapeless_2 escapeless_3 escapeless_n
 
 # Bijection test.
 escapeless_0:
-	echo -n | lua bin_escapeless.lua
+	echo -n | lua escapeless.lua
+
+escapeless_inp:
+	echo _does. it, Work? KK Q QQ QQQ QKQQ QX AQ PVDA | lua escapeless.lua
 
 escapeless_1:
-	head -c 1 /dev/random | lua bin_escapeless.lua
+	head -c 1 /dev/random | lua escapeless.lua
 escapeless_2:
-	head -c 2 /dev/random | lua bin_escapeless.lua
+	head -c 2 /dev/random | lua escapeless.lua
 escapeless_3:
-	head -c 3 /dev/random | lua bin_escapeless.lua
+	head -c 3 /dev/random | lua escapeless.lua
 
 escapeless_n:
-	head -c "$(expr $RANDOM % 64)" /dev/random | lua bin_escapeless.lua
+	head -c 30 /dev/random | lua escapeless.lua
