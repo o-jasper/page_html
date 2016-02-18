@@ -51,15 +51,15 @@ function Public.dec(data, fix)
         if (x == '=') then return '' end
         local r,f='',(b:find(x)-1)
 
-        for i = 1,6,2 do
-           r = r .. tostring(f%4)
+        for _ = 1,6,2 do
+           r = tostring(f%4) .. r
            f = math.floor(f/4)
         end
         return r;
    end):gsub('%d%d?%d?%d?', function(x)  -- And then "base256"
        if #x < 4 then return '' end
-       local c=0
-       for i=1,4 do
+       local c = 0
+       for i = 1,4 do
           c = 4*c + tonumber(x:sub(i,i))
        end
        return string.char(c)
