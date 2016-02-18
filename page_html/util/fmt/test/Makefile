@@ -5,7 +5,8 @@ all: base64 escapeless
 base64:
 	sh base64.sh | head
 
-escapeless: escapeless_inp escapeless_0 escapeless_1 escapeless_2 escapeless_3 escapeless_n
+escapeless: escapeless_inp escapeless_0 escapeless_1 escapeless_2 \
+ escapeless_3 escapeless_30 escapeless_3000
 
 # Bijection test.
 escapeless_0:
@@ -21,5 +22,8 @@ escapeless_2:
 escapeless_3:
 	head -c 3 /dev/random | lua escapeless.lua
 
-escapeless_n:
+escapeless_30:
 	head -c 30 /dev/random | lua escapeless.lua
+
+escapeless_3000:
+	head -c 3000 /dev/random | lua escapeless.lua > /dev/null
