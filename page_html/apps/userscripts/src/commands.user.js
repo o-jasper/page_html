@@ -18,6 +18,7 @@
 // @grant       GM_openInTab
 // ==/UserScript==
 
+=a=js/common.js
 =a=js/pegasus_send.js
 =s=figure_server.js
 
@@ -48,8 +49,11 @@ function currentPosFraction()
     var x = el.scrollTop;  //  + d.body.scrollTop;
     var y = el.scrollLeft; // + d.body.scrollLeft;
 
+// TODO better to just pass w,h along?
     return [x/w, y/h]
 }
+
+// TODO separate each portion.
 
 var commandpanel_html =
     "Cmd <input id='command_immediate' type='checkbox'>" +
@@ -89,7 +93,7 @@ function toggle_commandpanel(immediate) {
         document.body.appendChild(element);
 
         // Run stuff if complete inputs.
-        command_input.oninput = function(){
+        ge('command_input').oninput = function(){
             var ci = ge('command_input');
             // Strip out the command starter.
             ci.value = ci.value.replace(";", "");
