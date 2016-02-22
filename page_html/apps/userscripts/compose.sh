@@ -16,6 +16,6 @@ cat $1 | while IFS='' read -r line; do  # Shell sucks.
             cat src/$INSERT
             echo // -end ;;
         *)
-            echo -e "$line" ;;
+            echo "$line" ;;
     esac
 done
