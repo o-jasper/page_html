@@ -13,3 +13,7 @@ TODO: Probably neater if it also tries to search generally.
 #### Video
 
 * `mpv.lua` uses mpv to view something. (NOTE: other progs should be easy)
+
+#### TODO
+* Either, echo local files on local server, or get the userscripts to work
+  on `file://`
