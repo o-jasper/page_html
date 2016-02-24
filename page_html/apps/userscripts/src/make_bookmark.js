@@ -26,7 +26,7 @@ function make_bookmark() {
     cs.onclick = function() {
         var tag_els = ge('cmd_bm_taglist').childNodes;
         var tag_list = [];
-        for(i in tag_els){
+        for(var i in tag_els){
             if( tag_els[i].nodeName == 'BUTTON' ){
                 tag_list.push(tag_els[i].textContent);
             }

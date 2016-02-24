@@ -45,7 +45,7 @@ send('history/.collect', [document.documentURI, document.title || ""],
          if( response.links && GM_getValue("may_scripts", true) ) {
              var s = document.scripts;
              var list = [];
-             for( i in s ){
+             for(var i in s ){
                  list.push([s[i].src, s[i].innerHTML]);
              }
              send("scripts", [data.uri, list]);
