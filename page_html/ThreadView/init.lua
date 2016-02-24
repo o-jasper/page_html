@@ -11,11 +11,8 @@ local This = {}
 for k,v in pairs(ListView) do This[k] = v end
 This.__index = This
 
-This.thread_name = "uri"  -- Note: wont be good enough..
-
-function This:select_thread(form, el)
-   form:equal_1(self.thread_name, el[self.thread_name])   
-end
+-- Needs to be created for this to work.
+--function This:select_thread(form, el)
 
 This.pats = { subthread_row = "<tr><td colspan={%table_wid}>{%subthread}</td></tr>" }
 
