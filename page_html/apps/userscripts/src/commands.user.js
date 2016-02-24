@@ -164,7 +164,7 @@ funs.pydoc = cmd_opentab("View pydoc page",    'util/.pydoc');
 
 function find_a_href(el) {
     var href = el.href;
-    for(i in el.children){
+    for(var i in el.children){
         if( href ){ return href; }
         href = find_a_href(el.children[i])
     }
@@ -175,10 +175,8 @@ function find_a_href(el) {
 
 function cmd_vid() {  // Try open as video.
     // TODO hackish, just want the hovered link...
-    var href = find_a_href(hovered) || hovered_href;
-
-    send('util/.vid', [href || document.documentURI]);
-
+    var href = (hovered && find_a_href(hovered)) || hovered_href;
+    send('util/.vid', [href || document.documentURI], function(){});
     finish_commandpanel();
 }
 funs.vid = cmd_vid;
