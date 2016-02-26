@@ -55,11 +55,10 @@ This.cmd_strs = cmd_strs
 cmd_strs.enter     = "INSERT INTO bookmarks VALUES (?, ?,?, ?,?, ?, ?,?, ?);"
 cmd_strs.enter_tag = "INSERT INTO bookmark_tags VALUES (NULL, ?,?);"
 
-cmd_strs.del       = "DELETE FROM bookmarks WHERE id == ?;"
+cmd_strs.del_tags = "DELETE FROM bookmark_tags WHERE to_id = ?;"
+cmd_strs.del = "DELETE FROM bookmarks WHERE id == ?;" .. cmd_strs.del_tags
 
-cmd_strs.get_tags        = "SELECT name FROM bookmark_tags WHERE to_id == ?;"
-cmd_strs.get_tags_sorted = "SELECT name FROM bookmark_tags WHERE to_id == ? ORDER BY name;"
-cmd_strs.get             = "SELECT * FROM bookmarks WHERE id == ?"
+cmd_strs.get = "SELECT * FROM bookmarks WHERE id == ?"
 
 This.last_time = 0
 
@@ -76,12 +75,37 @@ function This:enter(entry)
 end
 
 function This:delete(entry)
-   self:cmd("del")((type(entry) == "table" and entry.id) or entry)
+   local id = (type(entry) == "table" and entry.id) or entry
+   self:cmd("del")(id, id)
 end
 
+cmd_strs._alter_entry =
+   [[UPDATE bookmarks
+SET uri=?, title=?, text=?, quote=?, time=?, x=?, y=? root_hash = ? WHERE id = ?;]]
+
+function This:alter_entry(entry)
+   self:cmd("_alter_entry")(entry.uri, entry.text, entry.quote, entry.time,
+                            entry.x, entry.y, entry.root_hash, entry.id)
+
+   self:cmd("del_tags")(entry.id)  -- This part is dumb remove-and-re-add.
+   assert(type(entry.tags) == "table")
+   for _, tag in ipairs(entry.tags) do
+      self:cmd("enter_tag")(tag, entry.id)
+   end
+end
+
+cmd_strs.get_tags        = "SELECT name FROM bookmark_tags WHERE to_id == ?;"
+cmd_strs.get_tags_sorted = "SELECT name FROM bookmark_tags WHERE to_id == ? ORDER BY name;"
+function This:get_tags(id, dont_sort)
+   local ret, fun = {}, self:cmd(dont_sort and "get_tags" or "get_tags_sorted")
+   for _, entry in ipairs(fun(id)) do
+      table.insert(ret, entry.name)
+   end
+   return ret
+end
 
 -- Produces a stripped down version. (removing root hash and creator to prevent circularity.)
-function This:strip(entry)
+function This:strip(entry)  -- TODO not sure if useful.
    if entry then
       entry.id        = nil
       entry.root_hash = nil

@@ -45,13 +45,7 @@ function This:_el_repl(el, state, repl)
    local _tag_list
    local function tag_list()
       if not _tag_list then
-         _tag_list = {}
-         local list = self.lister.db:cmd("get_tags")(el.id)
-         print(#list)
-         for k,v in pairs(list) do print(k,v) end
-         for _, entry in ipairs(list) do
-            table.insert(_tag_list, entry.name)
-         end
+         _tag_list = self.lister.db:get_tags(el.id)
       end
       return _tag_list
    end
