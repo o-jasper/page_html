@@ -151,11 +151,13 @@ if( GM_getValue('cmd_lua', false) ) {
 // --- Manuals and documentation.
 function cmd_opentab(button_str, httpreq) {
     return cmd_on_string(function(str) {
+        ge('command_extend').innerHTML += "working...";
         send(httpreq, [str], function(result_obj){
             var result = JSON.parse(result_obj.responseText);
             if( result.length > 0 ){ GM_openInTab(result); }
+            finish_commandpanel();
         });
-    }, button_str);
+    }, button_str, true);
 }
 
 funs.man   = cmd_opentab("View man page",      'util/.man');
@@ -174,12 +176,22 @@ function find_a_href(el) {
 // --- Running videos
 
 function cmd_vid() {  // Try open as video.
+    ge('command_extend').innerHTML = "working...";
     // TODO hackish, just want the hovered link...
     var href = (hovered && find_a_href(hovered)) || hovered_href;
-    send('util/.vid', [href || document.documentURI], function(){});
-    finish_commandpanel();
+    send('util/.vid', [href || document.documentURI],
+         function(){ finish_commandpanel(); });
 }
-funs.vid = cmd_vid;
+funs.vid = cmd_vid
+
+function cmd_fclip() {
+    ge('command_extend').innerHTML = "working...";
+    send('util/.fclip', [], function(got){
+        window.clipboardData = got;
+        finish_commandpanel();
+    })
+}
+funs.fclip = cmd_fclip;
 
 // Keydown listener.
 
