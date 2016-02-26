@@ -9,16 +9,19 @@ local Pegasus = require "pegasus"
 
 -- local PegasusJs = require "PegasusJs" -- Really will need it..
 local This = {}
-for k, v in pairs(Pegasus) do This[k] = v end
 This.__index = This
 
 This.__name = "page_html.html.pegasus"
 
 function This:new(new)
-   new = Pegasus:new(new)
    new = setmetatable(new or {}, self)
+
+   new.pegasus = Pegasus:new(new.pegasus_arg or {})
+   new.pegasus_arg = nil
+
    new.pages = new.pages or {}
    new.pages_js = new.pages_js or {}
+
    return new
 end
 
@@ -81,10 +84,15 @@ if Pegasus.prepare then
          local function cb(req, rep)
             return callback(req, rep) or loopfun(req, rep)
          end
-         Pegasus.prepare(self, cb)
+         self.pegasus:prepare(cb)
       else
-         Pegasus.prepare(self, loopfun)
+         self.pegasus:prepare(loopfun)
       end
    end
 end
+
+function This:start()
+   return self.pegasus:start(self:loopfun())
+end
+
 return This
