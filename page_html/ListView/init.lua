@@ -85,21 +85,23 @@ end
 
 function This:list_html(...) return table.concat(self:list_html_list(...), "\n") end
 
-function This:repl()
+function This:form(...) return self.lister:form(...) end
+
+function This:exec_form(form)
+   form:finish()
+   return self.lister.db:exec(form:sql_pattern(), unpack(form:sql_values()))
+end
+
+function This:repl(args)
    local _form, _list  -- Hmm, memoized too much work this way.
    local function form()
-      _form = _form or self.lister:form()
+      _form = _form or self:form(nil, args)
       return _form
    end
    local function list()
       if not _list then
-         local form = form()
-         form:finish()
-         pcall(function()
-               _list = self.lister.db:exec(form:sql_pattern(), unpack(form:sql_values()))
-         end)
+         _list = self:exec_form(form())
       end
-      assert(_list)
       return _list
    end
    return {
@@ -179,15 +181,15 @@ end
 This.rpc_sql_enabled = true
 
 function This:search(search_term, state)
-   state.search_term = state.search_term or search_term or self.search_term
+   local form = self:form(search_term, state)
+   local list = self:exec_form(form)
 
-   local list, form = self.lister:produce(search_term, state)
-   return { self:list_html_list(list, state, state.limit[1]), form:sql() }
+   return self:list_html_list(list, state, state.limit[1]), form:sql()
 end
 
 function This:rpc_js()
    return {  -- Produces a bunch of results.
-      rpc_search = function(...) return self:search(...) end,
+      rpc_search = function(...) return {self:search(...)} end,
       rpc_sql = function(sql_code)
          if self.rpc_sql_enabled then
             local pattern = self.assets:load("parts/raw.el.htm")
