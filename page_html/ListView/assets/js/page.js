@@ -1,12 +1,14 @@
 
-function list_extend(by_list, cnt) {
+function list_extend(by_list) {
     cur.done = true;
     for(var i in by_list){  // TODO might be nicer to .AppendChild(but the outer TR...)
         cur.done = false;
         ge('list').innerHTML += by_list[i];
     }
-    if(cnt){ cur.at_i += cnt }
+    cur.at_i += by_list.length;
     cur.last_el = ge('list').children[ge('list').children.length - 1];
+
+    ge('cnt').textContent = cur.at_i;
 }
 
 function search_extend(search_term, cnt) {
@@ -22,7 +24,7 @@ function search_extend(search_term, cnt) {
                                 ge("sql").textContent = ret[1];
                                 ge("search_button").textContent = "Go";
                                 ge('list').innerHTML = "";
-                                list_extend(ret[0], cnt);
+                                list_extend(ret[0]);
                                 cur.locked = false;
                             });
     }
@@ -53,11 +55,13 @@ function update_visibility(n) {
     }
 }
 
-function gui_search() { search_anew(ge("search").value); }
-
-search_continuous = false;
-
-ge('search').onkeydown = function(ev){ if( ev.keyCode == 13 ){ gui_search(); } };
+var gui_search_prev_value;
+function gui_search() {
+    if( ge('search').value != gui_search_prev_value ) {
+        gui_search_prev_value = ge('search').value;
+        search_anew(ge('search').value);
+    }
+}
 
 // Why the hell does it not call?
 (window.opera ? document.body : document).addEventListener('onscroll', function(ev) {

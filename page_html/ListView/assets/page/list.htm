@@ -16,7 +16,7 @@
 <body>
 
 <h3>{%title} (<span id="cnt">{%cnt}</span>)</h3>
-<input type="text" id="search" onsubmit="gui_search();" onchange="if(search_continuous){ gui_search();}"> 
+<input type="text" id="search" onsubmit="gui_search();">
 <button id="search_button" onclick="gui_search();">Go</button>
 <button id="visible_sql" onclick="visible_sql(ge('sql').hidden)">Sql off</button>
 <button id="sql_button" onclick="gui_sql_command();">Run Sql</button>
@@ -26,5 +26,11 @@
 <table id="list">{%list}</table>
 <button onclick="search_extend(cur.search_term, 50);">MOAR</button>
 
+<script type="text/javascript">
+ge('search').onkeydown = function(ev) {
+    if(search_continuous || ev.keyCode == 13){ gui_search(); }
+}
+ge('search').focus();
+</script>
 </body>
 </html>
