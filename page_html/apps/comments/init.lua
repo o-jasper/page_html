@@ -32,8 +32,56 @@ This.pats = {}
 for k,v in pairs(Bookmarks.pats)  do This[k] = v end
 for k,v in pairs(ThreadView.pats) do This[k] = v end
 
+This.Statementizer_list = require "merkle.statement.all"
+This.default_statement_type = "Sha256"
+
+-- Figures out the hash.
+function This:el_update_hash(el, assert_it, coerce_type)
+   local tp =  -- Figure the hash type, or use the default.
+      coerce_type or
+      el.root_hash and string.match(el.root_hash, "^[^:]+") or self.default_statement_type
+   local stmt = self.Statementizer_list[tp]:new()
+   local root_hash = self.root_hash
+   el.root_hash = nil  -- Set to nil.
+   local id = el.id
+   el.id = nil
+
+   el.root_hash = stmt:make_text(el)  -- Set hash.
+   el.id = id
+
+   print("**", root_hash, root_hash == el.root_hash)
+   if not root_hash or root_hash ~= "" or el.root_hash ~= root_hash then
+      assert(not assert_it)
+      self.lister.db:set_root_hash(el.id, el.root_hash)  -- Update in db.
+      return false
+   end
+   return true
+end
+
+This.statement_uri_base = "http://localhost:9090/comments/"
+
+function This:el_uri(el)
+   if (not el.root_hash) or el.root_hash == "" then  -- Create hash if doesn't exist.
+      self:el_update_hash(el)
+   end
+   return self.statement_uri_base .. el.root_hash
+end
+
+function This:select_thread(form, el)
+   -- Uris are where the comments are from, this finds comments on this comment.
+   form:like("uri", self:el_uri(el) .. "/%")
+end
+
 function This:el_repl(el, state)
    return Bookmarks._el_repl(self, el, state, ThreadView.el_repl(self, el, state))
+end
+
+function This:form(_, args)
+   local form = self.lister:form()
+
+   local to_uri = string.match(args.rest_path or "", "^/?to_uri/([^/]+)/?")
+   if to_uri then form:equal("root_hash", to_uri) end
+   return form
 end
 
 return This
