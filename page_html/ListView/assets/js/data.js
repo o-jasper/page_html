@@ -13,4 +13,4 @@ initial_cnt = {%at_i};
 cur = { at_i:initial_cnt, search_term:"{%search_term}" }
 step_cnt = {%step_cnt};
 
-search_continuous = false;
+search_continuous = true;

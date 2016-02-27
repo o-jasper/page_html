@@ -141,6 +141,7 @@ function This:extra_list()
       ["js/data.js"]   = {repl=true,
                           at_i = self.limit[2], search_term="", step_cnt=3,
                           table_wid=self.table_wid},
+      ["js/init.js"]   = true,
    }
 end
 

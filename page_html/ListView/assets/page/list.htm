@@ -26,11 +26,6 @@
 <table id="list">{%list}</table>
 <button onclick="search_extend(cur.search_term, 50);">MOAR</button>
 
-<script type="text/javascript">
-ge('search').onkeydown = function(ev) {
-    if(search_continuous || ev.keyCode == 13){ gui_search(); }
-}
-ge('search').focus();
-</script>
+<script type="text/javascript" src="/js/init.js"></script>
 </body>
 </html>
