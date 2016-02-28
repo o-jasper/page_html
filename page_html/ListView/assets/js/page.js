@@ -19,7 +19,7 @@ function search_extend(search_term, cnt) {
         prepend_child(ge('list'), a.working_row_el());
 
         ge("search_button").textContent = "(w)";
-        callback_rpc_search([search_term, {limit:[cur.at_i, cnt]}],
+        callback_rpc_search([search_term, {limit:[cur.at_i, cnt], rest_path:rest_path}],
                             function(ret) {
                                 ge("sql").textContent = ret[1];
                                 ge("search_button").textContent = "Go";

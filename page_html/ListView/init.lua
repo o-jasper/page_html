@@ -108,7 +108,8 @@ function This:repl(args)
       name = self.name, title = self.name,
       list = function() return self:list_html(list()) end,
       cnt  = #list(),
-      sql  = function() return form():sql() end
+      sql  = function() return form():sql() end,
+      rest_path = " ",  -- Rest path _cared to share_ (defaultly: dont care to share)
    }
 end
 
