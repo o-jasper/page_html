@@ -125,15 +125,19 @@ function This:static_list(set)
    local ret = {}
    for k,v in pairs(set) do
       if v == true then v = {} end
-      v.where = self.where
-      v.name = k
-      table.insert(ret, StaticPage:new(v))
+      if not getmetatable(v) then  -- Otherwise it is it\s own entire object.
+         v.where = self.where
+         v.name = k
+         v = StaticPage:new(v)
+      end
+      table.insert(ret, v)
    end
    return ret
 end
 
-function This:extra_list()
-   return self:static_list{
+function This:extra_list_data()
+   return {
+      ["css/master.css"]    = true,
       ["css/style.css"]    = true,
       ["css/ListView.css"] = true,
       ["js/common.js"]     = true,
@@ -144,6 +148,10 @@ function This:extra_list()
                           table_wid=self.table_wid},
       ["js/init.js"]   = true,
    }
+end
+
+function This:extra_list()
+   return self:static_list(self:extra_list_data())
 end
 
 local function list_html_rawdata(list, pattern, m, sn)
