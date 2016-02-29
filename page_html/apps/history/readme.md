@@ -5,3 +5,5 @@ History, userscript `althist.user.js` records it. Also has optional
 #### TODO
 
 * Removing entries.
+* Mirroring just does `document.body.innerHTML`, and is fairly awful.
+  + Needs to be possible view the mirrored files without loading assets.
