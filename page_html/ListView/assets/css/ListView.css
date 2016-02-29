@@ -1,7 +1,11 @@
 #sql{width:95%;}
 
 .tag{ background-color:#DDF; border-radius: 0.6em; border: 0.14em solid #88F;
-          padding:0.1em 0.1em; font-size:80%
+      padding:0.1em 0.1em; font-size:80%
 }
 
 .rawval{text-width:bold}
+
+.local_version{ font-size:50%; color:gray }
+
+a.local_version_href{ color:#779 }

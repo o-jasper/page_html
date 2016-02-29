@@ -64,6 +64,21 @@ function This:el_repl(el, state)
 
    for k,v in pairs(el) do ret[k] = html_escape(v) end
 
+   -- Base on pages.
+   ret.insert_page_method = function(name, method, ...)  -- Method provided by page.
+      local page = self.server.pages[name]
+      return page and page[method] and page[method](page, el, ...) or " "
+   end
+
+   ret.insert_page = function(name, ...)  -- Insert entire page.
+      return ret.insert_page_method(name, "output", el, ...)
+   end
+
+   -- Local version of mirror.
+   ret.local_version = function(...)
+      return ret.insert_page_method("history_mirrored", "link_part")
+   end
+
    return ret
 end
 
