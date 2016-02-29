@@ -69,17 +69,33 @@ function This:_el_repl(el, state, repl)
    return repl
 end
 
+-- Modify uris as from local server.  (hmm bit lacking in extendability?)
+function This:uri_mod(uri)
+   for _, name in ipairs{"rh", "uri"} do
+      local m = string.format("^https?://localhost:%s/comments/%s/(.+)$",
+                              self.server.port or "9090", name)
+      local ret = string.match(uri, m)
+      if ret then
+         if string.find(ret, "[%w%+]+") then ret = ret .. "/" end
+         return ret
+      end
+   end
+   return uri
+end
+
 function This:rpc_js()
    local ret = ListView.rpc_js(self)
 
    ret[".collect"] = function(uri, title, text, quote, tag_list, pos_frac)
+      local uri = self:uri_mod(uri)
+
       print("bookmarks.collect", uri)
       print(title, text, quote, #tag_list, unpack(pos_frac))
 
       self.lister.db:enter{
          uri=uri, title=title, text=text, quote=quote, tags=tag_list,
          x=pos_frac[1], y=pos_frac[2], creator="self",
-         }
+      }
       return "OK"
    end
 
