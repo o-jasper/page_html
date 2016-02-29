@@ -1,3 +1,7 @@
+config = {
+    sql_max_rows:10, sql_width:80,
+}
+
 a = {working_short:"(w)", working_long:"<span class='working'>...working...</span>",
      table_wid:{%table_wid}};
 

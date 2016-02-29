@@ -28,14 +28,21 @@ function in_viewport(el) {
     return top > 0 ? top <= height : (bottom > 0 && bottom <= height);
 }
 
-// Fits the length constantly.
-function textarea_update(te, after_keydown) {
+function textarea_fitting(te, reasonable_width, max_rows) {
     var te = maybe_ge(te);
-    te.rows = Math.max(te.value.split("\n").length, 0);
-    te.cols = GM_getValue("reasonable_width", 80);
+    te.rows = Math.min(Math.max(te.value.split("\n").length, 0),
+                       max_rows || config.sql_max_rows);
+    te.cols = reasonable_width || config.sql_width;
+}
+
+// Fits the length constantly.
+function textarea_update(te, after_keydown, reasonable_width) {
+    var te = maybe_ge(te);
+
+    textarea_fitting(te, reasonable_width);
 
     te.onkeydown = function(ev){
-        te.rows = Math.max(te.value.split("\n").length, 0);
+        textarea_fitting(te, reasonable_width);
         if(after_keydown){ after_keydown(ev); }
     }
 }

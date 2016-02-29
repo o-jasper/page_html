@@ -3,3 +3,4 @@ ge('search').onkeydown = function(ev) {
 };
 ge('search').focus();
 // visible_sql(false);  // uncomment to defaultly not show the sql.
+textarea_update('sql');

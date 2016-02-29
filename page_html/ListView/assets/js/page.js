@@ -21,7 +21,9 @@ function search_extend(search_term, cnt) {
         ge("search_button").textContent = "(w)";
         callback_rpc_search([search_term, {limit:[cur.at_i, cnt], rest_path:rest_path}],
                             function(ret) {
-                                ge("sql").textContent = ret[1];
+                                ge('sql').value = ret[1];
+                                textarea_fitting(ge('sql'));
+
                                 ge("search_button").textContent = "Go";
                                 ge('list').innerHTML = "";
                                 list_extend(ret[0]);
