@@ -28,6 +28,19 @@ This.db_file  = This.data_dir .. "history.db"
 
 This.full_span = 3
 
+This.enable_mirror = true  -- Note must also be enabled in the userscript.
+This.enable_view_mirror = true
+
+local MirrorPage = require "page_html.apps.history.MirrorPage"
+function This:extra_list_data()
+   local ret = ListView.extra_list_data(self)
+   if self.enable_view_mirror then
+      ret["history/mirror/"] = MirrorPage:new{ dir=self.data_dir .. "mirror/",
+                                               name="history_mirrored"}
+   end
+   return ret
+end
+
 function This:rpc_js()
    local ret = ListView.rpc_js(self)
    ret[".collect"] = function(uri, title)
@@ -36,16 +49,23 @@ function This:rpc_js()
       return { mirror=true }
    end
 
-   ret[".collect.mirror"] = function(uri, innerHTML)
-      print("history.mirror", uri)
-      local dir = self.data_dir .. "mirror/" .. uri .. "/"
-      os.execute("mkdir -p " .. dir)  -- Lazy
-      local fd = io.open(dir .. "index.html", "w")
-      if fd then
-         fd:write(innerHTML)
-         fd:close()
-      else
-         print("history.collect.mirror", "failed to open", dir .. "index.html")
+   if self.enable_mirror then  -- Fairly rudimentary mirror.
+      ret[".collect.mirror"] = function(uri, innerHTML)
+         if string.find(uri, string.format("^https?://localhost:%s/history_mirrored/",
+                                           self.server.port or 9090)) then
+            print("Excluded from mirror collection", uri)
+            return
+         end
+         print("history.mirror", uri)
+         local dir =  self.data_dir .. "mirror/".. uri .. "/"
+         os.execute("mkdir -p " .. dir)  -- Lazy
+         local fd = io.open(dir .. "index.html", "w")
+         if fd then
+            fd:write(innerHTML)
+            fd:close()
+         else
+            print("history.collect.mirror", "failed to open", dir .. "index.html")
+         end
       end
    end
 
