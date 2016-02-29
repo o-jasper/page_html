@@ -14,16 +14,24 @@ This.__index = This
 -- Needs to be created for this to work.
 --function This:select_thread(form, el)
 
-This.pats = { subthread_row = "<tr><td colspan={%table_wid}>{%subthread}</td></tr>" }
+This.pats = { subthread_row = [[<tr><td colspan={%table_wid}><span class="subthread">{%subthread}</span></td></tr>]] }
+
+This.max_thread_depth = 5
+
+function This:extra_list_data()
+   local ret = ListView.extra_list_data(self)
+   ret["css/ThreadView.css"] = true
+   return ret
+end
 
 function This:el_repl(el, state)
    local ret = ListView.el_repl(self, el, state)
 
+   local sub = (self.SubInstance or getmetatable(self)):new()
    local _list
    local function list()
       if not _list then
          -- NOTE: complete sub instance
-         local sub = (self.SubInstance or getmetatable(self)):new()
          local form = sub.lister:form(state.search_term, state)
          -- _Add_ the requirement of being in the thread.
          --  i.e. the lister should already have selected the comments "worthy of seeing"

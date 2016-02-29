@@ -19,7 +19,8 @@ This.Formulator = require "page_html.apps.bookmarks.Formulator"
 This.Db         = require "page_html.apps.bookmarks.Bookmarks"
 
 This.where      = {"page_html/apps/comments/",
-                   "page_html/apps/bookmarks/", "page_html/ListView/", "page_html/"}
+                   "page_html/apps/bookmarks/", "page_html/ThreadView/",
+                   "page_html/ListView/", "page_html/"}
 This.assets_arg = {where = This.where}
 
 -- TODO absolute..
@@ -29,8 +30,8 @@ This.db_file  = This.data_dir .. "history.db"
 This.table_wid = 4
 
 This.pats = {}
-for k,v in pairs(Bookmarks.pats)  do This[k] = v end
-for k,v in pairs(ThreadView.pats) do This[k] = v end
+for k,v in pairs(Bookmarks.pats)  do This.pats[k] = v end
+for k,v in pairs(ThreadView.pats) do This.pats[k] = v end
 
 This.Statementizer_list = require "merkle.statement.all"
 This.default_statement_type = "Sha256"
@@ -49,7 +50,6 @@ function This:el_update_hash(el, assert_it, coerce_type)
    el.root_hash = stmt:make_text(el)  -- Set hash.
    el.id = id
 
-   print("**", root_hash, root_hash == el.root_hash)
    if not root_hash or root_hash ~= "" or el.root_hash ~= root_hash then
       assert(not assert_it)
       self.lister.db:set_root_hash(el.id, el.root_hash)  -- Update in db.
@@ -58,13 +58,11 @@ function This:el_update_hash(el, assert_it, coerce_type)
    return true
 end
 
-This.statement_uri_base = "http://localhost:9090/comments/"
-
 function This:el_uri(el)
    if (not el.root_hash) or el.root_hash == "" then  -- Create hash if doesn't exist.
       self:el_update_hash(el)
    end
-   return self.statement_uri_base .. el.root_hash
+   return el.root_hash
 end
 
 function This:select_thread(form, el)
@@ -76,12 +74,25 @@ function This:el_repl(el, state)
    return Bookmarks._el_repl(self, el, state, ThreadView.el_repl(self, el, state))
 end
 
-function This:form(_, args)
-   local form = self.lister:form()
+function This:form(st, args)
+   local form = self.lister:form(st, args)
 
-   local to_uri = string.match(args.rest_path or "", "^/?to_uri/([^/]+)/?")
-   if to_uri then form:equal("root_hash", to_uri) end
+   local to_root_hash = string.match(args.rest_path or "", "^/?rh/([^/]+)/?")
+   if to_root_hash then form:equal("root_hash", to_root_hash) end
+
+   local to_uri       = string.match(args.rest_path or "", "^/?uri/([^/]+)/?")
+   if to_uri then form:equal("uri", to_uri) end   
+
    return form
 end
 
+function This:repl(args)
+   local ret = ThreadView.repl(self, args)
+   -- That part of the path we care to share.
+   for _, el in ipairs({"uri", "rh"}) do
+      ret.rest_path = string.match(args.rest_path or "", "^/?" .. el .. "/[^/]+/?")
+      if ret.rest_path then break end
+   end
+   return ret
+end
 return This
