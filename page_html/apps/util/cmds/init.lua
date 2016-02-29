@@ -4,11 +4,15 @@ end
 
 -- setmetatable({}, {__index=function(_, key) return r_util(key) end})
 -- maybe not, feels a bit more secure.
-return {
-   pydoc = r_util "pydoc",
-   doc   = r_util "doc",
-   man   = r_util "man",
---   bm    = r_util "bookmark",
+local cmds = {
+   pydoc = true, doc = true, man = true, fclip = true,
+--   go
    vid   = r_util "mpv",
---   go    = r_util "go",
 }
+
+local ret = {}
+for k,v in pairs(cmds) do
+   if v == true then ret[k] = r_util(k) else ret[k] = v end
+end
+
+return ret
