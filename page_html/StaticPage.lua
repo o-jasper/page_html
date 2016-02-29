@@ -5,7 +5,7 @@
 --  by the Free Software Foundation, either version 3 of the License, or
 --  (at your option) any later version.
 
--- Simple page(potentially substition and asset use.
+-- Simple page, obtained from assets, potentially with substition and asset use.
 
 local apply_subst = require "page_html.util.apply_subst"
 
