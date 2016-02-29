@@ -65,3 +65,25 @@ function next_prev(next, prev, need_shift, left, right) {
         }
     }
 }
+
+function go_graph(to, ev) {
+    if( typeof(to) == 'function' ) { to(ev); }
+    else { maybe_ge(to).focus(); }
+}
+
+function follow_graph(graph) {
+    return function(ev) {
+        var kc = ev.keyCode, cur = graph[ev.target.id];
+        if( kc == 13 ) {
+            if( cur.ed && (!cur.sd || ev.shiftKey) ) { go_graph(cur.d, ev); }
+        } else if( kc == 40 ) {
+            if( !cur.sd || ev.shiftKey ) { go_graph(cur.d, ev); }
+        } else if( kc == 38 ) {
+            if( !cur.su || ev.shiftKey ) { go_graph(cur.u, ev); }
+        } else if( kc == 37 ) {
+            if( !cur.sl || ev.shiftKey ) { go_graph(cur.l, ev); }
+        } else if( kc == 39 ) {
+            if( !cur.sr || ev.shiftKey ) { go_graph(cur.r, ev); }
+        }
+    }
+}
