@@ -30,16 +30,24 @@ This.full_span = 3
 
 This.enable_mirror = true  -- Note must also be enabled in the userscript.
 This.enable_view_mirror = true
+This.MirrorPage = require "page_html.apps.history.MirrorPage"
 
-local MirrorPage = require "page_html.apps.history.MirrorPage"
+function This:init()
+   ListView.init(self)
+   self.mirror_dir = self.data_dir .. "mirror/"
+end
+
 function This:extra_list_data()
    local ret = ListView.extra_list_data(self)
    if self.enable_view_mirror then
-      ret["history/mirror/"] = MirrorPage:new{ dir=self.data_dir .. "mirror/",
-                                               name="history_mirrored"}
+      ret["history/mirror/"] = self.MirrorPage:new{
+         dir=self.mirror_dir, name="history_mirrored"
+      }
    end
    return ret
 end
+
+local lfs = require "lfs"
 
 function This:rpc_js()
    local ret = ListView.rpc_js(self)
@@ -57,8 +65,8 @@ function This:rpc_js()
             return
          end
          print("history.mirror", uri)
-         local dir =  self.data_dir .. "mirror/".. uri .. "/"
-         os.execute("mkdir -p " .. dir)  -- Lazy
+         local dir =  self.mirror_dir
+         lfs.mkdir(dir)
          local fd = io.open(dir .. "index.html", "w")
          if fd then
             fd:write(innerHTML)

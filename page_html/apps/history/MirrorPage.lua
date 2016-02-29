@@ -13,44 +13,51 @@ local lfs = require "lfs"
 
 local apply_subst = require "page_html.util.apply_subst"
 This.mirror_msg = {
-      pattern = [[Excepting outside assets, this a local mirror:{%is_top}<br><br>]],
-      is_top = [[<span style="color:gray">(top of dir)</span>]],
+   pattern = [[Excepting outside assets, this a local mirror:{%is_top}<br><br>{%mirror}]],
+   is_top = [[<span style="color:gray">(top of dir)</span>]],
 }
 
-function This:output(args)
-   local mm = self.mirror_msg
-
-   local function finally(ret, data)
-      -- Can we indicate that no scripts are to be ran?
-      return apply_subst(mm.pattern, data) .. ret
-   end
-
-   local file = self.dir .. args.rest_path
+function This:have_mirror_fd(uri)
+   local file = self.dir .. uri
    if lfs.attributes(file, "mode") == "directory" then
-      local fd = io.open(file .. "/index.html")
-      if fd then
-         local ret = fd:read("*a")
-         fd:close()
-         return finally(ret, {is_top=mm.is_top})
-      else
-         return "Is a directory with no index.html file. TODO redirect to directory view?"
-      end
+      return io.open(file .. "/index.html"), "directory"
    else
-      local function report(...)
-         return string.format([[%s; %q <span style="color:gray">(%s)</span>]], ...)
-      end
-         
       local fd, msg, code = io.open(file)
-      if fd then
-         local ret, msg, code = fd:read("*a")
-         if ret then
-            return finally(ret, {is_top=" "})
-         else
-            return report("Couldnt read", msg, code)
-         end
-      else
-         return report("Couldnt open", msg, code)
-      end
+      return (fd and fd:read(0) and fd), msg, code  -- LOGIC!
+   end
+end
+
+function This:have_mirror(uri)
+   local fd = self:have_mirror_fd(uri)
+   if fd then
+      fd:close()
+      return true
+   end
+end
+
+function This:link_part(el)
+   local mirror_page = self.server.pages.history_mirrored
+   if mirror_page and mirror_page:have_mirror(el.uri) then
+      return apply_subst([[<span class="local_version">(<a class="local_version_href" href="{%local_href}">local</a>)</span>]], 
+         { local_href = "/history_mirrored/" .. el.uri })
+   else
+      return " "
+   end
+end
+
+function This:output(args)
+   local fd, msg, code = self:have_mirror_fd(args.rest_path)
+
+   local mm = self.mirror_msg
+   if fd then
+      local repl = {
+         is_top=(code =="directory" and mm.is_top or ""),
+         mirror=fd:read("*a"),
+      }
+      return apply_subst(mm.pattern, repl)
+   else
+      return string.format([[Couldnt read; %q <span style="color:gray">(%s)</span>]],
+         msg, code)
    end
 end
 
