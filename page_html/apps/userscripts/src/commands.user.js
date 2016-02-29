@@ -16,6 +16,7 @@
 // @grant       GM_registerMenuCommand
 // @grant       GM_xmlhttpRequest
 // @grant       GM_openInTab
+// @grant       GM_setClipboard
 // ==/UserScript==
 
 =a=js/common.js
@@ -148,6 +149,23 @@ if( GM_getValue('cmd_lua', false) ) {
     }, "Run lua(server side, if allowed)", true);
 }
 
+if( GM_getValue('cmd_syms', true) ) {
+    funs.syms = function() {
+        ge('command_extend').innerHTML = "<br><input id='cmd_sym_val'><br><span style='font-size:300%;' id='cmd_sym_out'></span>";
+        var sym_val = ge('cmd_sym_val');
+        sym_val.focus();
+        sym_val.onkeydown = function(ev) {
+            if( ev.keyCode == 13 ) {
+                GM_setClipboard(ge('cmd_sym_out').innerHTML);
+                finish_commandpanel();
+            }
+        }
+        sym_val.onkeyup = function(ev) {
+            ge('cmd_sym_out').innerHTML = "&" + sym_val.value + ";";
+        }
+    }
+}
+
 // --- Manuals and documentation.
 function cmd_opentab(button_str, httpreq) {
     return cmd_on_string(function(str) {
@@ -184,10 +202,10 @@ function cmd_vid() {  // Try open as video.
 }
 funs.vid = cmd_vid
 
-function cmd_fclip() {
+function cmd_fclip() {  // TODO cliboardData doesn't work?
     ge('command_extend').innerHTML = "working...";
-    send('util/.fclip', [], function(got){
-        window.clipboardData = got;
+    send('util/.fclip', [], function(result_obj){
+        GM_setClipboard(JSON.decode(result_obj.responseText));
         finish_commandpanel();
     })
 }
