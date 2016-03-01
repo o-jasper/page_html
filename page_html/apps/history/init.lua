@@ -47,7 +47,7 @@ function This:extra_list_data()
    return ret
 end
 
-local lfs = require "lfs"
+-- local lfs = require "lfs" -- Annoying, what is `mkdir -p` equivalent..
 
 function This:rpc_js()
    local ret = ListView.rpc_js(self)
@@ -57,22 +57,24 @@ function This:rpc_js()
       return { mirror=true }
    end
 
-   if self.enable_mirror then  -- Fairly rudimentary mirror.
+   -- Fairly rudimentary mirror.
+   -- TODO move to the mirroring page?
+   if self.enable_mirror then
       ret[".collect.mirror"] = function(uri, innerHTML)
          if string.find(uri, string.format("^https?://localhost:%s/history_mirrored/",
                                            self.server.port or 9090)) then
             print("Excluded from mirror collection", uri)
             return
          end
-         print("history.mirror", uri)
-         local dir =  self.mirror_dir
-         lfs.mkdir(dir)
-         local fd = io.open(dir .. "index.html", "w")
+         local dir =  self.mirror_dir .. uri
+         print("history.mirror", dir)
+         os.execute("mkdir -p " .. dir)
+         local fd = io.open(dir .. "/index.html", "w")
          if fd then
             fd:write(innerHTML)
             fd:close()
          else
-            print("history.collect.mirror", "failed to open", dir .. "index.html")
+            print("history.collect.mirror", "failed to open", dir .. "/index.html")
          end
       end
    end
