@@ -56,12 +56,6 @@ function currentPosFraction()
 
 // TODO separate each portion.
 
-var commandpanel_html =
-    "Cmd <input id='command_immediate' type='checkbox'>" +
-    "<input id='command_input' onsubmit='sayit();' onkeydown='sayit();'>" +
-    "<button onclick='sayit();'>Do</button>" +
-    "<span id='command_extend'</span>";
-
 function toggle_commandpanel(immediate) {
     selection = window.getSelection().toString();
     pos_frac  = currentPosFraction();
@@ -88,8 +82,10 @@ function toggle_commandpanel(immediate) {
         style.backgroundColor = "#fff";
         style['z-index'] = 1e16;
 
-        // TODO line around.
-        element.innerHTML = commandpanel_html;
+        // TODO line around, other styling.
+        var h = "";
+=a=parts/command_panel.htm
+        element.innerHTML = h;
 
         document.body.appendChild(element);
 

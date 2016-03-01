@@ -2,17 +2,11 @@
 // TODO feel like maybe want bare tag-uri too? (just immediately select the tag?)
 
 function make_bookmark() {
-    var h = "<span style='font-size:150%; text-weight:bold'>Bookmark</span><table>";
-    h += "<tr><td>Title:</td><td><input type='text' id='cmd_bm_title'></td></tr>";
-    h += "<tr><td>Text:</td><td><textarea id='cmd_bm_text'></textarea><br>";
-    h += "<tr><td>Quote:</td><td><textarea id='cmd_bm_quote'>";
-    h += selection + "</textarea></td></tr>";
-    // TODO tags enter-to-add-1 and make them buttons-to-remove one.
-    h += "<tr><td>Tags</td><td><input type='text' id='cmd_bm_tags'>";
-    h += "<span id='cmd_bm_taglist'></span></td></tr>";
-    h += "<tr><td span=2><button id='cmd_bm_submit'>Submit</button></td></tr>";
-    h += "</table>";
+    var h = "";
+=a=parts/make_bookmark.htm
     ge('command_extend').innerHTML = h;
+
+    g('cmd_bm_quote').value = selection;
 
     // NOTE: otherwise need to escape stuff.(which would be silly)
     ge('cmd_bm_title').value = document.title;

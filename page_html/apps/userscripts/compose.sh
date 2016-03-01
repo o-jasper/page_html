@@ -7,13 +7,19 @@ echo
 cat $1 | while IFS='' read -r line; do  # Shell sucks.
     INSERT=$(echo $line | tail -c+4)
     case "$line" in
+        =a=*.htm)
+            echo // -insert-asset-htm  $INSERT
+            cat ../../assets/$INSERT | while IFS='' read -r ln; do
+                echo "h += \"$ln\";"
+            done
+            echo // -end ;;
         =a=*)
             echo // -insert-asset  $INSERT
-            cat ../../assets/$INSERT
+            sh compose.sh ../../assets/$INSERT
             echo // -end ;;
         =s=*)
             echo // -insert-source $INSERT
-            cat src/$INSERT
+            sh compose.sh src/$INSERT
             echo // -end ;;
         *)
             echo "$line" ;;
