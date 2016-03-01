@@ -13,17 +13,21 @@ local lfs = require "lfs"
 
 local apply_subst = require "page_html.util.apply_subst"
 This.mirror_msg = {
-   pattern = [[Excepting outside assets, this a local mirror:{%is_top}<br><br>{%mirror}]],
+   pattern = [[Other than outside assets, this a {%local_mirror}:{%is_top}<br>
+{%from_time}, size {%gist_size}
+<hr>{%mirror}]],
+   fail_pattern = [[Couldnt read; {%msg} <span style="color:gray">({%code})</span>
+<br>{%spell_it}]],
    is_top = [[<span style="color:gray">(top of dir)</span>]],
 }
 
 function This:have_mirror_fd(uri)
    local file = self.dir .. uri
    if lfs.attributes(file, "mode") == "directory" then
-      return io.open(file .. "/index.html"), "directory"
+      return io.open(file .. "/index.html"), "directory", nil, file
    else
       local fd, msg, code = io.open(file)
-      return (fd and fd:read(0) and fd), msg, code  -- LOGIC!
+      return (fd and fd:read(0) and fd), msg, code, file  -- LOGIC!
    end
 end
 
@@ -45,19 +49,44 @@ function This:link_part(el)
    end
 end
 
+local gist = require("page_html.util.text.number").gist
+
+This.can_link_direct_file = false
+
 function This:output(args)
-   local fd, msg, code = self:have_mirror_fd(args.rest_path)
+   local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
+   local attrs = lfs.attributes(file)
+
+   local repl = {}
+   for k,v in pairs(attrs or {}) do repl[k] = v end
+
+   function repl.spell_it ()
+      local ret = {"<table>"}
+      for k,v in pairs(attrs or {}) do
+         table.insert(ret, string.format("<tr><td>%s</td><td>%s</td></tr>", k,v))
+      end
+      return table.concat(ret,"\n") .. "</table>"
+   end
+
+   repl.from_time = function() return os.date("%c", attrs.modification) end
+   repl.gist_size = function() return gist(attrs.size) end
+
+   repl.local_mirror = can_link_direct_file and [[<a href="{%mirror_href}">local mirror</a>]]
+      or "local mirror"
+   repl.mirror_href  = "file:/" .. file
 
    local mm = self.mirror_msg
    if fd then
-      local repl = {
+      for k,v in pairs{
          is_top=(code =="directory" and mm.is_top or ""),
          mirror=fd:read("*a"),
-      }
+      } do repl[k] = v end
       return apply_subst(mm.pattern, repl)
    else
-      return string.format([[Couldnt read; %q <span style="color:gray">(%s)</span>]],
-         msg, code)
+      for k,v in pairs{
+         msg = msg, code = code or "(nil)",
+      } do repl[k] = v end
+      return apply_subst(mm.fail_pattern, repl)
    end
 end
 
