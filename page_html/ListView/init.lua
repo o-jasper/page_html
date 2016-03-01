@@ -50,8 +50,22 @@ function This:el_repl(el, state)
                resay_colspan=self.table_wid,
                hour_min = os.date("%H:%M", time),
                day_frac = (date_nums.hour*3600 + date_nums.min*60 + date_nums.sec)/864.0,
-               date = function(_, inp)
-                  return os.date(inp, time)
+               date = function(_, inp) return os.date(inp, time) end,
+               date_min = function()
+                  local ret, same, cur_time = "", {}, os.date("*t")
+                  for k,v in pairs(os.date("*t", time)) do same[k] = (v == cur_time[k]) end
+                  if not same.year then
+                     ret = [[<span class="time_year">Y%Y</span> ]]
+                  end
+                  if not same.month then
+                     ret = ret .. [[<span class="time_month">%b</span> ]]
+                  end
+                  if not same.yday then
+                     ret = ret ..
+                        [[<span class="time_wday">%a</span>
+<span class="time_mday">%d</span>]]
+                  end
+                  return os.date(ret, time)
                end,
       }
    end

@@ -5,3 +5,7 @@
 .hour_min{font-weight:bold; font-size:70%; font-family:"Lucida Console"}
 
 .day_change{font-weight:bold}
+
+.time_month{color:gray ; font-size:80%}
+.time_wday{color:gray ; font-size:80%}
+.time_mday{color:gray ; font-size:80%}

@@ -4,6 +4,10 @@
 
 .day_change{font-weight:bold}
 
+.time_month{color:gray ; font-size:80%}
+.time_wday{color:gray ; font-size:80%}
+.time_mday{color:gray ; font-size:80%}
+
 .bm_quote{background-color:#BBB ; }
 blockquote.bm_quote{margin:0.0em 0.0em 0.1em 2em}
 
