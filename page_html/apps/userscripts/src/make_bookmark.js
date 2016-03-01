@@ -19,7 +19,18 @@ function make_bookmark() {
         cmd_bm_title  : { ed:true, d :'cmd_bm_text', u : 'cmd_bm_uri' },
         cmd_bm_text   : { ed:true, sd:true, d : 'cmd_bm_quote', su:true, u : 'cmd_bm_title' },
         cmd_bm_quote  : { ed:true, sd:true, d : 'cmd_bm_tags',  su:true, u : 'cmd_bm_text' },
-        cmd_bm_tags   : { d : 'cmd_bm_submit', u:'cmd_bm_quote' }, //, l: TODO deleting tags
+        cmd_bm_tags   : {
+            d : 'cmd_bm_submit', u:'cmd_bm_quote',
+            r : function(){
+                var to = ge('cmd_bm_taglist').childNodes[0];
+                if(to){ to.focus(); }
+            },
+            l : function(){
+                var children = ge('cmd_bm_taglist').childNodes;
+                var to = children[children.length - 1];
+                if(to){ to.focus(); }
+            }
+        },
         cmd_bm_submit : { u : 'cmd_bm_tags' }
     };
     var fg = follow_graph(graph);
@@ -62,7 +73,7 @@ function make_bookmark() {
         if( ev.keyCode == 13 ) {
             // TODO shift-enter should focus-and-submit, otherwise,
             //  just select the button-to-submit.(currently not so..)
-            if( ct.value.length == 0 ){ cs.focus(); return; }
+            if( ct.value.length == 0 ){ cs.focus(); return false; }
 
             // Add a button signifying the tag, clicking removes.
             var button = document.createElement('button');
@@ -71,7 +82,20 @@ function make_bookmark() {
                 button.style['text-decoration'] = 'line-through';
             }
             button.onmouseout = function(){ button.style['text-decoration'] = null }
-            button.onclick = function(){ ge('cmd_bm_taglist').removeChild(button); };
+
+            button.onclick = function(){
+                var to = button.nextSibling || button.previousSibling;
+                if(to){ to.focus(); } else{ ge('cmd_bm_tags').focus(); }
+                ge('cmd_bm_taglist').removeChild(button);
+            };
+
+            button.onkeydown = function(ev) {
+                if( ev.keyCode == 37 ) {
+                    (button.previousSibling || ge('cmd_bm_tags')).focus();
+                } else if( ev.keyCode == 39 ) {
+                    (button.nextSibling || ge('cmd_bm_tags')).focus();
+                }
+            }
 
             // We'll just use this as list of tags too.
             ge('cmd_bm_taglist').appendChild(button);
