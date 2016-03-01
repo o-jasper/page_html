@@ -1,4 +1,23 @@
+-- TODO this is a bit messy.
+
 local Public = {}
+
+function Public.mention_change(from, time, changes)
+   local to = os.date("*t", time)
+   local changes = changes or {
+      year  = [[<span class="time_year">Y%Y</span> ]],
+      month = [[<span class="time_month">%b</span> ]],
+      yday  = [[<span class="time_wday">%a</span>
+<span class="time_mday">%d</span>]],
+   }
+   local ret = ""
+   for _, k in ipairs(changes.order or {"year", "month", "yday"}) do
+      if to[k] ~= from[k] and changes[k] then
+         ret = ret .. changes[k]
+      end
+   end
+   return os.date(ret, time)
+end
 
 -- Functions helping out in writing time as text/html.
 function Public.delta_t(dt, pre, aft)  -- TODO tad messy..
