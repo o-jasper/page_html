@@ -8,10 +8,11 @@
 
 var fg = follow_graph(graph);
 
-ge('search').onkeydown = function(ev) {
+ge('search').onkeydown = fg;
+ge('search').onkeyup = function(ev){
     if(search_continuous || ev.keyCode == 13){ gui_search(); }
-    fg(ev);
-};
+}
+
 
 ge('search_button').onkeydown = fg;
 ge('visible_sql').onkeydown = fg;
