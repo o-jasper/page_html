@@ -43,7 +43,7 @@ function This:el_repl(el, state)
    end
 
    ret.subthread_row = function()
-      return #list() > 0 and self.assets:load("parts/subthread_row.htm")
+      return #list() > 0 and self.assets:load("parts/subthread_row.htm") or " "
    end
 
    ret.subthread = function()
