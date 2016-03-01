@@ -5,6 +5,8 @@ function make_bookmark() {
     var h = "";
 =a=parts/make_bookmark.htm
     ge('command_extend').innerHTML = h;
+    ge('cmd_bm_uri').value   = document.documentURI;
+    ge('cmd_bm_uri').style.width = "100%";
     ge('cmd_bm_quote').value = selection;
 
     // NOTE: otherwise need to escape stuff.(which would be silly)
@@ -12,16 +14,19 @@ function make_bookmark() {
     ge('cmd_bm_title').style.width = "100%";
 
     var graph = {
-        cmd_bm_uri   : { d :'cmd_bm_title', u : 'command_input' },
-        cmd_bm_title : { ed:true, d :'cmd_bm_text'}, // u : 'cmd_bm_uri' } // TODO
-        cmd_bm_text  : { ed:true, sd:true, d : 'cmd_bm_quote', su:true, u : 'cmd_bm_title' },
-        cmd_bm_quote : { ed:true, sd:true, d : 'cmd_bm_tags',  su:true, u : 'cmd_bm_text' },
-        cmd_bm_tags  : { d : 'cmd_bm_submit', u:'cmd_bm_quote' }, //, l: TODO deleting tags
-        cmd_bm_submit: { u : 'cmd_bm_tags' }
+        command_input : { d :'cmd_bm_uri' },
+        cmd_bm_uri    : { d :'cmd_bm_title', u : 'command_input' },
+        cmd_bm_title  : { ed:true, d :'cmd_bm_text', u : 'cmd_bm_uri' },
+        cmd_bm_text   : { ed:true, sd:true, d : 'cmd_bm_quote', su:true, u : 'cmd_bm_title' },
+        cmd_bm_quote  : { ed:true, sd:true, d : 'cmd_bm_tags',  su:true, u : 'cmd_bm_text' },
+        cmd_bm_tags   : { d : 'cmd_bm_submit', u:'cmd_bm_quote' }, //, l: TODO deleting tags
+        cmd_bm_submit : { u : 'cmd_bm_tags' }
     };
     var fg = follow_graph(graph);
 
-    ge('cmd_bm_title').onkeydown = fg
+    ge('command_input').onkeydown = fg;
+    ge('cmd_bm_uri').onkeydown = fg;
+    ge('cmd_bm_title').onkeydown = fg;
     var config = { max_rows:20, cols:90 }
     textarea_update('cmd_bm_text',  fg, config);
     textarea_update('cmd_bm_quote', fg, config);
@@ -36,7 +41,7 @@ function make_bookmark() {
             }
         }
         send('bookmarks/.collect',
-             [document.documentURI,
+             [ge('cmd_bm_uri').value,
               ge('cmd_bm_title').value,
               ge('cmd_bm_text').value,
               ge('cmd_bm_quote').value,

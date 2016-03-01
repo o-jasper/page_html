@@ -116,6 +116,7 @@ function toggle_commandpanel(immediate) {
 function finish_commandpanel() {
     ge('command_extend').innerHTML = ""; // Clean up.
     ge('command_input').value = "";
+    ge('command_input').onkeydown = null;
     toggle_commandpanel(); // Turn off.
 }
 
