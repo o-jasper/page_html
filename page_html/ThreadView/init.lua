@@ -14,7 +14,7 @@ This.__index = This
 -- Needs to be created for this to work.
 --function This:select_thread(form, el)
 
-This.pats = { subthread_row = [[<tr><td colspan={%table_wid}><span class="subthread">{%subthread}</span></td></tr>]] }
+This.pats = {}
 
 This.max_thread_depth = 5
 
@@ -43,7 +43,7 @@ function This:el_repl(el, state)
    end
 
    ret.subthread_row = function()
-      return #list() > 0 and self.pats.subthread_row or " "
+      return #list() > 0 and self.assets:load("parts/subthread_row.htm")
    end
 
    ret.subthread = function()
