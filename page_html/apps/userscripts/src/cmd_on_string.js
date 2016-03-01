@@ -4,6 +4,15 @@ function cmd_on_string(fun, button_str, dont_finish) {
         ge('command_extend').innerHTML = "<br><textarea id='cmd_js_code'></textarea>" +
             "<br><button id='cmd_submit'>" + button_str + "</button>";
 
+        var graph = {
+            command_input : { d:'cmd_js_code' },
+            cmd_js_code   : { su:true, u:'command_input', sd:true, d:'cmd_submit'},
+            cmd_submit    : { u:'cmd_js_code' }
+        }
+        var fg = follow_graph(graph);
+
+        ge('command_input').onkeydown = fg;
+
         var code_el = ge('cmd_js_code');
 
         code_el.rows = Math.max(code_el.value.split("\n").length, 0);
@@ -15,11 +24,13 @@ function cmd_on_string(fun, button_str, dont_finish) {
             fun(code_el.value);
             if(!dont_finish){ finish_commandpanel(); }
         }
+        cs.onkeydown = fg;
 
         code_el.onkeydown = function(ev) {
             code_el.rows = Math.max(code_el.value.split("\n").length, 0);
 
             if( ev.keyCode == 13 && ev.shiftKey ) { cs.onclick(); }
+            fg(ev);
         }
         code_el.focus();
     }
