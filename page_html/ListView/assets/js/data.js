@@ -1,5 +1,5 @@
 config = {
-    sql_textarea : { sql_max_rows:10, sql_width:80 }
+    sql_textarea : { max_rows:10, cols:90 }
 }
 
 a = {working_short:"(w)", working_long:"<span class='working'>...working...</span>",
