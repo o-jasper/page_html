@@ -49,7 +49,10 @@ function This:el_repl(el, state)
                table_wid = self.table_wid,
                resay_colspan=self.table_wid,
                hour_min = os.date("%H:%M", time),
-               day_frac = (date_nums.hour*3600 + date_nums.min*60 + date_nums.sec)/864.0
+               day_frac = (date_nums.hour*3600 + date_nums.min*60 + date_nums.sec)/864.0,
+               date = function(_, inp)
+                  return os.date(inp, time)
+               end,
       }
    end
 

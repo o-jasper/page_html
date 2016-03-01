@@ -12,7 +12,7 @@ return function(str, subst, max_tries)
    local n, k = 1, 0
    while n > fail_n and k < (max_tries or 256) do  -- More items substituted than failed.
       fail_n = 0
-      str, n = string.gsub(str, "{%%([_.:/%w%%]+)|?([_.,%s:/%w%%]*)}", fun)
+      str, n = string.gsub(str, "{%%([%w_]+)[%s]*([^}]*)}", fun)
       k = k + 1
    end
    return str
