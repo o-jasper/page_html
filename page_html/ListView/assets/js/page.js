@@ -22,7 +22,7 @@ function search_extend(search_term, cnt) {
         callback_rpc_search([search_term, {limit:[cur.at_i, cnt], rest_path:rest_path}],
                             function(ret) {
                                 ge('sql').value = ret[1];
-                                textarea_fitting(ge('sql'));
+                                textarea_fitting(ge('sql'), config.sql_textarea);
 
                                 ge("search_button").textContent = "Go";
                                 ge('list').innerHTML = "";

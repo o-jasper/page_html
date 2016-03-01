@@ -3,7 +3,7 @@ function ge(id) {
     return document.getElementById(id) || {};
 }
 function maybe_ge(el) {
-    return (typeof(el) == 'string' && ge(el)) || el; 
+    if( typeof(el) == 'string' ){ return ge(el); } else{ return el; }
 }
 
 function prepend_child(to_el, add_el) {
@@ -28,44 +28,25 @@ function in_viewport(el) {
     return top > 0 ? top <= height : (bottom > 0 && bottom <= height);
 }
 
-function textarea_fitting(te, reasonable_width, max_rows) {
+function textarea_fitting(te, config) {
     var te = maybe_ge(te);
     te.rows = Math.min(Math.max(te.value.split("\n").length, 0),
-                       max_rows || config.sql_max_rows);
-    te.cols = reasonable_width || config.sql_width;
+                       config.max_rows);
+    te.cols = config.cols;
 }
 
 // Fits the length constantly.
-function textarea_update(te, after_keydown, reasonable_width) {
+function textarea_update(te, after_keydown, config) {
     var te = maybe_ge(te);
-
-    textarea_fitting(te, reasonable_width);
+    textarea_fitting(te, config);
 
     te.onkeydown = function(ev){
-        textarea_fitting(te, reasonable_width);
+        textarea_fitting(te, config);
         if(after_keydown){ after_keydown(ev); }
     }
 }
 
-// Adds next/prev, left/right functionality.
-function next_prev(next, prev, need_shift, left, right) {
-    var next = maybe_ge(next), prev = maybe_ge(prev);
-    return function(ev) {
-        if( need_shift && !ev.shiftKey ){ return; }
-        if( next && ev.keyCode == 13 ) {
-            next.focus();
-        } else if( next && ev.keyCode == 40 ) {
-            next.focus();
-        } else if( prev && ev.keyCode == 38 ) {
-            prev.focus();
-        } else if( left && ev.keyCode == 37 ) {
-            left.focus();
-        } else if( right && ev.keyCode == 39 ) {
-            right.focus();
-        }
-    }
-}
-
+// Travelling through guis.
 function go_graph(to, ev) {
     if( typeof(to) == 'function' ) { to(ev); }
     else { maybe_ge(to).focus(); }
