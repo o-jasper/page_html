@@ -1,6 +1,6 @@
 
 function ge(id) { 
-    return document.getElementById(id) || {};
+    return document.getElementById(id) || { no_result:true };
 }
 function maybe_ge(el) {
     if( typeof(el) == 'string' ){ return ge(el); } else{ return el; }

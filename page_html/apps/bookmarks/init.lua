@@ -42,8 +42,10 @@ end
 
 This.pats = {
    text_row  = [[<tr><td colspan={%table_wid} class="bm_text">{%text}</td></tr>]],
-   quote_row = [[<tr><td colspan={%table_wid} class="bm_quote"><blockquote class="bm_quote">{%quote}</blockquote></td></tr>]],
-   tag_row   = [[<tr><td colspan={%table_wid}>{%tag_html}</td></tr>]],
+   quote_row = [[<tr><td colspan={%table_wid} class="bm_quote">
+<blockquote class="bm_quote">{%quote}</blockquote></td></tr>]],
+   tag_row   = [[<tr><td colspan=2>{%edit_this}</td>
+<td colspan={%table_wid -2}>{%tag_html}</td></tr>]],
 }
 
 function This:_el_repl(el, state, repl)
@@ -67,12 +69,13 @@ function This:_el_repl(el, state, repl)
    repl.tag_text = tag_fun("", ",", "")
 
    repl.text_row =
-      el.text and string.match(el.text, "[%w]*(.+)[%w]*") ~= "" and self.pats.text_row
+      el.text and string.find(el.text, "[^%s]") and self.pats.text_row
       or " "
    repl.quote_row =
-      el.quote and string.match(el.quote, "[%w]*(.*)[%w]*") ~= "" and self.pats.quote_row
+      el.quote and string.find(el.quote, "[^%s]") and self.pats.quote_row
       or " "
-   repl.tag_row = function() return #tag_list() > 0 and self.pats.tag_row or " " end
+   repl.tag_row = function() return self.pats.tag_row end
+   --return #tag_list() > 0 and self.pats.tag_row or " " end
 
    return repl
 end

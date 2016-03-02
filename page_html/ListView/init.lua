@@ -47,7 +47,7 @@ function This:el_repl(el, state)
       local time = el[self.Formulator.values.time]
       local date_nums = os.date("*t", time)
       add_ret{ time_resay = text_time.resay(state, 1000*time),
-               table_wid = self.table_wid,
+               table_wid = function(x) return self.table_wid + (tonumber(x) or 0) end,
                resay_colspan = self.table_wid,
                hour_min = os.date("%H:%M", time),
                day_frac = (date_nums.hour*3600 + date_nums.min*60 + date_nums.sec)/864.0,
@@ -84,7 +84,9 @@ function This:el_repl(el, state)
       return ret.insert_page_method("history_mirrored", "link_part")
    end
 
-   ret.edit_this = [[<button class="edit_this">E</button>]]
+   ret.edit_this = [[<button id="edit_el_{%i}" hidden=true  class="edit_this">E</button>]]
+
+   ret.start, ret["end"] = "<!-- start {%i} -->", "<!-- end {%i} -->"
 
    return ret
 end

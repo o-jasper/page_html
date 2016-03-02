@@ -1,9 +1,13 @@
+
 function into_from_top() {
-    cur_sel = [ge('list').rows[0]];
-    list_move(true, function(){
+
+    function limit(){
         ge('sql').focus();
         list_el_lose_focus();
-    });
+    }
+
+    cur_sel = [ge('list').rows[0]];
+    list_move(true, limit,limit);
 }
 
 var graph = {
