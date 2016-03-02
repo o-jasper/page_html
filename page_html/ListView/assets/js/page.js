@@ -65,6 +65,53 @@ function gui_search() {
     }
 }
 
+var cur_sel
+
+function list_el_lose_focus() {
+    if(cur_sel) { for( var i in cur_sel ){ cur_sel[i].className = ""; } }
+}
+
+function list_move(go_down, limit) {
+    // Clear old.
+    list_el_lose_focus();
+    var cur = cur_sel[cur_sel.length - 1];  // Go to the end.
+    cur_sel = [];
+
+    var is = function(what) {
+        var match = (cur.textContent || "").substr(0, what.length);
+//        if( what == " end " ){ alert(match + " ? " + (match == what)); }
+        return cur.nodeName != 'TR' && (match == what);
+    }
+    if(cur) {
+        if(!go_down) {
+            cur = cur.previousSibling;
+            // Go up until see a start.
+            while( cur && !is(" start ") ) { cur = cur.previousSibling; }
+        }
+        //  Go down until see a start.
+        while( cur && !is(" start ") ) { cur = cur.nextSibling; }
+        if(!cur){ limit(); return; }  // Off the map.
+
+        var str = "";
+        var i = 0  // Record until see an end.
+        while( cur && !is(" end ") ) {
+            str += "<br>\n" + cur.innerHTML;
+            if( cur.nodeName == 'TR' ) {
+                cur_sel.push(cur)
+
+                //cur.style.outline = "0.2em solid black";
+                cur.className = "row";
+                cur.style.color = "red";
+            }
+            cur = cur.nextSibling
+            i = i += 1
+        }
+        // TODO hmm need to add buttons onto there...
+        cur_sel[0].className += " top";
+        cur_sel[cur_sel.length - 1].className += " bottom";
+    } else{ limit(); }
+}
+
 // Why the hell does it not call?
 (window.opera ? document.body : document).addEventListener('onscroll', function(ev) {
     update_visibility();

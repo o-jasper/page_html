@@ -1,9 +1,17 @@
- var graph = {
+function into_from_top() {
+    cur_sel = [ge('list').rows[0]];
+    list_move(true, function(){
+        ge('sql').focus();
+        list_el_lose_focus();
+    });
+}
+
+var graph = {
     search : { sr:true, r:'search_button', sl:true, l:'sql_button', d:'sql' },
     search_button : { r:'visible_sql', l:'search', d:'sql' },
     visible_sql : { r:'sql_button', l:'search_button', d:'sql' },
     sql_button : { r:'search', l:'visible_sql', d:'sql' },
-    sql : { su:true, u:'search' }
+    sql : { su:true, u:'search', sd:true, d:into_from_top }
 };
 
 var fg = follow_graph(graph);

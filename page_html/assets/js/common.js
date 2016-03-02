@@ -49,7 +49,7 @@ function textarea_update(te, after_keydown, config) {
 // Travelling through guis.
 function go_graph(to, ev) {
     if( typeof(to) == 'function' ) { to(ev); }
-    else { maybe_ge(to).focus(); }
+    else if(to) { maybe_ge(to).focus(); }
 }
 
 function follow_graph(graph) {
