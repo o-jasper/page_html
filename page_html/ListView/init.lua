@@ -35,6 +35,7 @@ local text_time = require "page_html.util.text.time"
 
 This.table_wid = 3
 This.limit = {0, 50}
+This.master_css = "master"
 
 local html_escape = require "page_html.util.text.html_escape"
 
@@ -83,6 +84,8 @@ function This:el_repl(el, state)
       return ret.insert_page_method("history_mirrored", "link_part")
    end
 
+   ret.edit_this = [[<button class="edit_this">E</button>]]
+
    return ret
 end
 
@@ -123,12 +126,25 @@ function This:repl(args)
       end
       return _list
    end
+
    return {
+      master_css = self.master_css,
+
       name = self.name, title = self.name,
       list = function() return self:list_html(list()) end,
       cnt  = #list(),
       sql  = function() return form():sql() end,
       rest_path = " ",  -- Rest path _cared to share_ (defaultly: dont care to share)
+
+   -- Base on other pages.
+      insert_page_method = function(name, method, ...)  -- Method provided by page.
+         local page = self.server.pages[name]
+         return page and page[method] and page[method](page, ...) or " "
+      end,
+
+      insert_page = function(name, ...)  -- Insert entire page.
+         return ret.insert_page_method(name, "output", ...)
+      end,
    }
 end
 

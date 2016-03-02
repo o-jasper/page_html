@@ -62,7 +62,7 @@ function This:el_uri(el)
    if (not el.root_hash) or el.root_hash == "" then  -- Create hash if doesn't exist.
       self:el_update_hash(el)
    end
-   return el.root_hash
+   return "comment:" .. el.root_hash
 end
 
 function This:select_thread(form, el)
@@ -95,4 +95,5 @@ function This:repl(args)
    end
    return ret
 end
+
 return This

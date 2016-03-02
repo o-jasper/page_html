@@ -25,6 +25,14 @@ This.data_dir = "/home/jasper/iso/newiso/server/althist/data/"
 This.db_file  = This.data_dir .. "history.db"
 
 This.table_wid = 4
+This.master_css = "master_bm"
+
+function This:extra_list_data()
+   local ret = ListView.extra_list_data(self)
+   ret["css/master_bm.css"] = true
+   ret["css/bm.css"] = true
+   return ret
+end
 
 -- TODO extend the alt-list with position-percentages.
 -- TODO also want tags to show.
@@ -76,7 +84,7 @@ function This:uri_mod(uri)
                               self.server.port or "9090", name)
       local ret = string.match(uri, m)
       if ret then
-         if string.find(ret, "[%w%+]+") then ret = ret .. "/" end
+         if string.find(ret, "[%w%+]+") then ret = "comment:" .. ret .. "/" end
          return ret
       end
    end

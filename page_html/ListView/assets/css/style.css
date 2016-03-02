@@ -9,3 +9,10 @@
 .time_month{color:gray ; font-size:80%}
 .time_wday{color:gray ; font-size:80%}
 .time_mday{color:gray ; font-size:80%}
+
+.tag{font-weight:bold}
+
+:focus{border:0.2em solid black; font-weight:bold}
+
+td{padding-bottom:0em}
+tr{padding-bottom:0em}
