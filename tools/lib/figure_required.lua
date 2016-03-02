@@ -1,3 +1,5 @@
+-- Works statically, only works if `require` plainly uses a string.
+
 local search_dirs = {} -- Directories where assets may be.
 
 string.gsub(";" .. require("package").path .. ";", ";([^;]+);",
