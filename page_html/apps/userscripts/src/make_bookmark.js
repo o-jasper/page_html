@@ -92,6 +92,10 @@ function make_bookmark() {
                     (button.previousSibling || ge('cmd_bm_tags')).focus();
                 } else if( ev.keyCode == 39 ) {
                     (button.nextSibling || ge('cmd_bm_tags')).focus();
+                } else if( ev.keyCode == 40 ) {
+                    ge('cmd_bm_submit').focus();
+                } else if( ev.keyCode == 38 ) {
+                    ge('cmd_bm_quote').focus();
                 }
             }
 
