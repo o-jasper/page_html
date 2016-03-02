@@ -7,7 +7,8 @@ function into_from_top() {
     }
 
     cur_sel = [ge('list').rows[0]];
-    list_move(true, limit,limit);
+    // TODO the `limit_u` probably better off pressing the MOAR button.
+    list_move(true, {limit_d:limit, limit_u:limit});
 }
 
 var graph = {
@@ -24,7 +25,6 @@ ge('search').onkeydown = fg;
 ge('search').onkeyup = function(ev){
     if(search_continuous || ev.keyCode == 13){ gui_search(); }
 }
-
 
 ge('search_button').onkeydown = fg;
 ge('visible_sql').onkeydown = fg;
