@@ -8,6 +8,6 @@ Then puts all those files into a single directory.
 The output is not yet tested, and it would not work because the asset files
 are not yet transferred.
 
-Currently the lua files output, add up to mere 5.3kLOC, that includes
+Currently the lua files output, add up to mere 5.4kLOC, that includes
 all upstream lua code. (currently only `json.lua` and `socket.lua` not
 altered/made by myself)
