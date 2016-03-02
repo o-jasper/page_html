@@ -6,12 +6,10 @@ function make_bookmark() {
 =a=parts/make_bookmark.htm
     ge('command_extend').innerHTML = h;
     ge('cmd_bm_uri').value   = document.documentURI;
-    ge('cmd_bm_uri').style.width = "100%";
     ge('cmd_bm_quote').value = selection;
 
     // NOTE: otherwise need to escape stuff.(which would be silly)
     ge('cmd_bm_title').value = document.title;
-    ge('cmd_bm_title').style.width = "100%";
 
     var graph = {
         command_input : { d :'cmd_bm_uri' },

@@ -17,7 +17,14 @@
 // @grant       GM_xmlhttpRequest
 // @grant       GM_openInTab
 // @grant       GM_setClipboard
+// @grant       GM_addStyle
 // ==/UserScript==
+
+{
+    var h = "";
+=a=css/userscript/commands.css
+    GM_addStyle(h);
+}
 
 =a=js/common.js
 =a=js/pegasus_send.js
@@ -67,20 +74,7 @@ function toggle_commandpanel(immediate) {
 
         var element = command_element || document.createElement('div');
         command_element = element;
-
         element.id = 'CommandPanel'
-
-        var style = element.style
-        style.borderWidth = "0.1em";
-        style.borderRadius = "0.3em";
-        style.borderColor = "#000"
-
-        style.position = 'fixed';
-        style.top  = "1em";
-        style.left = "1em";
-        style.padding = "2em";
-        style.backgroundColor = "#fff";
-        style['z-index'] = 1e16;
 
         // TODO line around, other styling.
         var h = "";
@@ -148,17 +142,17 @@ if( GM_getValue('cmd_lua', false) ) {
 
 if( GM_getValue('cmd_syms', true) ) {
     funs.syms = function() {
-        ge('command_extend').innerHTML = "<br><input id='cmd_sym_val'><br><span style='font-size:300%;' id='cmd_sym_out'></span>";
+        ge('command_extend').innerHTML = "<br><input id='cmd_sym_val'><br><span id='cmd_sym_output'></span>";
         var sym_val = ge('cmd_sym_val');
         sym_val.focus();
         sym_val.onkeydown = function(ev) {
             if( ev.keyCode == 13 ) {
-                GM_setClipboard(ge('cmd_sym_out').innerHTML);
+                GM_setClipboard(ge('cmd_sym_output').innerHTML);
                 finish_commandpanel();
             }
         }
         sym_val.onkeyup = function(ev) {
-            ge('cmd_sym_out').innerHTML = "&" + sym_val.value + ";";
+            ge('cmd_sym_output').innerHTML = "&" + sym_val.value + ";";
         }
     }
 }

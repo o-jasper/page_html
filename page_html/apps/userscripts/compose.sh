@@ -7,7 +7,7 @@ echo
 cat $1 | while IFS='' read -r line; do  # Shell sucks.
     INSERT=$(echo $line | tail -c+4)
     case "$line" in
-        =a=*.htm)
+        =a=*.htm | *.css)
             echo // -insert-asset-htm  $INSERT
             cat ../../assets/$INSERT | while IFS='' read -r ln; do
                 echo "h += \"$ln\";"

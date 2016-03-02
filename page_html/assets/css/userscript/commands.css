@@ -1,0 +1,20 @@
+:focus{border:0.2em solid black; font-weight:bold}
+
+/* Panel itself. */
+#CommandPanel{
+    border:0.1em solid black;
+    border-radius: 0.3em;
+
+    position:fixed;
+    top:1em;
+    left:1em;
+    padding:2em;
+    background-color:white;
+    z-index:10000000000000;
+}
+/* Bookmark stuff */
+#cmd_bm_uri{ width:100% }
+#cmd_bm_title{ width:100% }
+
+/* Symbol output */
+#cmd_sym_output{ font-size:300%; }
