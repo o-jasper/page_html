@@ -11,7 +11,10 @@ althist.user.js: src/althist.user.js usual
 althist.mirror.user.js: src/althist.mirror.user.js usual
 	sh compose.sh $< > $@
 
-commands.user.js: src/commands.user.js src/make_bookmark.js src/cmd_on_string.js usual
+command_parts: \
+	src/make_bookmark.js src/cmd_on_string.js  src/cmd_vid.js
+
+commands.user.js: src/commands.user.js command_parts usual
 	sh compose.sh $< > $@
 
 pass:

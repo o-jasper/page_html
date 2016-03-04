@@ -173,24 +173,7 @@ funs.man   = cmd_opentab("View man page",      'util/.man');
 funs.doc   = cmd_opentab("View documentation", 'util/.doc');
 funs.pydoc = cmd_opentab("View pydoc page",    'util/.pydoc');
 
-function find_a_href(el) {
-    var href = el.href;
-    for(var i in el.children){
-        if( href ){ return href; }
-        href = find_a_href(el.children[i])
-    }
-    return href;
-}
-
-// --- Running videos
-
-function cmd_vid() {  // Try open as video.
-    ge('command_extend').innerHTML = "working...";
-    // TODO hackish, just want the hovered link...
-    var href = (hovered && find_a_href(hovered)) || hovered_href;
-    send('util/.vid', [href || document.documentURI],
-         function(){ finish_commandpanel(); });
-}
+=s=cmd_vid.js
 funs.vid = cmd_vid
 
 function cmd_fclip() {  // TODO cliboardData doesn't work?
