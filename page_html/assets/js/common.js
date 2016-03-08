@@ -68,3 +68,16 @@ function follow_graph(graph) {
         }
     }
 }
+
+function element_pos_dist(x,y) {
+    return function(el) {
+        var rect = el.getBoundingClientRect();
+
+        // TODO "closest of smaller rect"
+        var ex = (rect.left + rect.right)/2, ey = (rect.top + rect.bottom)/2;
+
+        // Note the weights!
+//TODO...
+        return Math.sqrt(Math.pow(x - ex, 2) + Math.pow(y - ey, 2));
+    }
+}

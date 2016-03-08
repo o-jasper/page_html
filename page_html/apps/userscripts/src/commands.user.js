@@ -37,13 +37,24 @@ function sayit() {
 }
 
 var selection, pos_frac;  // Holds selection, as otherwise lost due to focus change.
-var hovered, hovered_href;
+
+var iface_state = {}
 
 document.onmouseover = function(ev){
-    var el = ge('CommandPanel');
+    var el = ge('CommandPanel'), is = iface_state;
     if(!el || el.hidden){
-        hovered = ev.target;
-        hovered_href = hovered.href || hovered_href;
+        is.hovered = ev.target;
+        is.hovered_href = is.hovered.href || is.hovered_href;
+    }
+    is.x = ev.pageX;
+    is.y = ev.pageY;
+}
+
+if( (GM_getValue('cmd_track_cursor') || "yes") == "yes" ) {
+    var is = iface_state;
+    document.onmousemove = function(ev) {
+        is.x = ev.pageX;
+        is.y = ev.pageY;
     }
 }
 
