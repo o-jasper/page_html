@@ -29,7 +29,7 @@ test *1* **2** _3_ ~~4~~ [_**text**_](link)
 # I `shant` work <quote>or *will* i?</quote>
 </span>
 
-<div>example of breakage, <div>here</div>*indeededly*</div>
+<div>example _of_ breakage, <div>here</div>*indeededly*</div>
 
 ----
 * noconflict

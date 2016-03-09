@@ -1,5 +1,6 @@
 
---TODO Terrible statefulness monster. (metatables do not solve it as is!)
+--TODO afaics it isnt as stateful anymore, but the metatables are a bit
+--  iffy to follow this way.
 
 -- Note about state; `.shield` can shield things from being matched again.
 -- ANOTHER way is to simply not have things replacing afterwards.
@@ -126,9 +127,16 @@ local ops = {
                 end
    },
 
+   -- TODO Seems little too it but parsing the whole damn thing.
    html = { "<([%w]+)[%s]*([^>]*)>(.+)</([%w]+)>",
             function(state, tagname, args, stuff, tagname2)
-               if tagname == tagname2 then
+               local _, n = string.find(stuff, "</" .. tagname .. ">")
+               if n then
+                  return shield(state,
+                                string.format("<%s %s>%s", tagname, args,
+                                              string.sub(stuff, 1, n)))
+                     .. string.sub(stuff, n+1) .. "</" .. tagname2 .. ">"
+               elseif tagname == tagname2 then
                   local content = string.format("<%s%s%s>%s</%s>",
                                                 tagname, args == "" and "" or " ",
                                                 args, stuff, tagname)
@@ -138,7 +146,8 @@ local ops = {
    },
 }
 
-default_state.sequence = { ops.html, ops.hr, ops.header, ops.list, ops.nd, ops.unshield }
+default_state.sequence = { ops.html, ops.html,
+                           ops.hr, ops.header, ops.list, ops.nd, ops.unshield }
 default_state.substate = {
    name = "md_expr",
    sequence ={ ops.code, ops.bold, ops.italic, ops.underline, ops.strike,
