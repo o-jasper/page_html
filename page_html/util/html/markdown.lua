@@ -1,29 +1,35 @@
 
-local function surround(content, with)
-   return string.format("<%s>%s</%s>", with, content, with)
-end
-
-local ops = {}
-
 local function markdown(text, state, sequence)
-   --local state = state or { order="GOT NOTHING"}
    for _, el in ipairs(sequence or state.sequence or {}) do
       local pat, fun = unpack(el)
-      if type(fun) == "function" then
-         text = string.gsub(text, pat, function(...) return fun(state, ...) end)
-      else
-         text = string.gsub(text, pat, fun)
-      end
+      text = string.gsub(text, pat, function(...) return fun(state, ...) end)
    end
    return text
 end
 
 local function submd(text, state, ...)
-   return markdown(text, state.substate and state:substate(...) or state)
+   local substate = state.substate
+   if type(substate) == "function" then
+      return markdown(text, substate(state, ...))
+   elseif type(substate) == "table" then
+      return markdown(text, substate)
+   elseif substate == false then
+      return text
+   else
+      return markdown(text, state)
+   end
 end
 
-ops = {
-   hr = { "\n%-%-%-+\n", "\n<hr>\n" },
+local function surround(content, with)
+   return string.format("<%s>%s</%s>", with, content, with)
+end
+
+local function op_surround(tag)
+   return function(state, content) return surround(submd(content, state), tag) end
+end
+
+local ops = {
+   hr = { "\n%-%-%-+\n", function() return "\n<hr>\n" end },
    header = {
       "\n(##?#?#?#?)[%s]*([^\n]+)\n",
       function(state, leveltxt, content)
@@ -38,28 +44,13 @@ ops = {
       end
    },
    -- Decoration(as set)
-   decs = {
-      "([*_~]+)([^*_~]+)([*_~]+)",
-      function(state, before, content, after)
-         local content = submd(content, state)
-         assert(not state.assertive or before == string.reverse(after))
-         if not state.ifmatch or before == string.reverse(after) then
-            if string.find(before, "**", 1, true) then
-               content = surround(content, "b")
-            elseif string.find(before, "*", 1, true) then
-               content = surround(content, "i")
-            end
-            if string.find(before, "_", 1, true) then
-               content = surround(content, "u")
-            end
-            if string.find(before, "~~", 1, true) then
-               content = surround(content, "strike")
-            end
-         end
-         return content
-      end
-   },
+   bold      = { "%*%*([^*]*)%*%*", op_surround("b") },
+   italic   = { "%*([^*]*)%*",  op_surround("i") },
+   underline = { "_([^_]*)_",   op_surround("u") },
+   strike    = { "~~([^~]*)~~", op_surround("strike") },
+   code      = { "`([^`]*)`",   op_surround("code") },  -- TODO insufficent!
 
+   -- Note, can do what it can because it covers everything. A `code` isnt yet implemented..
    list = {  -- Hmm this one is a pita.
       "\n([ ]*)([*+]?)([^*+\n]?[^\n]*)",
       function(state, ws, kind, immediate)
@@ -103,9 +94,14 @@ ops = {
 }
 
 local default_state = {
+   name = "md_top",
    ops = ops,
    sequence = { ops.hr, ops.header, ops.list, ops.nd },
-   substate = function(state) return { sequence ={ ops.decs, ops.link } } end
+   substate = {
+      name = "md_expr",
+      sequence ={ ops.bold, ops.italic, ops.underline, ops.strike,
+                  ops.code, ops.link }
+   },
 }
 
 local function export_markdown(text, state)
