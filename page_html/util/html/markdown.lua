@@ -27,7 +27,7 @@ local function submd(text, state, ...)
       ss.shielded = state.shielded
       return markdown(text, ss)
    elseif type(substate) == "table" then
-      substate.shielded = state.shielded
+      local substate = setmetatable({shielded = state.shielded}, {__index=substate})
       return markdown(text, substate)
    elseif substate == false then
       return text
@@ -44,6 +44,12 @@ local function op_surround(tag)
    return function(state, content)
       return surround((tag ~= "code" and submd(content, state)) or content, tag)
    end
+end
+
+local function shield(state, content)
+   state.shielded = state.shielded or {}
+   table.insert(state.shielded, content)
+   return string.format("{%%shield %d}", #state.shielded)   
 end
 
 local ops = {
@@ -68,11 +74,7 @@ local ops = {
    strike    = { "~~([^~]*)~~", op_surround("strike") },
    code = {
       "`([^`]*)`",
-      function(state, content)
-         state.shielded = state.shielded or {}
-         table.insert(state.shielded, surround(content, "code"))
-         return string.format("{%%shield %d}", #state.shielded)
-      end
+      function(state, content) return shield(state, surround(content, "code")) end
    },  -- TODO insufficent!
 
    -- Note it *shields by* matching everything!
@@ -122,10 +124,21 @@ local ops = {
                    state.shielded = state.shielded or {}
                    return state.shielded[tonumber(num)]
                 end
-   }
+   },
+
+   html = { "<([%w]+)[%s]*([^>]*)>(.+)</([%w]+)>",
+            function(state, tagname, args, stuff, tagname2)
+               if tagname == tagname2 then
+                  local content = string.format("<%s%s%s>%s</%s>",
+                                                tagname, args == "" and "" or " ",
+                                                args, stuff, tagname)
+                  return shield(state, content)
+               end
+            end
+   },
 }
 
-default_state.sequence = { ops.hr, ops.header, ops.list, ops.nd, ops.unshield }
+default_state.sequence = { ops.html, ops.hr, ops.header, ops.list, ops.nd, ops.unshield }
 default_state.substate = {
    name = "md_expr",
    sequence ={ ops.code, ops.bold, ops.italic, ops.underline, ops.strike,

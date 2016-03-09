@@ -25,6 +25,12 @@ test *1* **2** _3_ ~~4~~ [_**text**_](link)
     continued
 * sla
 
+<span>
+# I `shant` work <quote>or *will* i?</quote>
+</span>
+
+<div>example of breakage, <div>here</div>*indeededly*</div>
+
 ----
 * noconflict
 
