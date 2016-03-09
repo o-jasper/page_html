@@ -21,7 +21,7 @@ test *1* **2** _3_ ~~4~~ [_**text**_](link)
 * list 2
 * list 3
   + sublist A
-  + sublist B
+  + sublist B `**code tag works, _[right](?)_**`
     continued
 * sla
 
@@ -29,3 +29,4 @@ test *1* **2** _3_ ~~4~~ [_**text**_](link)
 * noconflict
 
 ]]))
+

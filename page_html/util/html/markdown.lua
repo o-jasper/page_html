@@ -1,5 +1,18 @@
 
+--TODO Terrible statefulness monster. (metatables do not solve it as is!)
+
+-- Note about state; `.shield` can shield things from being matched again.
+-- ANOTHER way is to simply not have things replacing afterwards.
+local default_state = {
+   name = "md_top",
+}
+
 local function markdown(text, state, sequence)
+   local state = state or {}
+   state.shielded = state.shielded or {}
+   if not getmetatable(state) then
+      state = setmetatable(state or {}, {__index = default_state})
+   end
    for _, el in ipairs(sequence or state.sequence or {}) do
       local pat, fun = unpack(el)
       text = string.gsub(text, pat, function(...) return fun(state, ...) end)
@@ -10,8 +23,11 @@ end
 local function submd(text, state, ...)
    local substate = state.substate
    if type(substate) == "function" then
-      return markdown(text, substate(state, ...))
+      local ss = substate(state, ...)
+      ss.shielded = state.shielded
+      return markdown(text, ss)
    elseif type(substate) == "table" then
+      substate.shielded = state.shielded
       return markdown(text, substate)
    elseif substate == false then
       return text
@@ -25,7 +41,9 @@ local function surround(content, with)
 end
 
 local function op_surround(tag)
-   return function(state, content) return surround(submd(content, state), tag) end
+   return function(state, content)
+      return surround((tag ~= "code" and submd(content, state)) or content, tag)
+   end
 end
 
 local ops = {
@@ -45,12 +63,19 @@ local ops = {
    },
    -- Decoration(as set)
    bold      = { "%*%*([^*]*)%*%*", op_surround("b") },
-   italic   = { "%*([^*]*)%*",  op_surround("i") },
+   italic    = { "%*([^*]*)%*", op_surround("i") },
    underline = { "_([^_]*)_",   op_surround("u") },
    strike    = { "~~([^~]*)~~", op_surround("strike") },
-   code      = { "`([^`]*)`",   op_surround("code") },  -- TODO insufficent!
+   code = {
+      "`([^`]*)`",
+      function(state, content)
+         state.shielded = state.shielded or {}
+         table.insert(state.shielded, surround(content, "code"))
+         return string.format("{%%shield %d}", #state.shielded)
+      end
+   },  -- TODO insufficent!
 
-   -- Note, can do what it can because it covers everything. A `code` isnt yet implemented..
+   -- Note it *shields by* matching everything!
    list = {  -- Hmm this one is a pita.
       "\n([ ]*)([*+]?)([^*+\n]?[^\n]*)",
       function(state, ws, kind, immediate)
@@ -91,23 +116,22 @@ local ops = {
 
    -- No double or more newlines.
    nd = { "\n+", function() return "\n" end },
+
+   unshield = { "{%%shield ([%d]+)}",
+                function(state, num)
+                   state.shielded = state.shielded or {}
+                   return state.shielded[tonumber(num)]
+                end
+   }
 }
 
-local default_state = {
-   name = "md_top",
-   ops = ops,
-   sequence = { ops.hr, ops.header, ops.list, ops.nd },
-   substate = {
-      name = "md_expr",
-      sequence ={ ops.bold, ops.italic, ops.underline, ops.strike,
-                  ops.code, ops.link }
-   },
+default_state.sequence = { ops.hr, ops.header, ops.list, ops.nd, ops.unshield }
+default_state.substate = {
+   name = "md_expr",
+   sequence ={ ops.code, ops.bold, ops.italic, ops.underline, ops.strike,
+               ops.link }
 }
 
-local function export_markdown(text, state)
-   state = state or {}
-   for k, v in pairs(default_state) do state[k] = state[k] or v end
-   return markdown("\n" .. text .. "\n", state)
-end
+default_state.ops = ops
 
-return {export_markdown, ops, markdown}
+return {markdown, default_state}
