@@ -53,6 +53,33 @@ local function shield(state, content)
    return string.format("{%%shield %d}", #state.shielded)   
 end
 
+local function handle_html(state, content, intag, top)
+   assert(state)
+   local ret = ""
+   while true do
+      local pre, rest, stop, name, args, cnt =
+         string.match(content, "^([^<]*)(<(/?)([%w]+)[%s]*([^>]*)>)()")
+
+      if not pre then -- Nothing found.
+         return ret .. content, ""
+      else
+         ret = ret .. ((top and markdown(pre, state)) or pre)
+
+         if stop ~= "" then  -- Return from one.
+            if state.assertive then
+               assert(intag == name)
+               assert(state.args == "")
+            end
+            return ret .. rest, string.sub(content, cnt)
+         else  -- Get into one.
+            local got, left = handle_html(state, string.sub(content, cnt), name)
+            content = left
+            ret = ret .. rest .. got
+         end
+      end
+   end
+end
+
 local ops = {
    hr = { "\n%-%-%-+\n", function() return "\n<hr>\n" end },
    header = {
@@ -76,7 +103,7 @@ local ops = {
    code = {
       "`([^`]*)`",
       function(state, content) return shield(state, surround(content, "code")) end
-   },  -- TODO insufficent!
+   },
 
    -- Note it *shields by* matching everything!
    list = {  -- Hmm this one is a pita.
@@ -128,25 +155,15 @@ local ops = {
    },
 
    -- TODO Seems little too it but parsing the whole damn thing.
-   html = { "<([%w]+)[%s]*([^>]*)>(.+)</([%w]+)>",
-            function(state, tagname, args, stuff, tagname2)
-               local _, n = string.find(stuff, "</" .. tagname .. ">")
-               if n then
-                  return shield(state,
-                                string.format("<%s %s>%s", tagname, args,
-                                              string.sub(stuff, 1, n)))
-                     .. string.sub(stuff, n+1) .. "</" .. tagname2 .. ">"
-               elseif tagname == tagname2 then
-                  local content = string.format("<%s%s%s>%s</%s>",
-                                                tagname, args == "" and "" or " ",
-                                                args, stuff, tagname)
-                  return shield(state, content)
-               end
+   html = { "<[%w]+[%s]*[^>]*>.+</[%w]+>",
+            function(state, content)
+               assert(state)
+               return shield(state, handle_html(state, content, nil, true))
             end
    },
 }
 
-default_state.sequence = { ops.html, ops.html,
+default_state.sequence = { ops.html,
                            ops.hr, ops.header, ops.list, ops.nd, ops.unshield }
 default_state.substate = {
    name = "md_expr",

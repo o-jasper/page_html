@@ -28,8 +28,9 @@ test *1* **2** _3_ ~~4~~ [_**text**_](link)
 <span>
 # I `shant` work <quote>or *will* i?</quote>
 </span>
+# Shall work
 
-<div>example _of_ breakage, <div>here</div>*indeededly*</div>
+<div>in order simpler version, example _of_ breakage, <div>here</div>*indeededly*</div>
 
 ----
 * noconflict
