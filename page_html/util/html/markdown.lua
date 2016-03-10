@@ -54,7 +54,6 @@ local function shield(state, content)
 end
 
 local function handle_html(state, content, intag, top)
-   assert(state)
    local ret = ""
    while true do
       local pre, rest, stop, name, args, cnt =
@@ -158,7 +157,6 @@ local ops = {
    -- TODO Seems little too it but parsing the whole damn thing.
    html = { "<[%w]+[%s]*[^>]*>.+</[%w]+>",
             function(state, content)
-               assert(state)
                return shield(state, handle_html(state, content, nil, true))
             end
    },
