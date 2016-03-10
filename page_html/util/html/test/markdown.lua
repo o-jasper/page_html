@@ -35,5 +35,10 @@ test *1* **2** _3_ ~~4~~ [_**text**_](link)
 ----
 * noconflict
 
+gotta separate
+
+1. el1
+2. el2
+
 ]]))
 

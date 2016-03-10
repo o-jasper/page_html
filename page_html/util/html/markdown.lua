@@ -107,8 +107,10 @@ local ops = {
 
    -- Note it *shields by* matching everything!
    list = {  -- Hmm this one is a pita.
-      "\n([ ]*)([*+]?)([^*+\n]?[^\n]*)",
-      function(state, ws, kind, immediate)
+      "\n([^\n]*)",
+      function(state, whole)
+         local ws, kind, immediate = string.match(whole, "^([ ]*)([%d]*[*+.]?)([^*+\n]?[^\n]*)")
+         local indexed = string.match(kind, "^[%d]+[.]$")
 
          if not kind or kind ~= "" then ws = ws .. "  " end
          state.list = state.list or {{n=0, kind=""}}
@@ -125,20 +127,19 @@ local ops = {
 
          -- List depth changes.
          if n < #ws and kind ~= "" then  -- Deeper.
-            table.insert(state.list, 1, {n=#ws, kind=kind})
-            ret = ret .. "<ul><li>"
+            table.insert(state.list, 1, {n=#ws, kind=kind, indexed=indexed})
+            ret = ret .. (indexed and "<ol><li>" or "<ul><li>")
          else
             while #state.list > 1 and n > #ws do  -- Lower.
-               table.remove(state.list, 1)
+               local indexed = table.remove(state.list, 1).indexed
                n = state.list[1].n
-               ret = ret .. "</li></ul>\n"
+               ret = ret .. (indexed and "</li></ol>" or "</li></ul>")
             end
             -- New list elements.
             if kind ~= "" then
                ret = ret .. "</li><li>"
             end
          end
-
          -- Finally stuff in the markdowned immediate.
          return ret .. submd(immediate, state) .. "\n"
       end
