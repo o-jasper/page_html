@@ -82,23 +82,19 @@ function focus_table_list(el, out, prep) {
         prev = el;
         el = el.previousSibling;
     }
-    el = prev;  // Iterate, applying the classesw.
+    el = prev;  // Iterate, applying the classes.
+    var first, last;
     while( el && (el.nodeName != '#comment') ) {
-        var next = el.nextSibling;
-        var prev = el.previousSibling;
+        first = first || (el.nodeName == 'TR' && el);
+        last  = (el.nodeName == 'TR' && el) || last;
 
-        if( out ){ el.className = ""; }  // Reset if going out.
-        else {
-            el.className = prep + "row";
-            if( !prev || prev.nodeName == '#comment' ){
-                el.className += " " + prep + "top";
-            }
-            if( !next || next.nodeName == '#comment' ){
-                el.className += " " + prep + "bottom";
-            }
-        }
-        prev = el;
-        el = next;
+        el.className = (out ? "" : prep + "row");
+
+        el = el.nextSibling;
+    }
+    if( !out ) {
+        first.className += " " + prep + "top";
+        last.className  += " " + prep + "bottom";
     }
 }
 

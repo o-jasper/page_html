@@ -65,72 +65,30 @@ function gui_search() {
     }
 }
 
-var cur_sel;
-
-function list_el_lose_focus() {
-    if(cur_sel) { for( var i in cur_sel ){ cur_sel[i].className = ""; } }
-}
-
 // Basically here because list entries arent handy units.
 // (but i kindah want the vertical alignment of tables.)
 
-function list_move(go_up, funs) {
-    // Clear old.
-    list_el_lose_focus();
-    var cur = cur_sel[cur_sel.length - 1];  // Go to the end.
-    cur_sel = [];
-
-    var isnt = function(what) {  // Finds beginning/endings.
-        if(cur) {
-            var match = (cur.textContent || "").substr(0, what.length);
-            return !(cur.nodeName != 'TR' && (match == what));
-        }
-    }
-    if(cur) {
-        if(!go_up) {
-            cur = cur.previousSibling;
-            // Go up until see a start.
-            while( isnt(" start ") ) { cur = cur.previousSibling; }
-            if(!cur){ funs.limit_u(); return; } // Hit top.
-            cur = cur.previousSibling;
-            while( isnt(" start ") ) { cur = cur.previousSibling; }
-            if(!cur){ funs.limit_u(); return; }
-        }
-        //  Go down until see a start.
-        while( isnt(" start ") ) { cur = cur.nextSibling; }
-        if(!cur){ funs.limit_d(); return; }  // Hit bottom.
-        // This is the start, what is the name?
-        var name = cur.textContent;
-        name = name.substr(7, name.length - 8);
-        var edit_el = ge("edit_el_" + name);
-        if( edit_el ){
+function list_move(i, funs) {
+    var edit_el = ge("edit_el_" + i);
+    if( edit_el.no_result ){
+        funs.limit_u();
+    } else {
+        edit_el.onfocus = function() {
             edit_el.hidden = false;
-            edit_el.focus();
-
-            edit_el.onblur = function(){
-                list_el_lose_focus(); edit_el.hidden = true;
-            }
-            edit_el.onkeydown = function(ev) {
-                if(ev.keyCode == 38){ list_move(false, funs) }
-                else if(ev.keyCode == 40){ list_move(true, funs) }
-            }
+            focus_table_list(edit_el, false);  // Add the borders.
         }
-
-        var str = "";
-        var i = 0  // Record until see an end.
-        while( isnt(" end ") ) {
-            str += "<br>\n" + cur.innerHTML;
-            if( cur.nodeName == 'TR' ) {
-                cur_sel.push(cur);
-                cur.className = "row";
-            }
-            cur = cur.nextSibling
-            i = i += 1
+        edit_el.onblur = function(){
+            edit_el.hidden = true;
+            focus_table_list(edit_el, true);  // Remove the borders.
         }
-        // TODO hmm need to add buttons onto there...
-        cur_sel[0].className += " top";
-        cur_sel[cur_sel.length - 1].className += " bottom";
-    } else if(go_up){ funs.limit_u(); } else{ funs.limit_d(); }
+        edit_el.onkeydown = function(ev) {
+            if(ev.keyCode == 38){ list_move(i - 1, funs) }
+            else if(ev.keyCode == 40){ list_move(i + 1, funs) }
+        }
+        edit_el.onclick = function() { alert("SUB" + i); }
+        edit_el.hidden = false;
+        edit_el.focus();
+    }
 }
 
 // Why the hell does it not call?

@@ -1,14 +1,11 @@
 
 function into_from_top() {
 
-    function limit(){
-        ge('sql').focus();
-        list_el_lose_focus();
-    }
+    function limit(){ ge('sql').focus(); }
 
     cur_sel = [ge('list').rows[0]];
     // TODO the `limit_u` probably better off pressing the MOAR button.
-    list_move(true, {limit_d:limit, limit_u:limit});
+    list_move(1, {limit_d:limit, limit_u:limit});
 }
 
 var graph = {
