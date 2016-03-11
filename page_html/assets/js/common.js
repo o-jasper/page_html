@@ -69,12 +69,45 @@ function follow_graph(graph) {
     }
 }
 
+// Making lines around current list selection in tables.
+function focus_table_list(el, out, prep) {
+    var prep = prep || "";
+    // Find the `TR` level.
+    if( el.nodeName != '#comment' ) {
+        while(el && el.nodeName != 'TR'){ el = el.parentNode; }
+    }
+    // Find the comment node representing the "the start of the section."
+    var prev = el;
+    while( el  && el.nodeName != '#comment' ) {
+        prev = el;
+        el = el.previousSibling;
+    }
+    el = prev;  // Iterate, applying the classesw.
+    while( el && (el.nodeName != '#comment') ) {
+        var next = el.nextSibling;
+        var prev = el.previousSibling;
+
+        if( out ){ el.className = ""; }  // Reset if going out.
+        else {
+            el.className = prep + "row";
+            if( !prev || prev.nodeName == '#comment' ){
+                el.className += " " + prep + "top";
+            }
+            if( !next || next.nodeName == '#comment' ){
+                el.className += " " + prep + "bottom";
+            }
+        }
+        prev = el;
+        el = next;
+    }
+}
+
+// Function returning cursor-distance-to-element. Doesnt work. Why
+//  arent there clear coordinate systems...
 function element_pos_dist(x,y) {
     return function(el) {
-        var rect = el.getBoundingClientRect();
-
-        // TODO "closest of smaller rect"
-        var ex = (rect.left + rect.right)/2, ey = (rect.top + rect.bottom)/2;
+        var ex = el.clientLeft - document.body.clientLeft,
+            ey = el.clientTop - document.body.clientTop;
 
         // Note the weights!
 //TODO...

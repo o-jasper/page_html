@@ -53,7 +53,7 @@ function cmd_vid() {  // Try open as video.
         var n= 0, entry_list = []
         var add_one = function(str, uri) {
             entry_list.push([n, str, uri])
-            h += "<tr><td><button id ='cmd_vid_";
+            h += "<!--" + n + "--><tr><td><button id ='cmd_vid_";
             h += n;
             h += "'>";
             h += str;
@@ -90,11 +90,11 @@ function cmd_vid() {  // Try open as video.
                         ge((j == 0) ? 'command_input' : ('cmd_vid_' + (j - 1))).focus();
                     }
                 }
-                el.onfocusin = function() { // Give the thing under a border.
-                    el.parentNode.parentNode.style.border = "0.2em solid black";
+                el.onblur = function(ev) {
+                    focus_table_list(el, true);
                 }
-                el.onfocusout = function() {
-                    el.parentNode.parentNode.style.border = "";
+                el.onfocus = function(ev){
+                    focus_table_list(el); //cur_sel_list_cleanup);
                 }
             })(i, ge('cmd_vid_' + i));
         }

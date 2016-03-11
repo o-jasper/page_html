@@ -23,6 +23,7 @@
 {
     var h = "";
 =a=css/userscript/commands.css
+=a=css/style.css
     GM_addStyle(h);
 }
 
@@ -46,17 +47,18 @@ document.onmouseover = function(ev){
         is.hovered = ev.target;
         is.hovered_href = is.hovered.href || is.hovered_href;
     }
-    is.x = ev.pageX;
-    is.y = ev.pageY;
-}
 
+    is.x = ev.clientX - document.body.clientLeft;
+	  is.y = ev.clientY - document.body.clientTop;
+}
+/*
 if( (GM_getValue('cmd_track_cursor') || "yes") == "yes" ) {
     var is = iface_state;
     document.onmousemove = function(ev) {
         is.x = ev.pageX;
         is.y = ev.pageY;
     }
-}
+} */
 
 function currentPosFraction()
 {
@@ -132,6 +134,11 @@ var funs = {};
 =s=make_bookmark.js
 funs.bm = make_bookmark;
 
+/*=s=quickmark.js // TODO
+funs.qm = make_qm
+funs.fqm = follow_qm
+*/
+
 =s=cmd_on_string.js
 
 // --- Javascript/lua evaluation.
@@ -199,6 +206,8 @@ funs.fclip = cmd_fclip;
 // Keydown listener.
 
 (window.opera ? document.body : document).addEventListener('keydown', function(ev) {
+    iface_state.x = ev.pageX;
+    iface_state.y = ev.pageY;
     if( ev.ctrlKey && ev.keyCode == 59 ) { // Thats control-;.
         toggle_commandpanel(!ev.shiftKey);
     } else if( command_element && !command_element.hidden ){
