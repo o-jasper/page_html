@@ -23,7 +23,7 @@ local function esc_gsub(x)  -- Marks doubles that are _not_ involved.
 end
 
 -- Encodes stuff.
-local enc_gsub_str = "[^%p%w%d%s]"
+local enc_gsub_str = "[^%w%d%s,.?!@#$&{}_]"
 local function enc_gsub(x)  -- Replaces with data variant.
    local v = string.byte(x)
    local i, j = 1 + v%16, 1 + math.floor(v/16)
