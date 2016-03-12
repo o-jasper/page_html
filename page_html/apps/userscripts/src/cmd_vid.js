@@ -14,27 +14,19 @@ function cmd_vid() {  // Try open as video.
     if( (GM_getValue('cmd_track_cursor') || "yes") != "yes" ) {
         cmd_vid_go_uri(hover_uri || document.documentURI);
     } else {  // NOTE the thing seems not very effective..
-        var range = (GM_getValue('cmd_vid_range') || 0.2)*window.innerWidth;
         // Get sorted list.
-
-        var dist = element_pos_dist(is.x, is.y), list = [];
-
         var know_uri = {}
         know_uri[hover_uri] = true;
-        var search_list = document.getElementsByTagName("A") || document.links;
-        for( var i in search_list ){ // Unsorted, just in-range.
-            var el = search_list[i];
 
-            // Within range, and not already of known uri.
-            if( el && el.href && !know_uri[el.href]
-                && el.getBoundingClientRect && dist(el) < range ) {
-                el.style.color = "red";  //TESTING
-                know_uri[el.href] = true;
-                list.push(el);
-            }
-        }
-        // Sort them.
-        list.sort(dist);
+        var list = find_closest(
+            [is.x, is.y],
+            document.getElementsByTagName("A") || document.links,
+            (GM_getValue('cmd_vid_range') || 0.2)*window.innerWidth,
+            function(el) {
+                if(el.href && !know_uri[el.href]) {
+                    know_uri[el.href] = true; return true;
+                }
+            });
         // Enforce a limit on number of items.
         var limit = GM_getValue('cmd_vid_limit_cnt') || 6;
         while( list.length > limit ){ list.pop(); }

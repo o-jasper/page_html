@@ -1,5 +1,15 @@
 // Common stuff about finding stuff in elements.
 
+// Finds something with a href.
+function find_a_href(el) {
+    var href = el.href;
+    for(var i in el.children){
+        if( href ){ return href; }
+        href = find_a_href(el.children[i])
+    }
+    return href;
+}
+
 // Function returning cursor-distance-to-element. Doesnt work. Why
 //  arent there clear coordinate systems...
 function element_pos_dist(x,y) {
@@ -13,12 +23,13 @@ function element_pos_dist(x,y) {
     }
 }
 
-// Finds something with a href.
-function find_a_href(el) {
-    var href = el.href;
-    for(var i in el.children){
-        if( href ){ return href; }
-        href = find_a_href(el.children[i])
+function find_closest(dist, search_list, range, allow) {
+    if( typeof(dist) != "function" ) { dist = element_pos_dist(dist[0], dist[1]); }
+    var ret = [];
+    for( var i in search_list ){ // Unsorted, just in-range.
+        var el = search_list[i];
+        if( el && dist(el) < range && (!allow || allow(el))) { ret.push(el); }
     }
-    return href;
+    ret.sort(dist);
+    return ret;
 }
