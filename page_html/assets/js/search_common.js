@@ -11,6 +11,7 @@ function element_pos_dist(x,y) {
 //TODO...
         return Math.sqrt(Math.pow(x - ex, 2) + Math.pow(y - ey, 2));
     }
+}
 
 // Finds something with a href.
 function find_a_href(el) {

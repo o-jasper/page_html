@@ -193,7 +193,7 @@ funs.doc   = cmd_opentab("View documentation", 'util/.doc');
 funs.pydoc = cmd_opentab("View pydoc page",    'util/.pydoc');
 
 =s=cmd_vid.js
-funs.vid = cmd_vid
+funs.vid = cmd_vid;
 
 function cmd_fclip() {  // TODO cliboardData doesn't work?
     ge('command_extend').innerHTML = "working...";

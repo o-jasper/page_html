@@ -1,17 +1,3 @@
-.working{color:red;font-weight:bold}
-
-.minor{color:#666; font-size:70%;}
-
-.hour_min{font-weight:bold; font-size:70%; font-family:"Lucida Console"}
-
-.day_change{font-weight:bold}
-
-.time_month{color:gray ; font-size:80%}
-.time_wday{color:gray ; font-size:80%}
-.time_mday{color:gray ; font-size:80%}
-
-.tag{font-weight:bold}
-
 :focus{border:0.2em solid black; font-weight:bold}
 
 td{padding-bottom:0em}
@@ -19,6 +5,7 @@ tr{padding-bottom:0em}
 
 /* Going round TRs
  (https://stackoverflow.com/questions/670424/border-around-specific-rows-in-a-tablepage_html)
+TODO listview should get the general style..
 */
 tr.top td { border-top: 0.2em solid black; }
 tr.bottom td { border-bottom: 0.2em solid black; }
