@@ -24,7 +24,8 @@ function find_cursor_closest_links(limit, got_uri) {
 function produce_action_list(into, list, html, go_action, before_id, after_id) {
     activated_list(into, list,
                    html || ("<!--{%i}--><tr><td><button id ='cmd_vid_{%i}'>" + 
-                            "{%textContent}</button></td><td><code>{%href}</code></td></tr>"),
+                            "{%textContent}</button></td><td>" + 
+                            "<a href='{%href}'><code>{%href}</code></a></td></tr>"),
                    function(el, j) {
                        var set = ge('cmd_vid_' + j);
                        set.onclick = function(){ go_action(el, j); }
