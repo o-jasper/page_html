@@ -51,7 +51,7 @@ function activated_list(into, list, string_fun, alter_fun) {
     } else {
         for(var i in list) { list[i].i = i; h += replace_all(string_fun, list[i]); }
     }
-    into.innerHTML = h + "</table>";
+    into.innerHTML += h + "</table>";
 
     for(var i in list) {  // Mysteriously it turrns into a stringm fucking me up.
         alter_fun(list[i], parseInt(i));

@@ -21,7 +21,7 @@ function find_cursor_closest_links(limit, got_uri) {
 
 // Enter a list of actions, defaultly of links.
 
-function produce_action_list(into, list, html, go_action) {
+function produce_action_list(into, list, html, go_action, before_id, after_id) {
     activated_list(into, list,
                    html || ("<!--{%i}--><tr><td><button id ='cmd_vid_{%i}'>" + 
                             "{%textContent}</button></td><td><code>{%href}</code></td></tr>"),
@@ -30,9 +30,10 @@ function produce_action_list(into, list, html, go_action) {
                        set.onclick = function(){ go_action(el, j); }
                        set.onkeydown = function(ev) {
                            if( ev.keyCode == 40 ) {
-                               ge('cmd_vid_' + (j+1)).focus();
+                               ge((after_id && j == list.length-1) ? after_id :
+                                  'cmd_vid_' + (j+1)).focus();
                            } else if( ev.keyCode == 38 ){
-                               ge((j == 0) ? 'command_input' :
+                               ge((before_id && j == 0) ? before_id :
                                   ('cmd_vid_' + (j - 1))).focus();
                            }
                        }

@@ -32,6 +32,8 @@
 =a=js/pegasus_send.js
 =s=figure_server.js
 
+=s=list_assist.js
+
 var command_element;
 
 function sayit() {
