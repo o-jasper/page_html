@@ -23,6 +23,8 @@ test *1* **2** _3_ ~~4~~ [_**text**_](link)
   + sublist A
   + sublist B `**code tag works, _[right](?)_**`
     continued
+    1. and a numbered
+    2. in here
 * sla
 
 <span>

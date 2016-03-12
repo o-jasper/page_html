@@ -108,7 +108,8 @@ local ops = {
    list = {  -- Hmm this one is a pita.
       "\n([^\n]*)",
       function(state, whole)
-         local ws, kind, immediate = string.match(whole, "^([ ]*)([%d]*[*+.]?)([^*+\n]?[^\n]*)")
+         local ws, kind, immediate =
+            string.match(whole, "^([ ]*)([%d]*[*+.]?)([^*+\n]?[^\n]*)")
          local indexed = string.match(kind, "^[%d]+[.]$")
 
          if not kind or kind ~= "" then ws = ws .. "  " end
@@ -132,7 +133,7 @@ local ops = {
             while #state.list > 1 and n > #ws do  -- Lower.
                local indexed = table.remove(state.list, 1).indexed
                n = state.list[1].n
-               ret = ret .. (indexed and "</li></ol>" or "</li></ul>")
+               ret = ret .. (indexed and "</li></ol>\n" or "</li></ul>\n")
             end
             -- New list elements.
             if kind ~= "" then
@@ -146,6 +147,9 @@ local ops = {
 
    -- No double or more newlines.
    nd = { "\n+", function() return "\n" end },
+
+   -- More agressively clean whitespace.
+   clean_whitespace = { "([%s])[%s]*", function(_, char) return char end },
 
    unshield = { "{%%shield ([%d]+)}",
                 function(state, num)
