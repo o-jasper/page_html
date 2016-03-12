@@ -1,4 +1,25 @@
 
+// Closest links sorted
+function find_cursor_closest_links(limit, got_uri) {
+    var know_uri = {}
+    if(typeof(got_uri) == 'string') { know_uri[got_uri] = true; }
+    else{ for( var k in got_uri ){ know_uri[k] = true; } }
+
+    var list = find_closest_els(
+        [iface_state.x, iface_state.y],
+        document.getElementsByTagName("A") || document.links,
+        (GM_getValue('cmd_vid_range') || 0.2)*window.innerWidth,
+        function(el) {
+            if(el.href && !know_uri[el.href]) {
+                know_uri[el.href] = true; return true;
+            }
+        });
+    // Enforce a limit on number of items.
+    var limit = limit || GM_getValue('cmd_vid_limit_cnt') || 6;
+    while( list.length > limit ){ list.pop(); }
+    return list;
+}
+
 // --- Running videos
 
 var cmd_vid_go_uri = function(uri) {
@@ -15,21 +36,8 @@ function cmd_vid() {  // Try open as video.
         cmd_vid_go_uri(hover_uri || document.documentURI);
     } else {  // NOTE the thing seems not very effective..
         // Get sorted list.
-        var know_uri = {}
-        know_uri[hover_uri] = true;
-
-        var list = find_closest(
-            [is.x, is.y],
-            document.getElementsByTagName("A") || document.links,
-            (GM_getValue('cmd_vid_range') || 0.2)*window.innerWidth,
-            function(el) {
-                if(el.href && !know_uri[el.href]) {
-                    know_uri[el.href] = true; return true;
-                }
-            });
-        // Enforce a limit on number of items.
-        var limit = GM_getValue('cmd_vid_limit_cnt') || 6;
-        while( list.length > limit ){ list.pop(); }
+        var list = find_cursor_closest_links(false, hover_uri);
+        ge('command_extend').innerHTML = "Got list...";
 
         var h = "<table>"
         // TODO this is a pita...
@@ -56,9 +64,7 @@ function cmd_vid() {  // Try open as video.
         }
 
         h += "</table>";
-
         ge('command_extend').innerHTML = h;
-        ge('cmd_vid_0').focus();
 
         ge('command_input').onkeydown = function(ev) {
             if(ev.keyCode == 40){ ge('cmd_vid_0').focus(); }
@@ -82,6 +88,8 @@ function cmd_vid() {  // Try open as video.
                 }
             })(i, ge('cmd_vid_' + i));
         }
+
+        ge('cmd_vid_0').focus();
     }
 }
 

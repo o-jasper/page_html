@@ -23,8 +23,8 @@ function element_pos_dist(x,y) {
     }
 }
 
-function find_closest(dist, search_list, range, allow) {
-    if( typeof(dist) != "function" ) { dist = element_pos_dist(dist[0], dist[1]); }
+function find_closest_els(dist, search_list, range, allow) {
+    if( typeof(dist) != 'function' ) { dist = element_pos_dist(dist[0], dist[1]); }
     var ret = [];
     for( var i in search_list ){ // Unsorted, just in-range.
         var el = search_list[i];
