@@ -16,7 +16,6 @@ function element_pos_dist(x,y) {
     return function(el) {
         var ex = el.clientLeft - document.body.clientLeft,
             ey = el.clientTop - document.body.clientTop;
-
         // Note the weights!
 //TODO...
         return Math.sqrt(Math.pow(x - ex, 2) + Math.pow(y - ey, 2));
@@ -32,4 +31,29 @@ function find_closest_els(dist, search_list, range, allow) {
     }
     ret.sort(dist);
     return ret;
+}
+
+function replace_all(str, replacers) {
+    for( var k in replacers ) {
+        var n = str.replace("{%" + k + "}", replacers[k]);
+        while( n != str ){
+            str = n;
+            n = str.replace("{%" + k + "}", replacers[k]);
+        }
+    }
+    return str;
+}
+
+function activated_list(into, list, string_fun, alter_fun) {
+    var h = "<table>";
+    if( typeof(string_fun) == 'function' ) {
+        for(var i in list) { h += string_fun(list[i], parseInt(i)); }
+    } else {
+        for(var i in list) { list[i].i = i; h += replace_all(string_fun, list[i]); }
+    }
+    into.innerHTML = h + "</table>";
+
+    for(var i in list) {  // Mysteriously it turrns into a stringm fucking me up.
+        alter_fun(list[i], parseInt(i));
+    }
 }

@@ -41,43 +41,31 @@ function cmd_vid() {  // Try open as video.
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
         list.unshift({ textContent:"cur page", href:document.documentURI });
 
-        var h = "<table>";
-        for(var i in list) {
-            var str = list[i].textContent, uri = list[i].href;
-            h += "<!--" + i + "--><tr><td><button id ='cmd_vid_";
-            h += i;
-            h += "'>";
-            h += str;
-            h += "</button></td><td><code>";
-            h += uri;
-            h += "</code></td></tr>";
-        }
-        ge('command_extend').innerHTML = h + "</table>";
+        activated_list(ge('command_extend'), list,
+                       "<!--{%i}--><tr><td><button id ='cmd_vid_{%i}'>" + 
+                       "{%textContent}</button></td><td><code>{%href}</code></td></tr>",
+                       function(el, j) {
+                           var set = ge('cmd_vid_' + j);
+                           set.onclick = function(){ cmd_vid_go_uri(el.href); }
+                           set.onkeydown = function(ev) {
+                               if( ev.keyCode == 40 ) {
+                                   ge('cmd_vid_' + (j+1)).focus();
+                               } else if( ev.keyCode == 38 ){
+                                   ge((j == 0) ? 'command_input' :
+                                      ('cmd_vid_' + (j - 1))).focus();
+                               }
+                           }
+                           set.onblur = function(ev) {
+                               focus_table_list(set, true);
+                           }
+                           set.onfocus = function(ev){
+                               focus_table_list(set); //cur_sel_list_cleanup);
+                           }
+                       });
 
-        var add_fun = function(str, uri, j) {
-            var el = ge('cmd_vid_' + j);
-            el.onclick = function(){ cmd_vid_go_uri(uri); }
-            el.onkeydown = function(ev) {
-                if( ev.keyCode == 40 ) {
-                    ge('cmd_vid_' + (j+1)).focus();
-                } else if( ev.keyCode == 38 ){
-                    ge((j == 0) ? 'command_input' : ('cmd_vid_' + (j - 1))).focus();
-                }
-            }
-            el.onblur = function(ev) {
-                focus_table_list(el, true);
-            }
-            el.onfocus = function(ev){
-                focus_table_list(el); //cur_sel_list_cleanup);
-            }
-        }
         ge('command_input').onkeydown = function(ev) {
             if(ev.keyCode == 40){ ge('cmd_vid_0').focus(); }
         }
         ge('cmd_vid_0').focus();
-        for(var i in list) {  // Mysteriously it turrns into a stringm fucking me up.
-            var c = list[i];
-            add_fun(c.textContent, c.href, parseInt(i));
-        }
     }
 }
