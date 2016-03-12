@@ -97,16 +97,3 @@ function focus_table_list(el, out, prep) {
         last.className  += " " + prep + "bottom";
     }
 }
-
-// Function returning cursor-distance-to-element. Doesnt work. Why
-//  arent there clear coordinate systems...
-function element_pos_dist(x,y) {
-    return function(el) {
-        var ex = el.clientLeft - document.body.clientLeft,
-            ey = el.clientTop - document.body.clientTop;
-
-        // Note the weights!
-//TODO...
-        return Math.sqrt(Math.pow(x - ex, 2) + Math.pow(y - ey, 2));
-    }
-}

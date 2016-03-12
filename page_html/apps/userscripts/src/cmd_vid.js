@@ -1,11 +1,3 @@
-function find_a_href(el) {
-    var href = el.href;
-    for(var i in el.children){
-        if( href ){ return href; }
-        href = find_a_href(el.children[i])
-    }
-    return href;
-}
 
 // --- Running videos
 

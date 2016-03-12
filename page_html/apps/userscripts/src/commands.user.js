@@ -28,6 +28,7 @@
 }
 
 =a=js/common.js
+=a=js/search_common.js
 =a=js/pegasus_send.js
 =s=figure_server.js
 
