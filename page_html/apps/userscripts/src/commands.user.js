@@ -137,10 +137,9 @@ var funs = {};
 =s=make_bookmark.js
 funs.bm = make_bookmark;
 
-/*=s=quickmark.js // TODO
-funs.qm = make_qm
-funs.fqm = follow_qm
-*/
+=s=quickmarks.js // TODO
+funs.qm = cmd_make_quickmark;
+// TODO the viewer too
 
 =s=cmd_on_string.js
 

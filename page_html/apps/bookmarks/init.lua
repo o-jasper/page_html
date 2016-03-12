@@ -110,6 +110,21 @@ function This:rpc_js()
       return "OK"
    end
 
+   ret[".make_quickmark"] = function(uri, title, name, pos_frac)
+      self.lister.db:enter{ uri=uri, title=title, text=name, quote="",
+                            tags={":quickmark"}, x=pos_frac[1], y=pos_frac[2],
+                            creator="self" }
+   end
+
+   -- Get quickmarks belonging to name.
+   ret[".get_quickmarks"] = function(name)
+      return self.lister.db:cmd("get_quickmarks")
+   end
+   ret[".get_quickmarks_html"] = function(name)  -- Get a list of such.
+      local list = self.lister.db:cmd("get_quickmarks")
+      return {self:list_html_list(list, state, state.limit[1]), list}
+   end
+
    ret[".lookup_area"] = function(uri, x, y, terms)
       -- look up relevant bookmarks
       return "TODO"

@@ -123,4 +123,9 @@ function This:get_root_hash(root_hash) self:cmd("get_root_hash")(root_hash) end
 cmd_strs.set_root_hash = "UPDATE bookmarks SET root_hash = ? WHERE id = ?;"
 function This:set_root_hash(id, root_hash) self:cmd("set_root_hash")(root_hash, id) end
 
+cmd_strs.get_quickmarks = [[SELECT * FROM bookmarks
+WHERE EXISTS (SELECT * FROM bookmark_tags WHERE name == ':quickmark')
+AND text == ?;
+]]
+
 return This
