@@ -32,64 +32,52 @@ function cmd_vid() {  // Try open as video.
     var is = iface_state;
 
     var hover_uri = (is.hovered && find_a_href(is.hovered)) || is.hovered_href;
-    if( (GM_getValue('cmd_track_cursor') || "yes") != "yes" ) {
+    if( (GM_getValue('cmd_vid_linklist') || "yes") != "yes" ) {
         cmd_vid_go_uri(hover_uri || document.documentURI);
     } else {  // NOTE the thing seems not very effective..
         // Get sorted list.
         var list = find_cursor_closest_links(false, hover_uri);
-        ge('command_extend').innerHTML = "Got list...";
 
-        var h = "<table>"
-        // TODO this is a pita...
-        // TODO now to put the list in..
-        var n= 0, entry_list = []
-        var add_one = function(str, uri) {
-            entry_list.push([n, str, uri])
-            h += "<!--" + n + "--><tr><td><button id ='cmd_vid_";
-            h += n;
+        if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
+        list.unshift({ textContent:"cur page", href:document.documentURI });
+
+        var h = "<table>";
+        for(var i in list) {
+            var str = list[i].textContent, uri = list[i].href;
+            h += "<!--" + i + "--><tr><td><button id ='cmd_vid_";
+            h += i;
             h += "'>";
             h += str;
             h += "</button></td><td><code>";
             h += uri;
             h += "</code></td></tr>";
-            n ++;
         }
+        ge('command_extend').innerHTML = h + "</table>";
 
-        if(hover_uri){ add_one("hovered", hover_uri); }
-        add_one("cur page", document.documentURI);
-
-        for( var i in list ) {
-            var el = list[i];
-            add_one(el.textContent, el.href);
+        var add_fun = function(str, uri, j) {
+            var el = ge('cmd_vid_' + j);
+            el.onclick = function(){ cmd_vid_go_uri(uri); }
+            el.onkeydown = function(ev) {
+                if( ev.keyCode == 40 ) {
+                    ge('cmd_vid_' + (j+1)).focus();
+                } else if( ev.keyCode == 38 ){
+                    ge((j == 0) ? 'command_input' : ('cmd_vid_' + (j - 1))).focus();
+                }
+            }
+            el.onblur = function(ev) {
+                focus_table_list(el, true);
+            }
+            el.onfocus = function(ev){
+                focus_table_list(el); //cur_sel_list_cleanup);
+            }
         }
-
-        h += "</table>";
-        ge('command_extend').innerHTML = h;
-
         ge('command_input').onkeydown = function(ev) {
             if(ev.keyCode == 40){ ge('cmd_vid_0').focus(); }
         }
-        // Keyboard navigable, and onclick.
-        for( var i = 0 ; i < entry_list.length ; i++ ) {
-            (function(j, el) {
-                el.onclick = function(){ cmd_vid_go_uri(entry_list[j][2]); }
-                el.onkeydown = function(ev) {
-                    if( ev.keyCode == 40 ) {
-                        ge('cmd_vid_' + (j + 1)).focus();
-                    } else if( ev.keyCode == 38 ){
-                        ge((j == 0) ? 'command_input' : ('cmd_vid_' + (j - 1))).focus();
-                    }
-                }
-                el.onblur = function(ev) {
-                    focus_table_list(el, true);
-                }
-                el.onfocus = function(ev){
-                    focus_table_list(el); //cur_sel_list_cleanup);
-                }
-            })(i, ge('cmd_vid_' + i));
-        }
-
         ge('cmd_vid_0').focus();
+        for(var i in list) {  // Mysteriously it turrns into a stringm fucking me up.
+            var c = list[i];
+            add_fun(c.textContent, c.href, parseInt(i));
+        }
     }
 }
-
