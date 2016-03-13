@@ -1,10 +1,12 @@
 
 function list_extend(by_list) {
     cur.done = true;
+    var h = "";
     for(var i in by_list){  // TODO might be nicer to .AppendChild(but the outer TR...)
         cur.done = false;
-        ge('list').innerHTML += by_list[i];
+        h += by_list[i];
     }
+    ge('list').innerHTML += h;
     cur.at_i += by_list.length;
     cur.last_el = ge('list').children[ge('list').children.length - 1];
 
@@ -62,40 +64,6 @@ function gui_search() {
     if( ge('search').value != gui_search_prev_value ) {
         gui_search_prev_value = ge('search').value;
         search_anew(ge('search').value);
-    }
-}
-
-// Basically here because list entries arent handy units.
-// (but i kindah want the vertical alignment of tables.)
-
-function list_move(i, name, info) {
-    if(name) {
-        var funs = info[name] || info;
-        var cur = ge(info.nameprep + i + "_" + name);
-        if( cur.no_result ){
-            (funs.limit_u || info.limit_u)();
-        } else {
-            cur.onfocus = function() {
-                cur.hidden = false;
-                focus_table_list(cur, false);  // Add the borders.
-            }
-            cur.onblur = function(){
-                cur.hidden = funs.hide_it;
-                focus_table_list(cur, true);  // Remove the borders.
-            }
-            cur.onkeydown = function(ev) {
-                var kc = ev.keyCode, order = info.order;
-                var ol = order.length;
-
-                if(kc == 38){ list_move(i - 1, name, info) }
-                else if(kc == 40){ list_move(i + 1, name, info) }
-                else if(kc == 37){ list_move(i, order[(funs.i - 1 + ol)%ol], info) }
-                else if(kc == 39){ list_move(i, order[(funs.i + 1)%ol], info) }
-            }
-            cur.onclick = funs.onclick || null;
-            cur.hidden = false;
-            cur.focus();
-        }
     }
 }
 

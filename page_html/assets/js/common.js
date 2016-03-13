@@ -101,3 +101,37 @@ function focus_table_list(el, out, prep) {
         last.className  += " " + prep + "bottom";
     }
 }
+
+
+// Basically here because list entries arent handy units.
+// (but i kindah want the vertical alignment of tables.)
+function list_move(i, name, info) {
+    if(name) {
+        var funs = info[name] || info;
+        var cur = ge(info.nameprep + i + "_" + name);
+        if( cur.no_result ){
+            (funs.limit_u || info.limit_u)();
+        } else {
+            cur.onfocus = function() {
+                cur.hidden = false;
+                focus_table_list(cur, false);  // Add the borders.
+            }
+            cur.onblur = function(){
+                cur.hidden = funs.hide_it;
+                focus_table_list(cur, true);  // Remove the borders.
+            }
+            cur.onkeydown = function(ev) {
+                var kc = ev.keyCode, order = info.order;
+                var ol = order.length;
+
+                if(kc == 38){ list_move(i - 1, name, info) }
+                else if(kc == 40){ list_move(i + 1, name, info) }
+                else if(kc == 37){ list_move(i, order[(funs.i - 1 + ol)%ol], info) }
+                else if(kc == 39){ list_move(i, order[(funs.i + 1)%ol], info) }
+            }
+            cur.onclick = funs.onclick || null;
+            cur.hidden = false;
+            cur.focus();
+        }
+    }
+}
