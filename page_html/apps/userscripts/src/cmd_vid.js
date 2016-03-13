@@ -16,8 +16,8 @@ function cmd_vid() {  // Try open as video.
         // Get sorted list.
         var list = find_cursor_closest_links(false, hover_uri);
 
-        if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
         list.unshift({ textContent:"cur page", href:document.documentURI });
+        if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
 
         ge('command_extend').innerHTML = "";
         produce_action_list(ge('command_extend'), list, null, cmd_vid_fun, 'cmd_input');
