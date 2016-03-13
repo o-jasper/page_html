@@ -5,12 +5,12 @@ function into_from_top() {
 
     cur_sel = [ge('list').rows[0]];
     // TODO the `limit_u` probably better off pressing the MOAR button.
-    list_move(1, "linked_title", {limit_d:limit, limit_u:limit,
-                                  nameprep:config.list_el_nameprep,
-                                  mirror:{i:0},
-                                  linked_title:{i:1},
-                                  order:["mirror", "linked_title"],
-                                 });
+    list_move(1, "linked_title", {
+        limit_d:limit, limit_u:limit,
+        nameprep:config.list_el_nameprep,
+        mirror:{i:0}, linked_title:{i:1},
+        order:["mirror", "linked_title"],
+    });
 }
 
 var graph = {

@@ -74,8 +74,19 @@ function cmd_go_quickmark() {
     var name_el = ge('cmd_qm_name');
     name_el.focus();
 
+    var d = function() {
+        list_move(1, 'linked_title', {
+            limit_u:function() { ge('cmd_qm_name').focus(); },
+            nameprep:"list_el_",
+            mirror:{i:0}, linked_title:{i:1},
+            order:["mirror", "linked_title"],
+        });
+    }
+
     var graph = { command_input:{ sr:true, r:'cmd_qm_name',   d:'cmd_qm_name' },
-                  cmd_qm_name : { sl:true, l:'command_input', u:'command_input'}
+                  cmd_qm_name : { sl:true, l:'command_input', u:'command_input',
+                                  d:d
+                                }
                 };
     var fg = follow_graph(graph);
     ge('command_input').onkeydown = fg;

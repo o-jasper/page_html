@@ -53,7 +53,9 @@ function activated_list(into, list, string_fun, alter_fun) {
     }
     into.innerHTML += h + "</table>";
 
-    for(var i in list) {  // Mysteriously it turrns into a stringm fucking me up.
-        alter_fun(list[i], parseInt(i));
+    if(alter_fun) { // NOTE/TODO `list_move` might be better.
+        for(var i in list) {  // Mysteriously it turns into a string fucking me up.
+            alter_fun(list[i], parseInt(i));
+        }
     }
 }
