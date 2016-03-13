@@ -68,14 +68,19 @@ function This:_el_repl(el, state, repl)
    repl.tag_html = tag_fun([[<span class="tag">]], ",", "</span>")
    repl.tag_text = tag_fun("", ",", "")
 
-   repl.text_row =
-      el.text and string.find(el.text, "[^%s]") and self.pats.text_row
-      or " "
-   repl.quote_row =
-      el.quote and string.find(el.quote, "[^%s]") and self.pats.quote_row
-      or " "
-   repl.tag_row = function() return self.pats.tag_row end
+   repl.text_row = function()
+      return el.text and string.find(el.text, "[^%s]") and self.pats.text_row or " "
+   end
+   repl.quote_row = function()
+      return el.quote and string.find(el.quote, "[^%s]") and self.pats.quote_row or " "
+   end
+   repl.tag_row = self.pats.tag_row
    --return #tag_list() > 0 and self.pats.tag_row or " " end
+
+   -- Local version of mirror.
+   repl.local_version = function(...)
+      return repl.insert_page_method("history_mirrored", "link_part")
+   end
 
    return repl
 end

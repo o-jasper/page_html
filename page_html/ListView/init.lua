@@ -39,6 +39,8 @@ This.master_css = "master"
 
 local html_escape = require "page_html.util.text.html_escape"
 
+This.list_el_nameprep = "list_el_"
+
 function This:el_repl(el, state)
    local ret = { name=self.name, i = state.i, at_i=self.limit[1] + self.limit[2] }
    local function add_ret(list) for k,v in pairs(list) do ret[k] = v end end
@@ -58,12 +60,16 @@ function This:el_repl(el, state)
       }
    end
 
+
+   ret.namesys = function(_, str)
+      return string.format([[id="%s{%%i}_%s"]],
+         el.list_el_name or self.list_el_nameprep, str)
+   end
    if el.uri and (not el.title or el.title == "") then
-      add_ret{ linked_title = string.format([[(<a href="%s">%s</a>)]], el.uri, el.uri),
+      add_ret{ linked_title = [[(<a {%namesys linked_title} href="{%uri}">{%uri}</a>)]],
                ensure_title = "(" .. html_escape(el.uri) .. ")" }
    else
-      add_ret{ linked_title =
-                  string.format([[<a href="%s">%s</a>]], el.uri, html_escape(el.title)),
+      add_ret{ linked_title = [[<a {%namesys linked_title} href="{%uri}">{%title}</a>]],
                ensure_title = html_escape(el.title) }
    end
 
@@ -77,11 +83,6 @@ function This:el_repl(el, state)
 
    ret.insert_page = function(name, ...)  -- Insert entire page.
       return ret.insert_page_method(name, "output", el, ...)
-   end
-
-   -- Local version of mirror.
-   ret.local_version = function(...)
-      return ret.insert_page_method("history_mirrored", "link_part")
    end
 
    ret.edit_this = [[<button id="edit_el_{%i}" hidden=true  class="edit_this">E</button>]]

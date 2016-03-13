@@ -47,6 +47,18 @@ function This:extra_list_data()
    return ret
 end
 
+function This:el_repl(el, state)
+   return self:_el_repl(el, state, ListView.el_repl(self, el, state))
+end
+
+function This:_el_repl(el, state, repl)
+   -- Local version of mirror.
+   repl.local_version = function(...)
+      return repl.insert_page_method("history_mirrored", "link_part")
+   end
+   return repl
+end
+
 -- local lfs = require "lfs" -- Annoying, what is `mkdir -p` equivalent..
 
 function This:rpc_js()

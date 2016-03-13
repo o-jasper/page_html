@@ -42,7 +42,8 @@ end
 function This:link_part(el)
    local mirror_page = self.server.pages.history_mirrored
    if mirror_page and mirror_page:have_mirror(el.uri) then
-      return apply_subst([[<span class="local_version">(<a class="local_version_href" href="{%local_href}">local</a>)</span>]], 
+      return apply_subst([[<span class="local_version">(<a class="local_version_href"
+{%namesys mirror} href="{%local_href}">local</a>)</span>]],
          { local_href = "/history_mirrored/" .. el.uri })
    else
       return " "
