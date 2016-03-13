@@ -60,10 +60,9 @@ function This:el_repl(el, state)
       }
    end
 
-
+   ret.list_el_nameprep = function() return el.list_el_name or self.list_el_nameprep end
    ret.namesys = function(_, str)
-      return string.format([[id="%s{%%i}_%s"]],
-         el.list_el_name or self.list_el_nameprep, str)
+      return string.format([[id="{%%list_el_nameprep}{%%i}_%s"]], str)
    end
    if el.uri and (not el.title or el.title == "") then
       add_ret{ linked_title = [[(<a {%namesys linked_title} href="{%uri}">{%uri}</a>)]],
@@ -84,8 +83,6 @@ function This:el_repl(el, state)
    ret.insert_page = function(name, ...)  -- Insert entire page.
       return ret.insert_page_method(name, "output", el, ...)
    end
-
-   ret.edit_this = [[<button id="edit_el_{%i}" hidden=true  class="edit_this">E</button>]]
 
    ret.start, ret["end"] = "<!-- start {%i} -->", "<!-- end {%i} -->"
 
@@ -181,7 +178,7 @@ function This:extra_list_data()
       ["js/common.js"]     = true,
       ["js/manual_sql.js"] = true,
       ["js/page.js"]   = true,
-      ["js/data.js"]   = {repl=true,
+      ["js/data.js"]   = {repl=true, list_el_nameprep=self.list_el_nameprep,
                           at_i = self.limit[2], search_term="", step_cnt=3,
                           table_wid=self.table_wid},
       ["js/init.js"]   = true,

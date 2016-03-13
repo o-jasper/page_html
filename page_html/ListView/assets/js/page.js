@@ -68,26 +68,34 @@ function gui_search() {
 // Basically here because list entries arent handy units.
 // (but i kindah want the vertical alignment of tables.)
 
-function list_move(i, funs) {
-    var edit_el = ge("edit_el_" + i);
-    if( edit_el.no_result ){
-        funs.limit_u();
-    } else {
-        edit_el.onfocus = function() {
-            edit_el.hidden = false;
-            focus_table_list(edit_el, false);  // Add the borders.
+function list_move(i, name, info) {
+    if(name) {
+        var funs = info[name] || info;
+        var cur = ge(info.nameprep + i + "_" + name);
+        if( cur.no_result ){
+            (funs.limit_u || info.limit_u)();
+        } else {
+            cur.onfocus = function() {
+                cur.hidden = false;
+                focus_table_list(cur, false);  // Add the borders.
+            }
+            cur.onblur = function(){
+                cur.hidden = funs.hide_it;
+                focus_table_list(cur, true);  // Remove the borders.
+            }
+            cur.onkeydown = function(ev) {
+                var kc = ev.keyCode, order = info.order;
+                var ol = order.length;
+
+                if(kc == 38){ list_move(i - 1, name, info) }
+                else if(kc == 40){ list_move(i + 1, name, info) }
+                else if(kc == 37){ list_move(i, order[(funs.i - 1 + ol)%ol], info) }
+                else if(kc == 39){ list_move(i, order[(funs.i + 1)%ol], info) }
+            }
+            cur.onclick = funs.onclick || null;
+            cur.hidden = false;
+            cur.focus();
         }
-        edit_el.onblur = function(){
-            edit_el.hidden = true;
-            focus_table_list(edit_el, true);  // Remove the borders.
-        }
-        edit_el.onkeydown = function(ev) {
-            if(ev.keyCode == 38){ list_move(i - 1, funs) }
-            else if(ev.keyCode == 40){ list_move(i + 1, funs) }
-        }
-        edit_el.onclick = function() { alert("SUB" + i); }
-        edit_el.hidden = false;
-        edit_el.focus();
     }
 }
 

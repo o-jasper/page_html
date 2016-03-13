@@ -1,5 +1,6 @@
 config = {
-    sql_textarea : { max_rows:10, cols:90 }
+    list_el_nameprep : "{%list_el_nameprep}",
+    sql_textarea : { max_rows:10, cols:90 },
 }
 
 a = {working_short:"(w)", working_long:"<span class='working'>...working...</span>",

@@ -44,8 +44,8 @@ This.pats = {
    text_row  = [[<tr><td colspan={%table_wid} class="bm_text">{%text}</td></tr>]],
    quote_row = [[<tr><td colspan={%table_wid} class="bm_quote">
 <blockquote class="bm_quote">{%quote}</blockquote></td></tr>]],
-   tag_row   = [[<tr><td colspan=2>{%edit_this}</td>
-<td colspan={%table_wid -2}>{%tag_html}</td></tr>]],
+   tag_row   = [[<tr><td colspan=2></td>
+<td colspan={%table_wid-2}>{%tag_html}</td></tr>]],
 }
 
 function This:_el_repl(el, state, repl)
