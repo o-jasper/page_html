@@ -121,8 +121,9 @@ function This:rpc_js()
       return self.lister.db:cmd("get_quickmarks")
    end
    ret[".get_quickmarks_html"] = function(name)  -- Get a list of such.
-      local list = self.lister.db:cmd("get_quickmarks")
-      return {self:list_html_list(list, state, state.limit[1]), list}
+      local list = self.lister.db:cmd("get_quickmarks")(name)
+      print("QM", name, #list)
+      return {self:list_html_list(list, {}, nil), list}
    end
 
    ret[".lookup_area"] = function(uri, x, y, terms)

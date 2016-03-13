@@ -43,8 +43,17 @@ function cmd_make_quickmark() {  // Try open as video.
     }
 }
 
-/*
-
+var cmd_go_quickmark_fun = function(name) {
+    ge('cmd_qm_list').innerHTML = "getting...";
+    send('bookmarks/.get_quickmarks_html', [name],
+         function(result_obj) {
+             var html_list = JSON.parse(result_obj.responseText)[0];
+             ge('cmd_qm_list_cnt').innerHTML = html_list.length;
+             var h = "";
+             for(var i in html_list) { h += html_list[i]; }
+             ge('cmd_qm_list').innerHTML = h;
+         });
+}
 // TODO this thing doesnt have the needed classes.
 //
 // TODO can be improved; button to "open all in tabs",
@@ -54,15 +63,17 @@ function cmd_make_quickmark() {  // Try open as video.
 // preferably it transfers to _both_
 function cmd_go_quickmark() {
     var h = "<input id='cmd_qm_name' value='default'>";
-    h += "<table id='cmd_qm_list'><tr><td colspan=4>Working...</td></tr></table>";
+    h += "<span id='cmd_qm_list_cnt'>(count)</span>";
+    h += "<table id='cmd_qm_list'><tr><td colspan=4>(initial)</td></tr></table>";
     ge('command_extend').innerHTML = h;
-    send('bookmarks/.get_quickmarks_html', [],
-         function(got) {
-             var html_list = got[1], h= "";
-             for(var i in html_list) {
-                 h += html_list[i];
-             }
-             ge('cmd_qm_list').innerHTML = h;
-         });
+
+    var name_el = ge('cmd_qm_name');
+    name_el.focus();
+
+//    name_el.onkeydown = TODO
+
+    cmd_go_quickmark_fun(name_el.value); // Default.
+    name_el.onkeyup = function(ev) {
+        cmd_go_quickmark_fun(name_el.value);
+    }
 }
-*/

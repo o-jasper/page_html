@@ -139,7 +139,7 @@ funs.bm = make_bookmark;
 
 =s=quickmarks.js // TODO
 funs.qm = cmd_make_quickmark;
-// TODO the viewer too
+funs.gqm = cmd_go_quickmark;
 
 =s=cmd_on_string.js
 
