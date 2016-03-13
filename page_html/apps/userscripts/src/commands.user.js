@@ -24,6 +24,7 @@
     var h = "";
 =a=css/userscript/commands.css
 =a=css/style.css
+=a=../ListView/assets/css/ListView.css
     GM_addStyle(h);
 }
 
