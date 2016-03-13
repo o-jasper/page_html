@@ -214,6 +214,7 @@ funs.fclip = cmd_fclip;
         toggle_commandpanel(!ev.shiftKey);
     } else if( command_element && !command_element.hidden ){
         if( ev.keyCode == 27 ) { // Escape.
+            ge('command_input').value = "";
             toggle_commandpanel();
             return;
         }
