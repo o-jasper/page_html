@@ -1,7 +1,7 @@
 
 function into_from_top() {
 
-    function limit(){ ge('sql').focus(); }
+    function limit(){ ge(ge('sql').hidden ? 'search' : 'sql').focus(); }
 
     cur_sel = [ge('list').rows[0]];
     // TODO the `limit_u` probably better off pressing the MOAR button.
