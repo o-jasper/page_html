@@ -47,24 +47,28 @@ function textarea_update(te, after_keydown, config) {
 }
 
 // Travelling through guis.
-function go_graph(to, ev) {
+function go_graph(to, ev, graph) {
     if( typeof(to) == 'function' ) { to(ev); }
-    else if(to) { maybe_ge(to).focus(); }
+    else if(to) {
+        var got = maybe_ge(to);
+        if( !got.hidden ){ got.focus(); }
+        else{ follow_graph(graph)({target:got, keyCode:ev.keyCode, shiftKey:true}); }
+    }
 }
 
 function follow_graph(graph) {
     return function(ev) {
         var kc = ev.keyCode, cur = graph[ev.target.id];
         if( kc == 13 ) {
-            if( cur.ed && (!cur.sd || ev.shiftKey) ) { go_graph(cur.d, ev); }
+            if( cur.ed && (!cur.sd || ev.shiftKey) ) { go_graph(cur.d, ev, graph); }
         } else if( kc == 40 ) {
-            if( !cur.sd || ev.shiftKey ) { go_graph(cur.d, ev); }
+            if( !cur.sd || ev.shiftKey ) { go_graph(cur.d, ev, graph); }
         } else if( kc == 38 ) {
-            if( !cur.su || ev.shiftKey ) { go_graph(cur.u, ev); }
+            if( !cur.su || ev.shiftKey ) { go_graph(cur.u, ev, graph); }
         } else if( kc == 37 ) {
-            if( !cur.sl || ev.shiftKey ) { go_graph(cur.l, ev); }
+            if( !cur.sl || ev.shiftKey ) { go_graph(cur.l, ev, graph); }
         } else if( kc == 39 ) {
-            if( !cur.sr || ev.shiftKey ) { go_graph(cur.r, ev); }
+            if( !cur.sr || ev.shiftKey ) { go_graph(cur.r, ev, graph); }
         }
     }
 }
