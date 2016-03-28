@@ -40,9 +40,10 @@ end
 function This:extra_list_data()
    local ret = ListView.extra_list_data(self)
    if self.enable_view_mirror then
-      ret["history/mirror/"] = self.MirrorPage:new{
-         dir=self.mirror_dir, name="history_mirrored"
+      self.mirror_page = self.MirrorPage:new{
+         dir=self.mirror_dir, name="history_mirrored", server = self.server,
       }
+      ret["history/mirror/"] = self.mirror_page
    end
    return ret
 end
@@ -73,21 +74,7 @@ function This:rpc_js()
    -- TODO move to the mirroring page?
    if self.enable_mirror then
       ret[".collect.mirror"] = function(uri, innerHTML)
-         if string.find(uri, string.format("^https?://localhost:%s/history_mirrored/",
-                                           self.server.port or 9090)) then
-            print("Excluded from mirror collection", uri)
-            return
-         end
-         local dir =  self.mirror_dir .. uri
-         print("history.mirror", dir)
-         os.execute("mkdir -p " .. dir)
-         local fd = io.open(dir .. "/index.html", "w")
-         if fd then
-            fd:write(innerHTML)
-            fd:close()
-         else
-            print("history.collect.mirror", "failed to open", dir .. "/index.html")
-         end
+         self.mirror_page:mirror_uri_html(uri, innerHTML)
       end
    end
 
