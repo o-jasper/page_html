@@ -4,7 +4,7 @@ os.execute("mkdir -p " .. tmpdir)
 
 local defs = require "page_html.apps.util.cmds"
 
-return function(query)
+return function(_, query)
    local before, after = string.match(query, "^([^%s]+)[%s](.+)&")
 
    return defs[before](after)

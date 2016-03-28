@@ -4,15 +4,15 @@ local default_geometry = "100%x100%"
 
 function mpv_cmd(uri, geometry)
    if geometry == "fullscreen" then
-      return string.format("mpv --force-window --fs %s &", uri)
+      return string.format("mpv --force-window --fs \"%s\" &", uri)
    else
-      return string.format("mpv --force-window --geometry=%s %s &",
+      return string.format("mpv --force-window --geometry=%s \"%s\" &",
                           geometry or default_geometry, uri)
    end
 end
 
-return function(...)
-   local cmd = mpv_cmd(...)
+return function(_, uri, ...)
+   local cmd = mpv_cmd(uri, ...)
    print("----RUN:", cmd)
    os.execute(cmd)
 end

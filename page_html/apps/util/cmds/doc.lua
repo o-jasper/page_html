@@ -33,6 +33,6 @@ local function find_otherwise(query)
    end
 end
 
-return function(query)
+return function(_, query)
    return dict[query] or find_otherwise(query) or ""
 end

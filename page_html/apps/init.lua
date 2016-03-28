@@ -7,6 +7,6 @@ p:add(require("page_html.apps.history"):new())
 p:add(require("page_html.apps.bookmarks"):new())
 p:add(require("page_html.apps.comments"):new())
 
-p:add(require("page_html.apps.util"))
+p:add(require("page_html.apps.util"):new())
 
 p:start()

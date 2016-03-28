@@ -7,7 +7,8 @@ end
 local cmds = {
    pydoc = true, doc = true, man = true, fclip = true,
 --   go
-   vid   = r_util "mpv",
+--   vid   = r_util "mpv",
+   vid = r_util "localize_or_mpv",
 }
 
 local ret = {}
