@@ -1,11 +1,17 @@
 // --- Running videos
 
 var cmd_vid_fun = function(el) {
-    send('util/.vid', [el.href], function(){ finish_commandpanel(); });
+    send('util/.vid', [el.href],
+         function(result_obj) {
+             var tab = JSON.parse(result_obj.responseText);
+             // Sometimes it will run it on-browser.
+             if( tab && tab.success ) { GM_openInTab(tab.pref_uri || tab.m_uri); }
+             finish_commandpanel();
+        })
 }
 
 function cmd_vid() {  // Try open as video.
-    ge('command_extend').innerHTML = "working...";
+    ge('command_extend').innerHTML = "working...";  // TODO Dont see this?
 
     var is = iface_state;
 
