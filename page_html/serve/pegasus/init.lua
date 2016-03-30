@@ -72,7 +72,8 @@ function This:loopfun()
 
       -- Response from javascript might be sufficient.
       if not self:_ensure_js(page):respond(req, rep) then
-         local str, tp = page:output(args)
+         local str, tp, more = page:output(args)
+         for k,v in pairs(more or {}) do rep:addHeader(k, v) end
          rep:addHeader('Content-Type', tp or 'text/html'):write(str)
       end
    end

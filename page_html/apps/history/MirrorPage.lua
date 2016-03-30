@@ -79,7 +79,10 @@ function This:output(args)
    if attrs.mode == "file" and fd then
       local str = fd:read("*a")
       fd:close()
-      return str, "img/" .. string.match(file, "[.]([^.]+)$")
+      local more = {  -- Make it go inline. (can always manually download.
+         ["Content-Disposition"] = string.format("inline; filename=%q", file),
+      }
+      return str, "application/" .. string.match(file, "[.]([^.]+)$"), more
    end
 
    local repl = {}
