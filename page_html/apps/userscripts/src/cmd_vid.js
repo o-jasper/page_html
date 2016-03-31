@@ -4,10 +4,25 @@ var cmd_vid_fun = function(el) {
     send('util/.vid', [el.href],
          function(result_obj) {
              var tab = JSON.parse(result_obj.responseText);
-             // Sometimes it will run it on-browser.
-             if( tab && tab.success ) { GM_openInTab(tab.pref_uri || tab.m_uri); }
+             if( tab ) {
+                 var on_get_success = function(){ GM_openInTab(tab.pref_uri || tab.m_uri); };
+
+                 if(tab.get_it) {
+                     GM_xmlhttpRequest({  // Get it this way.(hopefully..)
+                         method:'GET', url:el.href,
+                         onload:function(result_obj){
+                             if( tab.view_it ) {
+                                 send('history/.collect.mirror',
+                                      [el.href, result_obj.responseText],
+                                      tab.view_it && on_get_success);
+                             }
+                         }})
+                 } else{ if( tab.view_it ) {
+                     on_get_success();
+                 } }
+             }
              finish_commandpanel();
-        })
+        });
 }
 
 function cmd_vid() {  // Try open as video.

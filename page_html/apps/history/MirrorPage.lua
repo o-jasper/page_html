@@ -1,3 +1,5 @@
+-- TODO perhaps nice to make a version integrated with file viewer.
+
 local This = {}
 This.__index = This
 
@@ -21,6 +23,8 @@ end
 local lfs = require "lfs"
 
 local apply_subst = require "page_html.util.apply_subst"
+
+-- TODO this is surely too limited.
 This.mirror_msg = {
    base = [[Other than outside assets, this a {%local_mirror}:{%is_top}<br>
 <a href="{%uri}"><code>{%uri}</code></a><br>
@@ -147,8 +151,8 @@ function This:output(args)
    end
 end
 
--- local lfs = require "lfs" -- Annoying, what is `mkdir -p` equivalent..
-function This:mirror_uri_html(uri, html)
+-- local lfs = require "lfs" -- Annoying, where is a `mkdir -p` equivalent..
+function This:mirror_uri_html(uri, html, override)
    assert(html)
    if string.find(uri, self:self_uri_pat()) then
       print("Excluded from mirror collection", uri)
@@ -158,19 +162,25 @@ function This:mirror_uri_html(uri, html)
    print("history.mirror", dir)
    os.execute("mkdir -p " .. dir)
    local file = dir .. "/index.html"
-   local fd = io.open(file, "w")
-   if fd then
-      fd:write(html)
+   local fd = not override and io.open(file)
+   if fd then  -- Don't overwrite.(TODO keep versioned?)
       fd:close()
-      return nil, true, file  -- TODO proper location.
+      return nil, true, file
    else
-      print("history.collect.mirror", "failed to open", dir .. "/index.html")
-      return nil, false, file
+      local fd = io.open(file, "w")
+      if fd then
+         fd:write(html)
+         fd:close()
+         return nil, true, file  -- TODO proper location.
+      else
+         print("history.collect.mirror", "failed to open", dir .. "/index.html")
+         return nil, false, file
+      end
    end
 end
 
 This.wget = "wget %s --output-document %s"  -- How does `-o` for logging make sense...
-function This:mirror_uri(uri)
+function This:mirror_uri(uri, dont_get)
    local dir =  self.dir .. uri
    os.execute("mkdir -p " .. dir)
    local append = string.match(uri, "^.+(/[^/]+)$")
@@ -178,10 +188,10 @@ function This:mirror_uri(uri)
    local fd = io.open(file)
    if fd then  -- Already have it.
       fd:close()
-   else
+   elseif not dont_get then
       os.execute(string.format(self.wget, uri, file))
    end
-   return self:base_uri() .. uri .. append, true, file
+   return self:base_uri() .. uri .. append, fd and true, file
 end
 
 return This

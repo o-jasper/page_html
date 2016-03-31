@@ -15,14 +15,16 @@ This.__name = "page_html.html.pegasus"
 
 function This:new(new)
    new = setmetatable(new or {}, self)
-
-   new.pegasus = Pegasus:new(new.pegasus_arg or {})
-   new.pegasus_arg = nil
-
-   new.pages = new.pages or {}
-   new.pages_js = new.pages_js or {}
-
+   new:init()
    return new
+end
+
+function This:init()
+   self.pegasus = Pegasus:new(self.pegasus_arg or {})
+   self.pegasus_arg = nil
+
+   self.pages = self.pages or {}
+   self.pages_js = self.pages_js or {}
 end
 
 function This:add(...)
@@ -54,9 +56,8 @@ function This:loopfun()
       local page_name, rest = string.match(req:path() or "", "^/([^/]+)/(.*)")
       if not page_name then
          page_name = string.match(req:path() or "/couldnt-figure-path", "^/(.+)") or "no-name"
+         rest = ""
       end
-
-      local rest = rest or ""
       local args = {
          page_name = page_name,
          rest_path = rest,
