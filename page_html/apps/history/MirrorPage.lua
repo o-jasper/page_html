@@ -131,22 +131,20 @@ function This:output(args)
    repl.is_top = " "
    local mm = self.mirror_msg
    if fd then
-      for k,v in pairs{
-         is_top=(code =="directory" and mm.is_top or ""),
-         mirror=fd:read("*a"),
-      } do repl[k] = v end
+      repl.is_top = (code =="directory" and mm.is_top or "")
+      repl.mirror = fd:read("*a"),
+
       fd:close()
       return apply_subst(mm.base .. mm.pattern, repl)
    elseif string.find(file, "/html/$") then
+      -- It is html-page-about for files to add stuff about.
       repl.uri = string.match(uri, "^(.+)/[^/]+/html/$")
       repl.img_file = "file://" .. string.match(file, "^(.+)/html/$")
       attrs = lfs.attributes(string.match(file, "^(.+)/html/$")) or {}
       repl.img_arch = self:base_uri() .. string.match(uri, "^(.+)/html/$")
       return apply_subst(mm.base .. mm.image_pattern, repl)
-   else
-      for k,v in pairs{
-         msg = msg, code = code or "(nil)",
-      } do repl[k] = v end
+   else  -- Didn't work somehow.
+      for k,v in pairs{ msg = msg, code = code or "(nil)" } do repl[k] = v end
       return apply_subst(mm.fail_pattern, repl)
    end
 end
@@ -185,13 +183,12 @@ function This:mirror_uri(uri, dont_get)
    os.execute("mkdir -p " .. dir)
    local append = string.match(uri, "^.+(/[^/]+)$")
    local file = dir .. append
-   local fd = io.open(file)
-   if fd then  -- Already have it.
-      fd:close()
-   elseif not dont_get then
+   local no_file_p = (lfs.attributes(file, "size") or 0) == 0
+  -- Size equal zero assume something wrong, re-get.
+   if no_file_p and not dont_get then
       os.execute(string.format(self.wget, uri, file))
    end
-   return self:base_uri() .. uri .. append, fd and true, file
+   return self:base_uri() .. uri .. append, not no_file_p, file
 end
 
 return This
