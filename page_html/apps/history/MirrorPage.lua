@@ -181,7 +181,7 @@ This.wget = "wget %s --output-document %s"  -- How does `-o` for logging make se
 function This:mirror_uri(uri, dont_get)
    local self_pat = self:self_uri_pat()
    if  string.find(uri, self_pat) then -- Already viewing a mirror.
-      return uri, false, self.dir .. "/" .. string.match(uri, self_pat .. "(.+)$")
+      return uri, "already_mirror", self.dir .. "/" .. string.match(uri, self_pat .. "(.+)$")
    end
 
    local dir =  self.dir .. uri
@@ -192,6 +192,7 @@ function This:mirror_uri(uri, dont_get)
   -- Size equal zero assume something wrong, re-get.
    if no_file_p and not dont_get then
       os.execute(string.format(self.wget, uri, file))
+      no_file_p = ((lfs.attributes(file, "size") or 0) == 0)
    end
    return self:base_uri() .. uri .. append, not no_file_p, file
 end
