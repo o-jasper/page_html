@@ -1,11 +1,17 @@
 // --- Running videos
 
 var cmd_vid_fun = function(el) {
+    ge('cmd_vid_say').textContent = "working...";
     send('util/.vid', [el.href],
          function(result_obj) {
              var tab = JSON.parse(result_obj.responseText);
              if( tab ) {
-                 var on_get_success = function(){ GM_openInTab(tab.pref_uri || tab.m_uri); };
+                 var on_get_success = function(){
+                     var uri = tab.pref_uri || tab.m_uri;
+                     if(GM_getValue('new_tab_own_mirror') || uri != document.documentURI){
+                         GM_openInTab(uri);
+                     }
+                 }
 
                  if(tab.get_it) {
                      GM_xmlhttpRequest({  // Get it this way.(hopefully..)
@@ -26,7 +32,7 @@ var cmd_vid_fun = function(el) {
 }
 
 function cmd_vid() {  // Try open as video.
-    ge('command_extend').innerHTML = "working...";  // TODO Dont see this?
+    ge('command_extend').textContent = "working...";
 
     var is = iface_state;
 
@@ -40,8 +46,9 @@ function cmd_vid() {  // Try open as video.
         list.unshift({ textContent:"cur page", href:document.documentURI });
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
 
-        ge('command_extend').innerHTML = "";
-        produce_action_list(ge('command_extend'), list, null, cmd_vid_fun, 'cmd_input');
+        ge('command_extend').innerHTML =
+            "<span id='cmd_vid_say'></span><span id='cmd_vid_extend'></span>";
+        produce_action_list(ge('cmd_vid_extend'), list, null, cmd_vid_fun, 'cmd_input');
 
         ge('command_input').onkeydown = function(ev) {
             if(ev.keyCode == 40){ ge('cmd_vid_0').focus(); }
