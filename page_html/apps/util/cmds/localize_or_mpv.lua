@@ -20,12 +20,11 @@ end
 return function(server, uri, ...)
    local m = any_pat(uri, indirect_pats)
    local md = any_pat(uri, direct_pats)
-   local refuse = find(uri, string.format("^https?://localhost:%s/history_mirrored",
-                                          server.port or 9090))
-   if not refuse and (m or md) then
+   if m or md then
       -- Direct the mirror page to mirror the uri.
       local mirror_uri, success =
          server.pages.history_mirrored:mirror_uri(uri, mirror_on_userscript)
+
       if success then  -- Got it.
          return {m_uri=mirror_uri, view_it=success and view_it,
                  pref_uri = (m and (mirror_uri .. "/html/")) or nil

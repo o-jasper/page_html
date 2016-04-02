@@ -179,6 +179,11 @@ end
 
 This.wget = "wget %s --output-document %s"  -- How does `-o` for logging make sense...
 function This:mirror_uri(uri, dont_get)
+   local self_pat = self:self_uri_pat()
+   if  string.find(uri, self_pat) then -- Already viewing a mirror.
+      return uri, false, self.dir .. "/" .. string.match(uri, self_pat .. "(.+)$")
+   end
+
    local dir =  self.dir .. uri
    os.execute("mkdir -p " .. dir)
    local append = string.match(uri, "^.+(/[^/]+)$")
