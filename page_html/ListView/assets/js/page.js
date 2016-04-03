@@ -14,14 +14,13 @@ function list_extend(by_list) {
 }
 
 function search_extend(search_term, cnt) {
-    var cnt = cnt || step_cnt;
-
     if( !cur.locked ) {
-//        cur.locked = true;
-        var working_indicator = a.working_row_el();
+        cur.locked = true;
+        var working_indicator = a.working_row_el(search_term + " (" + cnt + ")");
         prepend_child(ge('list'), working_indicator);
 
         ge("search_button").textContent = "(w)";
+
         callback_rpc_search([search_term, {limit:[cur.at_i, cnt], rest_path:rest_path}],
                             function(ret) {
                                 ge('sql').value = ret[1];
@@ -34,6 +33,10 @@ function search_extend(search_term, cnt) {
                                 cur.locked = false;
                             });
     }
+}
+
+function gui_search_extend(search_term, cnt) {
+    search_extend(search_term || cur.search_term || "", cnt || config.step_cnt || 50);
 }
 
 function search_anew(search_term, cnt) {
