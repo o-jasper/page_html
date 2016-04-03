@@ -179,7 +179,7 @@ function This:extra_list_data()
       ["js/manual_sql.js"] = true,
       ["js/page.js"]   = true,
       ["js/data.js"]   = {repl=true, list_el_nameprep=self.list_el_nameprep,
-                          at_i = self.limit[2], search_term="", step_cnt=3,
+                          at_i = self.limit[2], search_term="", step_cnt=50,
                           table_wid=self.table_wid},
       ["js/init.js"]   = true,
    }
