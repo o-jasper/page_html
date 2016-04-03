@@ -105,12 +105,12 @@ function focus_table_list(el, out, prep) {
 
 // Basically here because list entries arent handy units.
 // (but i kindah want the vertical alignment of tables.)
-function list_move(i, name, info) {
+function list_move(i, name, info, alt_fun) {
     if(name) {
         var funs = info[name] || info;
         var cur = ge(info.nameprep + i + "_" + name);
         if( cur.no_result ){
-            (funs.limit_u || info.limit_u)();
+            (alt_fun || funs.alt_fun || info.alt_fun)();
         } else {
             cur.onfocus = function() {
                 cur.hidden = false;
@@ -124,11 +124,16 @@ function list_move(i, name, info) {
                 var kc = ev.keyCode, order = info.order;
                 var ol = order.length;
 
-                if(kc == 38){ list_move(i - 1, name, info) }
-                else if(kc == 40){ list_move(i + 1, name, info) }
-                else if(kc == 37){ list_move(i, order[(funs.i - 1 + ol)%ol], info) }
-                else if(kc == 39){ list_move(i, order[(funs.i + 1)%ol], info) }
+                if(kc == 38){ list_move(i - 1, name, info, info.limit_u) }
+                else if(kc == 40){ list_move(i + 1, name, info, info.limit_d) }
+                else if(kc == 37){
+                    list_move(i, order[(funs.i - 1 + ol)%ol], info, info.limit_r);
+                }
+                else if(kc == 39){
+                    list_move(i, order[(funs.i + 1)%ol], info, info.limit_l);
+                }
             }
+            if(info.block_keyup){ cur.onkeyup = function(){} }
             cur.onclick = funs.onclick || null;
             cur.hidden = false;
             cur.focus();
