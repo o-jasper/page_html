@@ -17,8 +17,9 @@ function search_extend(search_term, cnt) {
     var cnt = cnt || step_cnt;
 
     if( !cur.locked ) {
-        cur.locked = true;
-        prepend_child(ge('list'), a.working_row_el());
+//        cur.locked = true;
+        var working_indicator = a.working_row_el();
+        prepend_child(ge('list'), working_indicator);
 
         ge("search_button").textContent = "(w)";
         callback_rpc_search([search_term, {limit:[cur.at_i, cnt], rest_path:rest_path}],
@@ -27,7 +28,8 @@ function search_extend(search_term, cnt) {
                                 textarea_fitting(ge('sql'), config.sql_textarea);
 
                                 ge("search_button").textContent = "Go";
-                                ge('list').innerHTML = "";
+                                list.removeChild(working_indicator);
+
                                 list_extend(ret[0]);
                                 cur.locked = false;
                             });
@@ -38,6 +40,7 @@ function search_anew(search_term, cnt) {
     var cnt = cnt || initial_cnt;
     cur = { at_i:0, search_term:search_term, done:false };
 
+    ge('list').innerHTML = "";  // Anew; remove list.
     search_extend(search_term, cnt);
     cur.search_term = search_term;
 }
@@ -47,7 +50,7 @@ function visible_sql(yes) {
     ge('sql').hidden = !yes;
     ge('sql_button').hidden = !yes;
 
-    ge('visible_sql').textContent = yes ? "Hide SQL" : "Show Sql";
+    ge('visible_sql').textContent = yes ? "Hide SQL" : "Show SQL";
 }
 
 // Extends list until out of view. (TODO doesnt work...)
