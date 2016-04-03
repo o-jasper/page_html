@@ -41,10 +41,17 @@ local html_escape = require "page_html.util.text.html_escape"
 
 This.list_el_nameprep = "list_el_"
 
+local function namesys(_, str)
+   return string.format([[id="{%%list_el_nameprep}{%%i}_%s"]], str)
+end
+
+local apply_subst = require "page_html.util.apply_subst"
+
 function This:el_repl(el, state)
    local ret = { name=self.name, i = state.i, at_i=self.limit[1] + self.limit[2] }
    local function add_ret(list) for k,v in pairs(list) do ret[k] = v end end
 
+   -- Time stuff.
    if self.Formulator.values.time then
       local time = el[self.Formulator.values.time]
       local date_nums = os.date("*t", time)
@@ -60,10 +67,12 @@ function This:el_repl(el, state)
       }
    end
 
-   ret.list_el_nameprep = function() return el.list_el_name or self.list_el_nameprep end
-   ret.namesys = function(_, str)
-      return string.format([[id="{%%list_el_nameprep}{%%i}_%s"]], str)
-   end
+   add_ret{
+      list_el_nameprep = (el.list_el_name or self.list_el_nameprep),
+      namesys = namesys,
+      selectme = [[onclick="select_list_index({%i})"]],
+   }
+
    if el.uri and (not el.title or el.title == "") then
       add_ret{ linked_title = [[(<a {%namesys linked_title} href="{%uri}">{%uri}</a>)]],
                ensure_title = "(" .. html_escape(el.uri) .. ")" }
@@ -72,26 +81,47 @@ function This:el_repl(el, state)
                ensure_title = html_escape(el.title) }
    end
 
-   ret.selectme = [[onclick="select_list_index({%i})"]]
-
+   -- Add direct values.
    for k,v in pairs(el) do ret[k] = html_escape(v) end
 
-   -- Base on pages.
+   -- Base on other page objects.
    ret.insert_page_method = function(name, method, ...)  -- Method provided by page.
-      local page = self.server.pages[name]
-      return page and page[method] and page[method](page, el, ...) or " "
+         local page = self.server.pages[name]
+         return page and page[method] and page[method](page, el, ...) or " "
    end
-
    ret.insert_page = function(name, ...)  -- Insert entire page.
       return ret.insert_page_method(name, "output", el, ...)
    end
 
-   ret.start, ret["end"] = "<!-- start {%i} -->", "<!-- end {%i} -->"
+   add_ret{ start = "<!-- start {%i} -->",  ["end"] ="<!-- end {%i} -->" }
+
+   -- Was in raw first, sorts the keys so can show them.
+   local ksort = {}
+   for k in pairs(el) do table.insert(ksort, k) end
+   table.sort(ksort)
+
+   local raw_1 = [[<td class="raw"><span class="rawkey">{%key}</span>:<span class="rawval">{%val}</span></td>]]
+   local n, parts = 2, {{}}
+   for _, k in ipairs(ksort) do
+      table.insert(parts[1], apply_subst(raw_1, {key=k, val=el[k]}))
+      n = n + 1
+      if n == m then
+         table.insert(parts, 1, {})
+         n = 1
+      end
+   end
+   ret.raw_first = table.concat(table.remove(parts))
+
+   local rest_parts = {}
+   ret.raw_rest = function()
+      if #rest_parts == 0 then
+         for _, el in ipairs(parts) do table.insert(rest_parts, table.concat(el)) end
+      end
+      return table.concat(rest_parts, "</tr><tr>")
+   end
 
    return ret
 end
-
-local apply_subst = require "page_html.util.apply_subst"
 
 function This:el_html(el, state)
    return apply_subst(self.assets:load("parts/" .. self.name .. ".el.htm"),
@@ -129,7 +159,7 @@ function This:repl(args)
       return _list
    end
 
-   return {
+   local ret = {
       master_css = self.master_css,
 
       name = self.name, title = self.name,
@@ -143,11 +173,12 @@ function This:repl(args)
          local page = self.server.pages[name]
          return page and page[method] and page[method](page, ...) or " "
       end,
-
-      insert_page = function(name, ...)  -- Insert entire page.
-         return ret.insert_page_method(name, "output", ...)
-      end,
    }
+
+   ret.insert_page = function(name, ...)  -- Insert entire page.
+      return ret.insert_page_method(name, "output", ...)
+   end
+   return ret
 end
 
 This.page_path = "page/list.htm"
@@ -191,42 +222,6 @@ function This:extra_list()
    return self:static_list(self:extra_list_data())
 end
 
-local function list_html_rawdata(list, pattern, m, sn)
-   if #list == 0 then return {} end
-
-   local ret, ksort = {}, {}
-   for k in pairs(list[1]) do table.insert(ksort, k) end
-   table.sort(ksort)
-
-   local raw_1 = [[<td class="raw"><span class="rawkey">{%key}</span>:<span class="rawval">{%val}</span></td>]]
-
--- self.assets:load("parts/raw.el.1.htm")
-
-   for i,el in ipairs(list) do
-      local n, parts = sn or 2, {{}}
-      for _, k in ipairs(ksort) do
-         table.insert(parts[1], apply_subst(raw_1, {key=k, val=el[k]}))
-         n = n + 1
-         if n == m then
-            table.insert(parts, 1, {})
-            n = 1
-         end
-      end
-      local repl = { i = i,
-                     first = table.concat(table.remove(parts)),
-      }
-
-      local rest_parts = {}
-      for _, el in ipairs(parts) do table.insert(rest_parts, table.concat(el)) end
-      repl.rest = table.concat(rest_parts, "</tr><tr>")
-      
-      table.insert(ret, apply_subst(pattern, repl))
-   end
-   return ret
-end
-
-This.rpc_sql_enabled = true
-
 function This:search(search_term, state)
    local form = self:form(search_term, state)
    local list = self:exec_form(form)
@@ -234,15 +229,23 @@ function This:search(search_term, state)
    return self:list_html_list(list, state, state.limit[1]), form:sql()
 end
 
+This.rpc_sql_enabled = true
+
 function This:rpc_js()
    return {  -- Produces a bunch of results.
       rpc_search = function(...) return {self:search(...)} end,
       rpc_sql = function(sql_code)
+         local html_list = {}
          if self.rpc_sql_enabled then
-            local pattern = self.assets:load("parts/raw.el.htm")
-            local list = self.lister.db:exec(sql_code)
-            return list_html_rawdata(list, pattern, self.table_wid)
+            local list, state = self.lister.db:exec(sql_code), {}
+            for i, el in ipairs(list) do
+               local repl = self:el_repl(el, state)
+               repl.i = i
+               table.insert(html_list,
+                            apply_subst(self.assets:load("parts/raw.el.htm"), repl))
+            end
          end
+         return html_list
       end,
    }
 end

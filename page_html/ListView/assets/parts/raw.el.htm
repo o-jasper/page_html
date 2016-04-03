@@ -1,4 +1,5 @@
 {%start}
-<tr><td><span class="minor">{%i}</span>{%first}</tr>
-<tr>{%rest}</tr>
+<tr {%selectme}>
+  <td><button {%namesys whole} class="minor">{%i}</button>{%raw_first}</tr>
+<tr>{%raw_rest}</tr>
 {%end}
