@@ -72,6 +72,8 @@ function This:el_repl(el, state)
                ensure_title = html_escape(el.title) }
    end
 
+   ret.selectme = [[onclick="select_list_index({%i})"]]
+
    for k,v in pairs(el) do ret[k] = html_escape(v) end
 
    -- Base on pages.
