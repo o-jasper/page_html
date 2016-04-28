@@ -36,7 +36,7 @@ local function figure_required_file(file, reqs)
       local line = fd:read("l")
       if line then
          -- Everything that matches a pattern for a _simple_ require goes.
-         string.gsub(line, [[require[%s]*%(?[%s]*"([%w._]+)"[%s]*%)?]],
+         string.gsub(line, [[require[%s]*%(?[%s]*['"]([%w._]+)['"][%s]*%)?]],
                      function(pkg)
                         new_reqs[pkg] = (not reqs[pkg] or nil) and pkg
          end)
