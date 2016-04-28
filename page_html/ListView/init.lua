@@ -17,12 +17,15 @@ This.Assets = require "page_html.Assets"
 -- This.assets_arg = {where = {"first_dir/", "second_dir/"}}
 
 --This.data_dir = "/some/dir/"
---This.db_file  = This.data_dir .. "history.db"
+--This.db_file  = This.data_dir .. "history.db"  (default)
 This.name = "noname"
 
 This.ProduceList = require "Searcher.ProduceList"
 
 function This:init()
+   assert(self.data_dir, "Don't know where to put the files.")
+   self.db_file = self.db_file or (self.data_dir .. "main.db")
+
    assert(self.assets_arg)
    self.assets = self.Assets:new(self.assets_arg)
    self.lister = self.ProduceList:new{

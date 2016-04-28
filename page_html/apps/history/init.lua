@@ -22,10 +22,6 @@ This.Db         = require "page_html.apps.history.History"
 This.where      = {"page_html/apps/history/", "page_html/ListView/", "page_html/"}
 This.assets_arg = {where = This.where}
 
--- TODO absolute..
-This.data_dir = "/home/jasper/iso/newiso/server/althist/data/"
-This.db_file  = This.data_dir .. "history.db"
-
 This.full_span = 3
 
 This.enable_mirror = true  -- Note must also be enabled in the userscript.
