@@ -1,7 +1,8 @@
 page_html_set: builds/page_html_set/ builds/page_html_set/shatotal files
 
 files: builds/page_html_set/readme.md builds/page_html_set/agpl-3.0.txt \
-	builds/page_html_set/firejail.sh builds/page_html_set/page_html/.init.lua \
+	builds/page_html_set/firejail.sh builds/page_html_set/plain.sh \
+  builds/page_html_set/page_html/.init.lua \
 	builds/page_html_set/page_html/run.lua
 
 builds/page_html_set/agpl-3.0.txt: ../agpl-3.0.txt
@@ -14,6 +15,8 @@ builds/page_html_set/shadir.sh: src/shadir.sh
 	cp $< $@
 
 builds/page_html_set/firejail.sh: src/firejail.sh
+	cp $< $@
+builds/page_html_set/plain.sh: src/plain.sh
 	cp $< $@
 
 builds/page_html_set/page_html/run.lua: ../page_html/apps/init.lua
@@ -40,3 +43,6 @@ say_files:
 ## Run in firejail
 run_firejail:
 	cd builds/page_html_set; sh firejail.sh
+
+run_plain:
+	cd builds/page_html_set; sh plain.sh

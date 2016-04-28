@@ -19,8 +19,12 @@ Afaics, the rest is packaged-in.
 and projects of mine like [PegasusJs](https://github.com/o-jasper/PegasusJs),
 [storebin](https://github.com/o-jasper/storebin).
 
-To run, go to the directory `cd $DIRECTORY_OF_THIS_FILE/page_html` do `lua run.lua`,
-there is also a firejail `cd $DIRECTORY_OF_THIS_FILE; sh firejail.sh`, which
+To run:
+
+    cd $DIRECTORY_OF_THIS_FILE
+    sh plain.sh
+    # sh firejail.sh  #if you have that.
+
 uses firejail in a very basic manner. (keeping the configuration in this directory.)
 
 ### Notes:
