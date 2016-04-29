@@ -6,7 +6,7 @@ That has been packaged as one bunch at
 there is a
 [PKGBUILD](https://github.com/o-jasper/page_html/tree/master/tools/pkg/PKGBUILD).
 
-<img src="screens/2016-04-29:22:03:16.png" title="Screenshot of bookmarks with symbol-getter">
+<img src="screens/2016-04-29:22:01:35.png" title="Screenshot of bookmarks with symbol-getter">
 
 ## Page lib
 The page package allows you to provide objects with appropriately defined
@@ -124,3 +124,5 @@ The different implementations depend on their respective thing.
 
 * [tox_comms](https://github.com/o-jasper/tox_comms/), lua bindings to Tox and
   bare bot.
+
+<img src="screens/2016-04-29:22:03:16.png" title="Screenshot of bookmark command.">
