@@ -1,6 +1,6 @@
 # Super-LOC-inefficient makefile.
 
-page_html_set: builds/page_html_set/ builds/page_html_set/shatotal files
+page_html_set: builds/page_html_set/ builds/page_html_set/shatotal files userscripts
 
 files: builds/page_html_set/readme.md \
 	builds/page_html_set/firejail.sh builds/page_html_set/plain.sh \
@@ -17,7 +17,11 @@ builds/page_html_set/licenses/:
 builds/page_html_set/licenses/agpl-3.0.txt: ../agpl-3.0.txt
 	cp $< $@
 
-# ..
+# Userscripts.
+userscripts:
+	mkdir -p builds/page_html_set/userscripts/; cp -u ../page_html/apps/userscripts/*.user.js  builds/page_html_set/userscripts/
+
+#..
 builds/page_html_set/readme.md: src/readme.md
 	cp $< $@
 
