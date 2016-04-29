@@ -40,8 +40,8 @@ function cmd_vid() {  // Try open as video.
     if( (GM_getValue('cmd_vid_linklist') || "yes") != "yes" ) {
         cmd_vid_fun({href:hover_uri || document.documentURI});
     } else {  // NOTE the thing seems not very effective..
-        // Get sorted list.
-        var list = find_cursor_closest_links(false, hover_uri);
+        // Get sorted list.  (closest links aren't good enough..)
+        var list = []; //find_cursor_closest_links(false, hover_uri);
 
         list.unshift({ textContent:"cur page", href:document.documentURI });
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
