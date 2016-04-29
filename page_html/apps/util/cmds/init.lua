@@ -1,19 +1,6 @@
-local function r_util(s)
-   return require("page_html.apps.util.cmds." .. s)
-end
-
--- setmetatable({}, {__index=function(_, key) return r_util(key) end})
--- maybe not, feels a bit more secure.
-local cmds = {
-   pydoc = true, doc = true, man = true, fclip = true,
---   go
---   vid   = r_util "mpv",
-   vid = r_util "localize_or_mpv",
+-- Note just written out so easy text-based static detection of dependencies.
+return {
+   pydoc = require "page_html.apps.util.cmds.pydoc",   doc   = require "page_html.apps.util.cmds.doc",
+   man   = require "page_html.apps.util.cmds.man",
+   vid   = require "page_html.apps.util.cmds.localize_or_mpv",
 }
-
-local ret = {}
-for k,v in pairs(cmds) do
-   if v == true then ret[k] = r_util(k) else ret[k] = v end
-end
-
-return ret
