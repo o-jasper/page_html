@@ -12,6 +12,12 @@ Currently all these work with the lua server stuff.
 
 ## TODO
 
+* Detecting hovered links is iffy, works annoyingly badly.
+
+* Commands panel takes over CSS from the page too much.
+
+* element `id`s can overlap with stuff on the page.
+
 * Quite annoying how gui js code has to be embedded into `commands.user.js`,
   even though the "building system" already makes this less..
 
