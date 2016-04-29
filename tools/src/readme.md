@@ -10,9 +10,10 @@ This is currently developed at
 Requires [lua](http://www.lua.org/) itself,
 [lua-sqlite-bindings](http://www.keplerproject.org/luasql/),
 [lua-socket](https://github.com/diegonehab/luasocket). Linux distros will
-usually have them in their repositories. Perhaps in the future `.so` and
-`.DLL`s will accompany this. On the other hand, i am taking another
-direction, so they may not.
+usually have them in their repositories, expect that it just works if you
+install the appropriate packages. Perhaps in the future `.so` and
+`.DLL`s will accompany this. I may not, or i might use the code in another
+way, have my own bookmarks to put in that case, so that should be there then.
 
 Afaics, the rest is packaged-in.
 "The rest" includes [Pegasus](https://github.com/EvandroLG/pegasus.lua/),
