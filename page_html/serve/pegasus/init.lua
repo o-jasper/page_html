@@ -20,7 +20,7 @@ function This:new(new)
 end
 
 function This:init()
-   self.pegasus = Pegasus:new(self.pegasus_arg or {})
+   self.pegasus = Pegasus:new(self.pegasus_arg or {port=self.port})
    self.pegasus_arg = nil
 
    self.pages = self.pages or {}
