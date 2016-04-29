@@ -22,16 +22,16 @@ optdepends=('mpv: directly view videos with mpv'
 options=(!emptydirs)
 # Note:  no security here, make sure the md5sums/sha256sums are proper.
 source=("http://ojasper.nl/data/${pkgname}.${pkgver}.tar.bz2")
+md5sums=('080adbc53e0e6c667aaccda54612b353')
+sha256sums=('9ee6ab7aa4acedf31b5e9fa4deb28a0956610b64c273661d94e1069180118ce0')
 
 # Note this is as-of the-commit-after-b9da82a82e975f1462921dad4501e5ca751fcedf
-sha256sums=('9ee6ab7aa4acedf31b5e9fa4deb28a0956610b64c273661d94e1069180118ce0')
-md5sums=('080adbc53e0e6c667aaccda54612b353')
 
 build() {
   # Add "binary" that selects the proper lua packages.
   mkdir -p bin/
   echo '#!/usr/bin/lua' > bin/page_html_set.lua
-  echo 'package.path="/usr/share/local/'${pkgname}'/page_html/?.lua;/usr/share/local/'${pkgname}'/page_html/?/init.lua"' >> bin/page_html_set.lua
+  echo 'package.path="/usr/local/share/'${pkgname}'/page_html/?.lua;/usr/local/share/'${pkgname}'/page_html/?/init.lua"' >> bin/page_html_set.lua
   echo '-- package.cpath should be fine' >> bin/page_html_set.lua
   echo >> bin/page_html_set.lua
   cat ${pkgname}/page_html/run.lua >> bin/page_html_set.lua
@@ -41,8 +41,8 @@ package() {
   # The "executable"
   install -D -m755 bin/page_html_set.lua ${pkgdir}/usr/bin/page_html_set.lua
   # Rest of the files. This PKGBUILD is a bit of a "dump it in"
-  mkdir -p ${pkgdir}/usr/share/local/${pkgname}/
+  mkdir -p ${pkgdir}/usr/local/share/${pkgname}/
   find ${pkgname}/ -type f | while read line; do
-    install -D -m644 $line ${pkgdir}/usr/share/local/$line
+    install -D -m644 $line ${pkgdir}/usr/local/share/$line
   done
 }
