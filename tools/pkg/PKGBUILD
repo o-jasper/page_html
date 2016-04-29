@@ -12,7 +12,7 @@ pkgrel=0
 pkgdesc="Userscript and lua server for bookmarks, history and a bunch of commands.(like watch-with-mpv)"
 arch=('i686' 'x86_64')
 url="https://github.com/o-jasper/page_html"
-license=('custom')
+license=('AGPL, MIT')
 # Note: more dependencies are already-packaged-in. (pegasus, bunch of stuff of mine)
 depends=('lua' 'lua-socket' 'lua-sql-sqlite')
 
