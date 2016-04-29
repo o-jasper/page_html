@@ -25,7 +25,10 @@ builds/page_html_set.lua/licenses/agpl-3.0.txt: ../agpl-3.0.txt
 	cp $< $@
 
 # Userscripts.
-userscripts:
+userscripts-make:
+	cd ../page_html/apps/userscripts; make
+
+userscripts: userscripts-make
 	mkdir -p builds/page_html_set.lua/userscripts/; cp -u ../page_html/apps/userscripts/*.user.js  builds/page_html_set.lua/userscripts/
 
 #..
