@@ -1,28 +1,6 @@
 # Html page and asset system
 
-### Assets lib
-The asset package allows you to specify a cascading set of directories
-where assets will be searched for.
-
-* `Assets:new{...}`
-  + `where`: where to search for assets. Defaultly `{"assets/"}`
-
-    If you want all parent paths to be considered good, preceed with entries with
-    `*`.
-  + `memorize`: disable memoizeing with `false`, defaultly
-    enabled.
-
-    Defaultly all memoizing shared among all instances! `memoize={}` to
-    stop that.
-* `:load(path)` loads a particular path.
-
-Rest is less important.
-
-* `:path(path)` produces an exact path to the file.
-* `:open(path)` opens a file descriptor. Does not use memoizing currently!
-* `:load_direct(path)`
-
-The directories are relative to directories inferred from `package.path`.
+Build from this, and userscripts a bookmarks and history server.
 
 ## Page lib
 The page package allows you to provide objects with appropriately defined
@@ -75,6 +53,30 @@ It additionally defines:
 * `.where` a list of places to look for assets.(just comes from the above.)
 * `:rpc_js()` a key-value store of javascript functions to RPC.
 
+### Assets lib
+The asset package allows you to specify a cascading set of directories
+where assets will be searched for.
+
+* `Assets:new{...}`
+  + `where`: where to search for assets. Defaultly `{"assets/"}`
+
+    If you want all parent paths to be considered good, preceed with entries with
+    `*`.
+  + `memorize`: disable memoizeing with `false`, defaultly
+    enabled.
+
+    Defaultly all memoizing shared among all instances! `memoize={}` to
+    stop that.
+* `:load(path)` loads a particular path.
+
+Rest is less important.
+
+* `:path(path)` produces an exact path to the file.
+* `:open(path)` opens a file descriptor. Does not use memoizing currently!
+* `:load_direct(path)`
+
+The directories are relative to directories inferred from `package.path`.
+
 ### Installing(linux)
 In `~/.init.lua`(other whatever initiates lua, add.
 
@@ -95,10 +97,10 @@ Then, symmlink this thing to there.
 #### Dependencies
 The different implementations depend on their respective thing.
 
-* Luakit for `luakit_chrome`
-
 * Pegagus and [PegasusJs](https://github.com/o-jasper/PegasusJs)
   for the [pegasus](http://evandrolg.github.io/pegasus.lua/) variant.
+
+* Luakit for `luakit_chrome`
 
 ## Lua Ring
 
