@@ -1,13 +1,23 @@
+# Super-LOC-inefficient makefile.
+
 page_html_set: builds/page_html_set/ builds/page_html_set/shatotal files
 
-files: builds/page_html_set/readme.md builds/page_html_set/agpl-3.0.txt \
+files: builds/page_html_set/readme.md \
 	builds/page_html_set/firejail.sh builds/page_html_set/plain.sh \
   builds/page_html_set/page_html/.init.lua \
-	builds/page_html_set/page_html/run.lua
+	builds/page_html_set/page_html/run.lua \
+	license_files
 
-builds/page_html_set/agpl-3.0.txt: ../agpl-3.0.txt
+# License stuff.
+license_files: builds/page_html_set/licenses/
+
+builds/page_html_set/licenses/:
+	cp -ru src/licenses/ builds/page_html_set/
+
+builds/page_html_set/licenses/agpl-3.0.txt: ../agpl-3.0.txt
 	cp $< $@
 
+# ..
 builds/page_html_set/readme.md: src/readme.md
 	cp $< $@
 
@@ -22,7 +32,7 @@ builds/page_html_set/plain.sh: src/plain.sh
 builds/page_html_set/page_html/run.lua: ../page_html/apps/init.lua
 	cp $< $@
 
-builds/page_html_set/page_html/.init.lua:  # Just make it.
+builds/page_html_set/page_html/.init.lua:  # Sometimes needed?
 	touch $@
 
 builds/page_html_set/shasums: builds/page_html_set/shadir.sh

@@ -20,7 +20,7 @@ for k,v in pairs(figure_required.file(arg[1])) do
                                (is_dir and "r") or "", fr_file, name, build_dir .. file_dir))
    end
    cp("assets/", true)
-   for _, name in
+   for _, name in  -- Note: i looked up the licenses of some things directly.
       ipairs{"readme.md", "README", "README.md", "LICENSE", "COPYING", "README"}
    do
       cp(name)
