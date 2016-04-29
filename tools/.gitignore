@@ -1,0 +1,7 @@
+builds/
+
+pkg/pkg/
+pkg/src/
+pkg/*.xz
+pkg/*.tar.bz2
+pkg/*.tar.gz
