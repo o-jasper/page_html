@@ -1,12 +1,20 @@
 // Common stuff about finding stuff in elements.
 
 // Finds something with a href.
-function find_a_href(el) {
-    var href = el.href;
-    for(var i in el.children){
-        if( href ){ return href; }
-        href = find_a_href(el.children[i])
+function find_a_href(el, also, n) {
+    n = n || 5
+    also = also || {previousSibling:true, nextSibling:true, }
+    if( el.href ){ return el.href; }
+    if( n > 0 ) {
+        for(var i in el.children){
+            var href = find_a_href(el.children[i], also, n-1)
+            if( href ){ return href; }
+        }
     }
+    var href;
+    if(also.previousSibling){ href = find_a_href(el.previousElementSibling, {}, n-1); }
+    if(href){ return href; }
+    if(also.nextSibling){ href = find_a_href(el.nextElementSibling, {}, n-1); }
     return href;
 }
 

@@ -110,7 +110,8 @@ function list_move(i, name, info, alt_fun) {
         var funs = info[name] || info;
         var cur = ge(info.nameprep + i + "_" + name);
         if( cur.no_result ){
-            (alt_fun || funs.alt_fun || info.alt_fun)();
+            (alt_fun || funs.alt_fun || info.alt_fun ||
+             function(){ alert("No:" + info.nameprep + i + "_" + name); })();
         } else {
             cur.onfocus = function() {
                 cur.hidden = false;
