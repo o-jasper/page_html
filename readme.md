@@ -2,7 +2,7 @@
 Build from this, and userscripts a bookmarks and history server.
 
 That has been packaged as one bunch at
-[ojasper.nl/data/data/page_html_set.lua.0.0.tar.bz2](data/page_html_set.lua.0.0.tar.bz2),
+[ojasper.nl/data/data/page_html_set.lua.0.0.tar.bz2](http://ojasper.nl/data/page_html_set.lua.0.0.tar.bz2),
 there is a
 [PKGBUILD](https://github.com/o-jasper/page_html/tree/master/tools/pkg/PKGBUILD).
 
