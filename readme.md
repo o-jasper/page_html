@@ -6,6 +6,7 @@ That has been packaged as one bunch at
 there is a
 [PKGBUILD](https://github.com/o-jasper/page_html/tree/master/tools/pkg/PKGBUILD).
 
+<img src="screens/2016-04-29:22:03:16.png" title="Screenshot of bookmarks with symbol-getter">
 
 ## Page lib
 The page package allows you to provide objects with appropriately defined
