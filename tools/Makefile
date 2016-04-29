@@ -1,6 +1,13 @@
 # Super-LOC-inefficient makefile.
 
+default: page_html_set builds/page_html_set.tar.bz2
+
 page_html_set: builds/page_html_set/ builds/page_html_set/shatotal files userscripts
+
+builds/page_html_set.tar.gz:
+	cd builds; tar -czf page_html_set.tar.gz page_html_set/
+builds/page_html_set.tar.bz2:
+	cd builds; tar -cjf page_html_set.tar.bz2 page_html_set/
 
 files: builds/page_html_set/readme.md \
 	builds/page_html_set/firejail.sh builds/page_html_set/plain.sh \
