@@ -23,7 +23,7 @@ options=(!emptydirs)
 # Note:  no security here, make sure the md5sums/sha256sums are proper.
 source=("http://ojasper.nl/data/${pkgname}.${pkgver}.tar.bz2")
 
-#sha256sums=('06c68c4a9e84f3d1cbda145093c82a18ce80ff5f6f718cd0736d35f8fcf9b8ab')
+sha256sums=('06c68c4a9e84f3d1cbda145093c82a18ce80ff5f6f718cd0736d35f8fcf9b8ab')
 md5sums=('502260079daa420ff84384fdb8a3146a')
 
 build() {
