@@ -67,3 +67,6 @@ run_firejail:
 
 run_plain:
 	cd builds/page_html_set; sh plain.sh
+
+clean:
+	rm -r builds/
