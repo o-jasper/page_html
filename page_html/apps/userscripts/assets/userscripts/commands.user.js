@@ -166,7 +166,8 @@ if( GM_getValue('cmd_lua', false) ) {
 // --- Manuals and documentation.
 function cmd_opentab(button_str, httpreq) {
     return cmd_on_string(function(str) {
-        ge('command_extend').innerHTML += "working...";
+        ge('command_extend').innerHTML +=
+            "Working... <code class='minor'>(" + str + ")</code>";
         send(httpreq, [str], function(result_obj){
             var result = JSON.parse(result_obj.responseText);
             if( result.length > 0 ){ GM_openInTab(result); }
@@ -183,7 +184,7 @@ funs.pydoc = cmd_opentab("View pydoc page",    'util/.pydoc');
 funs.vid = cmd_vid;
 
 function cmd_fclip() {  // TODO cliboardData doesn't work?
-    ge('command_extend').innerHTML = "working...";
+    ge('command_extend').innerHTML = "Working...";
     send('util/.fclip', [], function(result_obj){
         GM_setClipboard(JSON.decode(result_obj.responseText));
         finish_commandpanel();

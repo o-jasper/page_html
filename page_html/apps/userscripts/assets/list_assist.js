@@ -23,7 +23,7 @@ function find_cursor_closest_links(limit, got_uri) {
 
 function produce_action_list(into, list, html, go_action, before_id, after_id) {
     activated_list(into, list,
-                   html || ("<!--{%i}--><tr><td><button id ='cmd_vid_{%i}'>" + 
+                   html || ("<!--{%i}--><tr><td><button id='{%.prep}cmd_vid_{%i}'>" +
                             "{%textContent}</button></td><td>" + 
                             "<a href='{%href}'><code>{%href}</code></a></td></tr>"),
                    function(el, j) {

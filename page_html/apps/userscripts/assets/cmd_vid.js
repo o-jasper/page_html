@@ -1,7 +1,8 @@
 // --- Running videos
 
 var cmd_vid_fun = function(el) {
-    ge('cmd_vid_say').textContent = "working...";
+    ge('cmd_vid_say').innerHTML =
+        "working...<code class='minor'>(" + el.href + ")</code>";
     send('util/.vid', [el.href],
          function(result_obj) {
              var tab = JSON.parse(result_obj.responseText);
