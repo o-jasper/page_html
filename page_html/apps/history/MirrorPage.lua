@@ -170,7 +170,7 @@ function This:mirror_uri_html(uri, html, override)
    end
 end
 
-This.wget = "wget %s --output-document %s"  -- How does `-o` for logging make sense...
+This.get_cmd = "curl %s > %s"
 function This:mirror_uri(uri, dont_get)
    local self_pat = self:self_uri_pat()
    if  string.find(uri, self_pat) then -- Already viewing a mirror.
@@ -184,7 +184,9 @@ function This:mirror_uri(uri, dont_get)
    local no_file_p = (lfs.attributes(file, "size") or 0) == 0
   -- Size equal zero assume something wrong, re-get.
    if no_file_p and not dont_get then
-      os.execute(string.format(self.wget, uri, file))
+      local cmd = string.format(self.get_cmd, uri, file)
+      print("Fetching", cmd)
+      os.execute(cmd)
       no_file_p = ((lfs.attributes(file, "size") or 0) == 0)
    end
    return self:base_uri() .. uri .. append, not no_file_p, file
