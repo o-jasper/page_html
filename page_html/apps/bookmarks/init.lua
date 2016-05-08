@@ -6,14 +6,12 @@
 --  (at your option) any later version.
 
 local ListView = require "page_html.ListView"
-
 local This = ListView:class_derive{__name="Bookmarks", name="bookmarks"}
 
 This.Formulator = require "page_html.apps.bookmarks.Formulator"
 This.Db         = require "page_html.apps.bookmarks.Bookmarks"
 
 This.where      = {"page_html/apps/bookmarks/", "page_html/ListView/", "page_html/"}
-This.assets_arg = {where = This.where}
 
 This.table_wid = 4
 This.master_css = "master_bm"

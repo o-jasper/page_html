@@ -20,7 +20,7 @@ function This:init()
    assert(self.data_dir, "Don't know where to put the files.")
    self.db_file = self.db_file or (self.data_dir .. "main.db")
 
-   assert(self.assets_arg)
+   self.asset_arg = self.asset_arg or { where = self.where }
    self.assets = self.Assets:new(self.assets_arg)
    self.lister = self.ProduceList:new{
       Formulator = self.Formulator,
