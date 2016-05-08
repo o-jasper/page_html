@@ -17,4 +17,6 @@ p:add(require("page_html.apps.comments"):new(inp()))
 
 p:add(require("page_html.apps.util"):new())
 
+p:add(require("page_html.apps.userscripts"):new())
+
 p:start()

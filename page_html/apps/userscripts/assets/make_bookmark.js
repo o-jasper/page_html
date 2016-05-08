@@ -3,7 +3,7 @@
 
 function make_bookmark() {
     var h = "";
-=a=parts/make_bookmark.htm
+    {%parts/make_bookmark.htm}
     ge('command_extend').innerHTML = h;
     ge('cmd_bm_uri').value   = document.documentURI;
     ge('cmd_bm_quote').value = selection;

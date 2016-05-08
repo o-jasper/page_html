@@ -15,8 +15,8 @@
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
-=a=js/pegasus_send.js
-=s=figure_server.js
+{%js/pegasus_send.js}
+{%figure_server.js}
 
 send('history/.collect', [document.documentURI, document.title || ""],
      function(response_data) {

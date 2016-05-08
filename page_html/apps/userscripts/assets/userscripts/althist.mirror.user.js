@@ -15,8 +15,8 @@
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
-=a=js/pegasus_send.js
-=s=figure_server.js
+{%js/pegasus_send.js}
+{%figure_server.js}
 
 if( response.mirror && GM_getValue('direct.may_mirror', true) ) {
     send('history/.collect.mirror',

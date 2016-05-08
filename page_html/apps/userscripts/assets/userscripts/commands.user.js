@@ -22,18 +22,18 @@
 
 {
     var h = "";
-=a=css/userscript/commands.css
-=a=css/style.css
-=a=../ListView/assets/css/ListView.css
+{%css/userscript/commands.css}
+{%css/style.css}
+{%css/ListView.css}
     GM_addStyle(h);
 }
 
-=a=js/common.js
-=a=js/search_common.js
-=a=js/pegasus_send.js
-=s=figure_server.js
+{%js/common.js}
+{%js/search_common.js}
+{%js/pegasus_send.js}
+{%figure_server.js}
 
-=s=list_assist.js
+{%list_assist.js}
 
 var command_element;
 
@@ -95,7 +95,7 @@ function toggle_commandpanel(immediate) {
 
         // TODO line around, other styling.
         var h = "";
-=a=parts/command_panel.htm
+{%parts/command_panel.htm}
         element.innerHTML = h;
 
         document.body.appendChild(element);
@@ -135,14 +135,14 @@ GM_registerMenuCommand("Command Panel", toggle_commandpanel);
 
 var funs = {};
 
-=s=make_bookmark.js
+{%make_bookmark.js}
 funs.bm = make_bookmark;
 
-=s=quickmarks.js // TODO
+{%quickmarks.js} // TODO
 funs.qm = cmd_make_quickmark;
 funs.gqm = cmd_go_quickmark;
 
-=s=cmd_on_string.js
+{%cmd_on_string.js}
 
 // --- Javascript/lua evaluation.
 if( GM_getValue('cmd_js', false) ) {
@@ -194,7 +194,7 @@ funs.man   = cmd_opentab("View man page",      'util/.man');
 funs.doc   = cmd_opentab("View documentation", 'util/.doc');
 funs.pydoc = cmd_opentab("View pydoc page",    'util/.pydoc');
 
-=s=cmd_vid.js
+{%cmd_vid.js}
 funs.vid = cmd_vid;
 
 function cmd_fclip() {  // TODO cliboardData doesn't work?
