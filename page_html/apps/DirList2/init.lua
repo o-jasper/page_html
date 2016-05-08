@@ -2,6 +2,8 @@ local ListView = require "page_html.ListView"
 
 local This = ListView:class_derive{ __name="DirList2", name="DirList2" }
 
+This.db_file = ":memory:"
+
 This.description = "Very unfinished directory browser."
 
 This.Formulator = require "page_html.apps.DirList2.Formulator"
