@@ -98,14 +98,14 @@ function Assets:path(path)
 end
 
 function Assets:if_not_found(path)
-   print(string.format("Asset not found: %s\n", path))
+   print(string.format("Asset not found: %s\nSearched:\n", table.concat(self.where, ", ")))
 end
 
 function Assets:load(path)
    local got, at_path = self:open(path)
    if got then
       return read_and_close(got, at_path, self.memorize)
-   else
+   elseif self.if_not_found then
       self:if_not_found(path)
    end
 end
