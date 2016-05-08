@@ -44,6 +44,8 @@ function This:_ensure_js(page)
    return js
 end
 
+local NotFound = require "page_html.serve.NotFound"
+
 function This:loopfun()
    -- Lists chromes and stuff if not found.
    return function(req, rep)
@@ -64,7 +66,9 @@ function This:loopfun()
       }
       -- Figure the page, if not, give help.
       local page = self.pages[page_name] or self.pages[page_name .. "/" .. rest]
-         or require("page_html.serve.NotFound"):new(args)
+      if not (page and page.output) then
+         page = self.pages[self.if_none or "if_none"] or NotFound:new(args)
+      end
 
       -- Response from javascript might be sufficient.
       if not self:_ensure_js(page):respond(req, rep) then
