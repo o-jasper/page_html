@@ -22,10 +22,16 @@ function This:extra_list_data()
    return ret
 end
 
+This.SubInstance = This
+
 function This:el_repl(el, state)
    local ret = ListView.el_repl(self, el, state)
 
-   local sub = (self.SubInstance or getmetatable(self)):new()
+   local sub = (self.SubInstance or self.__index):new{
+      db_file=self.db_file, data_dir=self.data_dir,
+      assets=self.assets,
+      lister=self.lister
+   }
    local _list
    local function list()
       if not _list then
