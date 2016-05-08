@@ -1,21 +1,18 @@
 
-default: userscripts pass
+default: userscripts
 
 userscripts: althist.user.js althist.mirror.user.js commands.user.js 
 
-usual: src/figure_server.js compose.sh Makefile
+usual: assets/figure_server.js gen.lua Makefile
 
-althist.user.js: src/althist.user.js usual
-	sh compose.sh $< > $@
+%.user.js:
+	lua gen.lua $@ > $@
 
-althist.mirror.user.js: src/althist.mirror.user.js usual
-	sh compose.sh $< > $@
+althist.user.js: assets/userscripts/althist.user.js usual
+
+althist.mirror.user.js: assets/userscripts/althist.mirror.user.js usual
 
 command_parts: \
-	src/make_bookmark.js src/cmd_on_string.js  src/cmd_vid.js
+	assets/make_bookmark.js assets/cmd_on_string.js  assets/cmd_vid.js
 
-commands.user.js: src/commands.user.js command_parts usual
-	sh compose.sh $< > $@
-
-pass:
-	sh pass.sh
+commands.user.js: assets/userscripts/commands.user.js command_parts usual

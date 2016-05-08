@@ -30,7 +30,7 @@ function This:output(args)
          return apply_subst(ret, setmetatable({}, {__index=index}),
                             256, "{%%([%w_/]+[.][%w_./]+)[%s]*([^}]*)}"), "text/javascript"
       else
-         return "No such userscript."
+         return "No such userscript: " .. args.rest_path
       end
    else  -- TODO use an asset..
       local userscript_list = {}

@@ -18,10 +18,6 @@ Currently all these work with the lua server stuff.
 
 * element `id`s can overlap with stuff on the page.
 
-* Quite annoying how gui js code has to be embedded into `commands.user.js`,
-  even though the "building system" already makes this less..
+* More modularity in the construction of `commands.user.js`.
 
-  Perhaps could have a list of (sha256) checksums of *allowed* code, and just
-  have the server check those, so the server can send along unavailable code.
-
-
+  Allow selecting what features are desired.
