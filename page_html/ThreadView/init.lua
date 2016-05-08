@@ -22,8 +22,6 @@ function This:extra_list_data()
    return ret
 end
 
-This.SubInstance = This
-
 function This:el_repl(el, state)
    local ret = ListView.el_repl(self, el, state)
 

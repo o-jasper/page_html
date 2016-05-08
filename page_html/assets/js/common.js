@@ -59,7 +59,9 @@ function go_graph(to, ev, graph) {
 function follow_graph(graph) {
     return function(ev) {
         var kc = ev.keyCode, cur = graph[ev.target.id];
-        if( kc == 13 ) {
+        if( !ev.ctrlKey ) {   //Always control key, its consistent.
+            return;
+        } else if( kc == 13 ) {
             if( cur.ed && (!cur.sd || ev.shiftKey) ) { go_graph(cur.d, ev, graph); }
         } else if( kc == 40 ) {
             if( !cur.sd || ev.shiftKey ) { go_graph(cur.d, ev, graph); }

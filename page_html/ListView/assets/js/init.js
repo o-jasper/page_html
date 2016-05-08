@@ -17,11 +17,11 @@ function select_list_index(index) {
 function into_from_top(){ select_list_index(1); }
 
 var graph = {
-    search : { sr:true, r:'search_button', sl:true, l:'sql_button', d:'sql' },
+    search : { r:'search_button', l:'sql_button', d:'sql' },
     search_button : { r:'visible_sql', l:'search', d:'sql' },
     visible_sql : { r:'sql_button', l:'search_button', d:'sql' },
     sql_button : { r:'search', l:'visible_sql', d:'sql' },
-    sql : { su:true, u:'search', sd:true, d:into_from_top },
+    sql : { u:'search', d:into_from_top },
     moar_button : { u:function(){select_list_index(cur.at_i); } },
 };
 
