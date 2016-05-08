@@ -16,8 +16,8 @@ This.where = { "page_html/serve/" }
 This.Assets = require "page_html.Assets"
 
 function This:init()
-   self.asset_arg = self.asset_arg or { where = self.where }
-   self.assets = self.Assets:new(self.asset_arg)
+   self.assets_arg = self.assets_arg or { where = self.where }
+   self.assets = self.Assets:new(self.assets_arg)
 end
 
 function This:repl(args)
