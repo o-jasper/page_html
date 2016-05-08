@@ -65,13 +65,14 @@ function This:loopfun()
          pages = self.pages,
       }
       -- Figure the page, if not, give help.
-      local page = self.pages[page_name] or self.pages[page_name .. "/" .. rest]
-      if not (page and page.output) then
-         page = self.pages[self.if_none or "if_none"] or NotFound:new(args)
-      end
+      local page = self.pages[page_name] or self.pages[page_name .. "/" .. rest] or
+         self.pages[self.if_none or "if_none"] or NotFound:new(args)
 
       -- Response from javascript might be sufficient.
       if not self:_ensure_js(page):respond(req, rep) then
+         if not page.output then
+            page = self.pages[self.if_none or "if_none"] or NotFound:new(args)
+         end
          local str, tp, more = page:output(args)
          for k,v in pairs(more or {}) do rep:addHeader(k, v) end
          rep:addHeader('Content-Type', tp or 'text/html'):write(str)
