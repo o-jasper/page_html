@@ -26,7 +26,7 @@ for k,v in pairs(figure_required.file(arg[1])) do
       cp(name)
    end
 
-   if lfs and lfs.attributes(build_dir .. file_dir) then
+   if false and lfs and lfs.attributes(build_dir .. file_dir) then
       os.execute("TODIR=" .. build_dir .. file_dir .. "; cd " .. fr_file .. [[;
 if git remote -v >> /dev/null; then
 TOFILE=$OLDPWD/$TODIR/git_info;
