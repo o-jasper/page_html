@@ -1,15 +1,5 @@
-local This = {}
-This.__index = This
-
-function This:new(new)
-   new = setmetatable(new or {}, This)
-   new:init()
-   return new
-end
-
-function This:init() end
-
-This.name = "util"
+local This = require("page_html.util.Class"):class_derive{
+   name="util", __name="page_html.apps.util" }
 
 function This:rpc_js()
    -- Just cmds at the moment.

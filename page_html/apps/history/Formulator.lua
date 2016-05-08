@@ -6,12 +6,8 @@
 --  (at your option) any later version.
 
 local Formulator = require "Searcher.Formulator"
-
-local This = {}
-
-for k,v in pairs(Formulator) do This[k] = v end
-
-This.__index = This
+local This = require("page_html.util.Class"):class_derive(
+   Formulator, { __name="page_html.apps.history.Formulator"})
 
 This.values = {
    table_name = "history",

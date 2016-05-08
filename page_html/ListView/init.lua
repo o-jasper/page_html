@@ -5,20 +5,14 @@
 --  by the Free Software Foundation, either version 3 of the License, or
 --  (at your option) any later version.
 
-local This = {}
-function This:new(new)
-   new = setmetatable(new or {}, self)
-   new:init()
-   return new
-end
-This.__index = This
+local This = require("page_html.util.Class"):class_derive{__name="ListView", name="ListView"}
 
 This.Assets = require "page_html.Assets"
--- This.assets_arg = {where = {"first_dir/", "second_dir/"}}
 
+-- This.assets_arg = {where = {"first_dir/", "second_dir/"}}
 --This.data_dir = "/some/dir/"
+This.db_file = ":memory:"
 --This.db_file  = This.data_dir .. "history.db"  (default)
-This.name = "noname"
 
 This.ProduceList = require "Searcher.ProduceList"
 

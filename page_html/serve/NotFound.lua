@@ -5,13 +5,8 @@
 --  by the Free Software Foundation, either version 3 of the License, or
 --  (at your option) any later version.
 
-local This = {}
-
 local StaticPage = require "page_html.StaticPage"
-for k,v in pairs(StaticPage) do This[k] = v end
-This.__index = This
-
-This.name = "page_not_found"
+local This = StaticPage:class_derive{name="page_not_found", __name="page_html.server.NotFound"}
 
 This.repl = true
 This[1] = [[

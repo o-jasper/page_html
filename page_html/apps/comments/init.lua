@@ -7,13 +7,7 @@
 
 local ThreadView = require "page_html.ThreadView"
 local Bookmarks = require "page_html.apps.bookmarks"
-
-local This = {}
--- Derive from listview.
-for k,v in pairs(ThreadView) do This[k] = v end
-This.__index = This
-
-This.name = "comments"
+local This = ThreadView:class_derive{ name="comments", __name="page_html.apps.comments" }
 
 This.Formulator = require "page_html.apps.bookmarks.Formulator"
 This.Db         = require "page_html.apps.bookmarks.Bookmarks"

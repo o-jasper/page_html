@@ -1,10 +1,6 @@
 local Sql = require "Searcher.Sql"
-
-local This = {}
-
-for k,v in pairs(Sql) do This[k] = v end
-
-This.__index = This
+local This = require("page_html.util.Class"):class_derive(
+   Sql, { __name="page_html.apps.history.History" })
 
 function This:init()
    self.db_filename = self.filename
@@ -21,8 +17,6 @@ CREATE TABLE IF NOT EXISTS history (
 );
 ]]
 end
-
-This.__name = "page_html.apps.history.History"
 
 This.Formulator = require "page_html.apps.history.Formulator"
 

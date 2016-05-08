@@ -27,10 +27,8 @@ local function read_and_close(fd, path, memorize)
    return ret
 end
 
-local Assets = {}
-Assets.__index = Assets
+local Assets = require("page_html.util.Class"):class_derive{__name="page_html.Assets"}
 
-Assets.__name = "page_html.Assets"
 Assets.prefix = "assets/"
 
 Assets.memoize = {}

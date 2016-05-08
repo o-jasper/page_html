@@ -1,13 +1,6 @@
 -- TODO perhaps nice to make a version integrated with file viewer.
 
-local This = {}
-This.__index = This
-
-function This:new(new)
-   new = setmetatable(new or {}, self)
-   new:init()
-   return new
-end
+local This = require("page_html.util.Class"):class_derive{__name="page_html.apps.MirrorPage"}
 
 function This:init() assert(type(self.dir) == "string") end
 

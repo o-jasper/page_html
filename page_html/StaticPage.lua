@@ -9,9 +9,7 @@
 
 local apply_subst = require "page_html.util.apply_subst"
 
-local This = {}
-for k,v in pairs(require "page_html.Assets") do This[k] = v end
-This.__index = This
+local This = require("page_html.Assets"):class_derive{__name="page_html.StaticPage"}
 
 function This:output(args)
    --assert(not self[1] and self.name)

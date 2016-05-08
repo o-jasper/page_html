@@ -1,13 +1,7 @@
 local ListView = require "page_html.ListView"
 
-local This = {}
-for k,v in pairs(ListView) do This[k] = v end
+local This = ListView:class_derive{ __name="DirList2", name="DirList2" }
 
-This.__index = This
-
-This.name = "DirList2"
-
-This.db_file = ":memory:"
 This.Formulator = require "page_html.apps.DirList2.Formulator"
 This.Db = require "page_html.apps.DirList2.Dir"
 

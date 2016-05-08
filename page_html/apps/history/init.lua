@@ -8,13 +8,7 @@
 --local search = require "page_html.apps.lib.search"
 
 local ListView = require "page_html.ListView"
-
-local This = {}
--- Derive from listview.
-for k,v in pairs(ListView) do This[k] = v end
-This.__index = This
-
-This.name = "history"
+local This = ListView:class_derive{ __name="History", name="history" }
 
 This.Formulator = require "page_html.apps..history.Formulator"
 This.Db         = require "page_html.apps.history.History"

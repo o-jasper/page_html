@@ -1,10 +1,7 @@
 local Formulator = require "Searcher.Formulator"
 
-local This = {}
-
-for k,v in pairs(Formulator) do This[k] = v end
-
-This.__index = This
+local This = require("page_html.util.Class"):class_derive{
+   __name="DirList2.Formulator" }
 
 This.values = {
    table_name = "files",

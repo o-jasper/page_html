@@ -8,16 +8,7 @@
 local Pegasus = require "pegasus"
 
 -- local PegasusJs = require "PegasusJs" -- Really will need it..
-local This = {}
-This.__index = This
-
-This.__name = "page_html.html.pegasus"
-
-function This:new(new)
-   new = setmetatable(new or {}, self)
-   new:init()
-   return new
-end
+local This = require("page_html.util.Class"):class_derive{__name="page_html.html.pegasus"}
 
 function This:init()
    self.pegasus = Pegasus:new(self.pegasus_arg or {port=self.port})

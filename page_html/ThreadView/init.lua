@@ -7,9 +7,7 @@
 
 local ListView = require "page_html.ListView"
 
-local This = {}
-for k,v in pairs(ListView) do This[k] = v end
-This.__index = This
+local This = ListView:class_derive{__name="page_html.ThreadView"}
 
 -- Needs to be created for this to work.
 --function This:select_thread(form, el)

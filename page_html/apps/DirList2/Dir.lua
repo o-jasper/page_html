@@ -1,11 +1,8 @@
 local lfs = require "lfs"
 local Sql = require "Searcher.Sql"
 
-local This = {}
-
-for k,v in pairs(Sql) do This[k] = v end
-
-This.__index = This
+local This = require("page_html.util.Class"):class_derive(
+   Sql, { __name="page_html.apps.DirList2.Dir" })
 
 function This:init()
    Sql.init(self)
@@ -24,8 +21,6 @@ function This:init()
 ]]
    self.update_times = {}
 end
-
-This.__name = "page_html.apps.DirList2.Dir"
 
 This.Formulator = require "page_html.apps.DirList2.Formulator"
 
