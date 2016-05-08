@@ -91,7 +91,7 @@ function toggle_commandpanel(immediate) {
 
         var element = command_element || document.createElement('div');
         command_element = element;
-        element.id = 'CommandPanel'
+        element.id = '{%.prep}CommandPanel'
 
         // TODO line around, other styling.
         var h = "";
@@ -161,22 +161,7 @@ if( GM_getValue('cmd_lua', false) ) {
     }, "Run lua(server side, if allowed)", true);
 }
 
-if( GM_getValue('cmd_syms', true) ) {
-    funs.syms = function() {
-        ge('command_extend').innerHTML = "<br><input id='cmd_sym_val'><br><span id='cmd_sym_output'></span>";
-        var sym_val = ge('cmd_sym_val');
-        sym_val.focus();
-        sym_val.onkeydown = function(ev) {
-            if( ev.keyCode == 13 ) {
-                GM_setClipboard(ge('cmd_sym_output').innerHTML);
-                finish_commandpanel();
-            }
-        }
-        sym_val.onkeyup = function(ev) {
-            ge('cmd_sym_output').innerHTML = "&" + sym_val.value + ";";
-        }
-    }
-}
+{%cmd_syms.js}
 
 // --- Manuals and documentation.
 function cmd_opentab(button_str, httpreq) {

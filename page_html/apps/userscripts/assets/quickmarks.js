@@ -21,7 +21,7 @@ function cmd_make_quickmark() {  // Try open as video.
         list.unshift({ textContent:"cur page", href:document.documentURI });
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
 
-        ge('command_extend').innerHTML = "<input id='cmd_qm_name' value='default'>";
+        ge('command_extend').innerHTML = "<input id='{%.prep}cmd_qm_name' value='default'>";
         produce_action_list(ge('command_extend'), list, null, cmd_make_quickmark_fun,
                             'cmd_qm_name');
 
@@ -66,9 +66,9 @@ var cmd_go_quickmark_fun = function(name) {
 // HOWEVER, consider what you want in the list functionality in general,
 // preferably it transfers to _both_
 function cmd_go_quickmark() {
-    var h = "Name <input id='cmd_qm_name' value='default'>";
-    h += "Got <span id='cmd_qm_list_cnt'>(count)</span>";
-    h += "<table id='cmd_qm_list'><tr><td colspan=4>(initial)</td></tr></table>";
+    var h = "Name <input id='{%.prep}cmd_qm_name' value='default'>";
+    h += "Got <span id='{%.prep}cmd_qm_list_cnt'>(count)</span>";
+    h += "<table id='{%.prep}cmd_qm_list'><tr><td colspan=4>(initial)</td></tr></table>";
     ge('command_extend').innerHTML = h;
 
     var name_el = ge('cmd_qm_name');
@@ -83,8 +83,8 @@ function cmd_go_quickmark() {
         });
     }
 
-    var graph = { command_input:{ sr:true, r:'cmd_qm_name',   d:'cmd_qm_name' },
-                  cmd_qm_name : { sl:true, l:'command_input', u:'command_input',
+    var graph = { command_input:{ r:'cmd_qm_name',   d:'cmd_qm_name' },
+                  cmd_qm_name : { l:'command_input', u:'command_input',
                                   d:d
                                 }
                 };

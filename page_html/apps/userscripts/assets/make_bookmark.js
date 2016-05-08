@@ -14,9 +14,9 @@ function make_bookmark() {
     var graph = {
         command_input : { d :'cmd_bm_uri' },
         cmd_bm_uri    : { d :'cmd_bm_title', u : 'command_input' },
-        cmd_bm_title  : { ed:true, d :'cmd_bm_text', u : 'cmd_bm_uri' },
-        cmd_bm_text   : { ed:true, sd:true, d : 'cmd_bm_quote', su:true, u : 'cmd_bm_title' },
-        cmd_bm_quote  : { ed:true, sd:true, d : 'cmd_bm_tags',  su:true, u : 'cmd_bm_text' },
+        cmd_bm_title  : { d :'cmd_bm_text',  u : 'cmd_bm_uri' },
+        cmd_bm_text   : { d :'cmd_bm_quote', u : 'cmd_bm_title' },
+        cmd_bm_quote  : { d :'cmd_bm_tags',  u : 'cmd_bm_text' },
         cmd_bm_tags   : {
             d : 'cmd_bm_submit', u:'cmd_bm_quote',
             r : function(){

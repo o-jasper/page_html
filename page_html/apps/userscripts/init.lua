@@ -10,6 +10,11 @@ This.where = {"page_html/apps/userscripts/", "page_html/", "page_html/ListView/"
 function This:init()
    self.assets_arg = self.assets_args or {where = This.where}
    self.assets = self.Assets:new(self.assets_arg)
+
+   local large = math.floor(256^5)  -- Just for uniqueness.(really, overkill
+   math.randomseed(os.time() + math.floor(large*os.clock()))
+   local function r() return math.random(large) end
+   self.ge_prep = self.ge_prep or string.format("R%x%x_", r(),r())
 end
 
 local apply_subst = require "page_html.util.apply_subst"
@@ -21,16 +26,24 @@ function This:output(args)
       local ret = assets:load("userscripts/" .. args.rest_path)
       if ret then
          local function index(_, key) 
+            if key == ".prep" then
+               return self.ge_prep
+            end
+
             local prep, asset = "// - " .. key .. "\n", assets:load(key)
             if string.match(key, "[.]css$") or string.match(key, "[.]htm") then
                return prep .. string.gsub(asset, "([^\n]+)",
                                           function(x) return [[h += "]] .. x .. [[";]] end)
+            elseif key == "js/common.js" then
+               return prep .. asset .. "\n" .. [[ge_prep = "]] .. self.ge_prep .. [[";]]
+            elseif asset then
+               return prep .. asset
             else
-               return prep .. (asset or "ASSET " .. key .. "NOT FOUND")
+               return prep .. "ASSET " .. key .. "NOT FOUND"
             end
          end
          return apply_subst(ret, setmetatable({}, {__index=index}),
-                            256, "{%%([%w_/]+[.][%w_./]+)[%s]*([^}]*)}"), "text/javascript"
+                            256, "{%%([%w_/]*[.][%w_./]+)[%s]*([^}]*)}"), "text/javascript"
       else
          return "No such userscript: " .. args.rest_path
       end

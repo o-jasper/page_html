@@ -1,6 +1,8 @@
 
-function ge(id) { 
-    return document.getElementById(id) || { no_result:true };
+ge_prep = "";
+
+function ge(id) {
+    return document.getElementById(ge_prep + id) || { no_result:true };
 }
 function maybe_ge(el) {
     if( typeof(el) == 'string' ){ return ge(el); } else{ return el; }
@@ -58,7 +60,8 @@ function go_graph(to, ev, graph) {
 
 function follow_graph(graph) {
     return function(ev) {
-        var kc = ev.keyCode, cur = graph[ev.target.id];
+        var kc = ev.keyCode, cur = graph[ev.target.id.substr(ge_prep.length)];
+
         if( !ev.ctrlKey ) {   //Always control key, its consistent.
             return;
         } else if( kc == 13 ) {

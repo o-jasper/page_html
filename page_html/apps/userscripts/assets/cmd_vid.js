@@ -47,7 +47,7 @@ function cmd_vid() {  // Try open as video.
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
 
         ge('command_extend').innerHTML =
-            "<span id='cmd_vid_say'></span><span id='cmd_vid_extend'></span>";
+            "<span id='{%.prep}cmd_vid_say'></span><span id='{%.prep}cmd_vid_extend'></span>";
         produce_action_list(ge('cmd_vid_extend'), list, null, cmd_vid_fun, 'cmd_input');
 
         ge('command_input').onkeydown = function(ev) {
