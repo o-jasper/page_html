@@ -52,7 +52,6 @@ function This:repl(args)
 end
 
 function This:output(...)
-   for k,v in pairs(self.assets.where) do print(k,v) end
    return apply_subst(self.assets:load("page_not_found.html"), self:repl(...))
 end
 
