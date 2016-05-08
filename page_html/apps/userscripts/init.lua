@@ -11,10 +11,22 @@ function This:init()
    self.assets_arg = self.assets_args or {where = This.where}
    self.assets = self.Assets:new(self.assets_arg)
 
-   local large = math.floor(256^5)  -- Just for uniqueness.(really, overkill
-   math.randomseed(os.time() + math.floor(large*os.clock()))
-   local function r() return math.random(large) end
-   self.ge_prep = self.ge_prep or string.format("R%x%x_", r(),r())
+   if not self.ge_prep then
+      local prepfile = self.data_dir .. "/userscript_prep"
+      local fd = io.open(prepfile)
+      if fd then
+         self.ge_prep = fd:read("*a")
+      else
+         local large = math.floor(256^5)  -- Just for uniqueness.(really, overkill
+         math.randomseed(os.time() + math.floor(large*os.clock()))
+         local function r() return math.random(large) end
+         self.ge_prep = string.format("R%x%x_", r(),r())
+
+         fd = io.open(prepfile, "w")  -- Write it down.
+         fd:write(self.ge_prep)
+         fd:close()
+      end
+   end
 end
 
 local apply_subst = require "page_html.util.apply_subst"
