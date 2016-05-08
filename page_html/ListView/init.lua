@@ -8,12 +8,6 @@
 local This = require("page_html.util.Class"):class_derive{__name="ListView", name="ListView"}
 
 This.Assets = require "page_html.Assets"
-
--- This.assets_arg = {where = {"first_dir/", "second_dir/"}}
---This.data_dir = "/some/dir/"
-This.db_file = ":memory:"
---This.db_file  = This.data_dir .. "history.db"  (default)
-
 This.ProduceList = require "Searcher.ProduceList"
 
 function This:init()
