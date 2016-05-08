@@ -22,7 +22,11 @@ function This:add(...)
    for i, page in ipairs{...} do
       self.pages[page.name] = page
       page.server = self
-      self:add(unpack(page.extra_list and page:extra_list() or {}))
+      local extra = page.extra_list and page:extra_list() or {}
+      for _, e in ipairs(extra) do
+         e.extra = true
+         self:add(e)
+      end
    end
 end
 
