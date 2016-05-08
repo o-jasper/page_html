@@ -9,6 +9,8 @@ local ThreadView = require "page_html.ThreadView"
 local Bookmarks = require "page_html.apps.bookmarks"
 local This = ThreadView:class_derive{ name="comments", __name="page_html.apps.comments" }
 
+This.description = "Comments (very unfinished)"
+
 This.Formulator = require "page_html.apps.bookmarks.Formulator"
 This.Db         = require "page_html.apps.bookmarks.Bookmarks"
 

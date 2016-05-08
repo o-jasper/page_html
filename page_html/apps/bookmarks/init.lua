@@ -8,6 +8,8 @@
 local ListView = require "page_html.ListView"
 local This = ListView:class_derive{__name="Bookmarks", name="bookmarks"}
 
+This.description = "Browser bookmarks."
+
 This.Formulator = require "page_html.apps.bookmarks.Formulator"
 This.Db         = require "page_html.apps.bookmarks.Bookmarks"
 

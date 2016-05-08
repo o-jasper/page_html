@@ -1,6 +1,8 @@
 local This = require("page_html.util.Class"):class_derive{
    name="userscripts", __name="page_html.apps.userscripts" }
 
+This.description = "Can load userscripts from here."
+
 This.Assets = require "page_html.Assets"
 
 This.where = {"page_html/apps/userscripts/", "page_html/", "page_html/ListView/"}

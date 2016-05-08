@@ -10,11 +10,12 @@
 local ListView = require "page_html.ListView"
 local This = ListView:class_derive{ __name="History", name="history" }
 
+This.description = "Browser history as recorded by (presumably)userscript."
+
 This.Formulator = require "page_html.apps..history.Formulator"
 This.Db         = require "page_html.apps.history.History"
 
 This.where      = {"page_html/apps/history/", "page_html/ListView/", "page_html/"}
-This.assets_arg = {where = This.where}
 
 This.full_span = 3
 

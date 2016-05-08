@@ -1,6 +1,8 @@
 local This = require("page_html.util.Class"):class_derive{
    name="util", __name="page_html.apps.util" }
 
+This.description =  "Set of functions for javascript RPC. does not have page.(currently)"
+
 function This:rpc_js()
    -- Just cmds at the moment.
    local funs = {}

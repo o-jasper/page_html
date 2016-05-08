@@ -5,8 +5,12 @@
 --  by the Free Software Foundation, either version 3 of the License, or
 --  (at your option) any later version.
 
+local apply_subst = require "page_html.util.apply_subst"
+
 local This = require("page_html.util.Class"):class_derive{
    name="page_not_found.html", __name="page_html.server.NotFound"}
+
+This.description = "Page shown when no page is found."
 
 This.where = { "page_html/serve/" }
 This.Assets = require "page_html.Assets"
@@ -24,12 +28,18 @@ function This:repl(args)
    for k, v in pairs(args) do
       table.insert(args_list, string.format("<tr><td>%s</td><td>=</td><td>%s</td></tr>", k,v))
    end
+
+   local page_asset = self.assets:load("page_entry.htm")
    -- TODO separate principle and secondary pages, show descriptions.
-   for k, v in pairs(self.pages) do
-      local val = v.name == k  and v.name or string.format("%s != %s", k, v.name)
-      local htm = string.format([[<tr><td><a href="/%s/">%s</a></td></tr>]],
-                      val, val)
-      table.insert(v.extra and extra_page_list or page_list, htm)
+   for k, page in pairs(self.pages) do
+      local el = {
+         name = page.name,
+         desc = type(page.desc) == "function" and page:description() or page.description
+            or " ",
+      }
+      el.description = el.desc
+      table.insert(page.extra and extra_page_list or page_list,
+                   apply_subst(page_asset, el))
    end
 
    return {
@@ -41,7 +51,6 @@ function This:repl(args)
    }
 end
 
-local apply_subst = require "page_html.util.apply_subst"
 function This:output(...)
    for k,v in pairs(self.assets.where) do print(k,v) end
    return apply_subst(self.assets:load("page_not_found.html"), self:repl(...))
