@@ -1,6 +1,7 @@
 local data_dir = os.getenv("HOME") .. "/.page_html/data/"
+local exec = require "page_html.util.exec"
 
-os.execute("mkdir -p " .. data_dir)  -- Create if doesn't exist.
+exec([[mkdir -p "%s"]], data_dir)  -- Create if doesn't exist.
 local db_file = data_dir .. "main.db"
 local function inp()
    return {data_dir = data_dir, db_file=db_file}

@@ -22,6 +22,7 @@ end
 local lfs = require "lfs"
 
 local apply_subst = require "page_html.util.apply_subst"
+local exec = require "page_html.util.exec"
 
 -- TODO this is surely too limited.
 This.mirror_msg = {
@@ -181,7 +182,7 @@ function This:mirror_uri_html(uri, html, override)
 
    local dir =  self.mirror_dir .. save_path
    print("history.mirror", dir)
-   os.execute("mkdir -p " .. dir)
+   exec([[mkdir -p "%s"]], dir)
    local file = dir .. "/index.html"
    local fd = not override and io.open(file)
    if fd then  -- Don't overwrite.(TODO keep versioned?)
@@ -200,24 +201,19 @@ function This:mirror_uri_html(uri, html, override)
    end
 end
 
-local function exec_format(...)
-   print("Exec:", string.format(...))
-   return os.execute(string.format(...))
-end
-
 This.get_cmd = [[curl "%s" > "%s"]]
 function This:mirror_uri(uri, dont_get)
    local save_path = check_in_uri(self, uri)
    if not save_path then return end
 
    local dir =  self.mirror_dir .. save_path
-   exec_format([[mkdir -p "%s"]], dir)
+   exec([[mkdir -p "%s"]], dir)
    local append = string.match(uri, "^.+(/[^/]+)$")
    local file = dir .. append
    local no_file_p = (lfs.attributes(file, "size") or 0) == 0
   -- Size equal zero assume something wrong, re-get.
    if no_file_p and not dont_get then
-      exec_format(self.get_cmd, uri, file)
+      exec(self.get_cmd, uri, file)
       no_file_p = ((lfs.attributes(file, "size") or 0) == 0)
    end
    return self:base_uri() .. uri .. append, not no_file_p, file
@@ -228,7 +224,7 @@ function This:mirror_uri_kr(uri)
    local save_path = check_in_uri(self, uri)
    if not save_path then return end
 
-   exec_format(self.get_cmd, self.manual_mirror_dir, uri)
+   exec(self.get_cmd, self.manual_mirror_dir, uri)
 
    return self:base_uri() .. uri .. append
 end

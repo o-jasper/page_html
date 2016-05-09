@@ -1,8 +1,11 @@
 local default_geometry = "100%x100%"
 
 -- TODO video-finished callback..
+local uri_check = [[^[%a][%w-+.]*://^[^%s#?"';{}()]+[?#]?[^%s"';{}()]$]]
 
 function mpv_cmd(uri, geometry)
+   if not string.find(uri, uri_check) then return "echo" end
+
    -- Note if this works tell mpv about it?
    local yc = string.match(
       uri,
@@ -22,8 +25,7 @@ function mpv_cmd(uri, geometry)
    end
 end
 
+local exec = require "page_html.util.exec"
 return function(_, uri, ...)
-   local cmd = mpv_cmd(uri, ...)
-   print("----RUN:", cmd)
-   os.execute(cmd)
+   exec(mpv_cmd(uri, ...))
 end

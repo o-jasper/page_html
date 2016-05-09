@@ -1,6 +1,5 @@
 local tmpdir = "/tmp/man/"
-
-os.execute("mkdir -p " .. tmpdir)
+require("page_html.util.exec")([[mkdir -p "%s"]], tmpdir)
 
 local defs = require "page_html.apps.util.cmds"
 
