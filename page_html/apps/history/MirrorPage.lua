@@ -2,7 +2,13 @@
 
 local This = require("page_html.util.Class"):class_derive{__name="page_html.apps.MirrorPage"}
 
-function This:init() assert(type(self.dir) == "string") end
+This.name = "history_mirrored"
+This.description = "Manages local copies."
+
+function This:init()
+   self.mirror_dir = self.mirror_dir or self.data_dir .. "mirror/"
+   self.manual_mirror_dir = self.manual_mirror_dir or self.data_dir .. "manual_mirror/"
+end
 
 function This:base_uri()
    return string.format("http://localhost:%s/history_mirrored/", self.server.port or 9090)
@@ -35,13 +41,26 @@ This.mirror_msg = {
 <img src="{%img_arch}"></img>]],
 }
 
+local function try_file(file)
+   local fd, msg, code = io.open(file)
+   if fd and fd:read(0) then
+      return fd, msg, code
+   else
+      fd:close()
+      return nil, msg, code
+   end
+end
+local function save_path(uri)
+   local protocol, rel = string.match(uri, "^([^:]+://(.*)")
+   return protocol .. "/" .. rel
+end
+
 function This:have_mirror_fd(uri)
-   local file = self.dir .. uri
+   local file = self.mirror_dir .. save_path(uri)
    if lfs.attributes(file, "mode") == "directory" then
       return io.open(file .. "/index.html"), "directory", nil, file
    else
-      local fd, msg, code = io.open(file)
-      return (fd and fd:read(0) and fd), msg, code, file  -- LOGIC!
+      return try_file(file) or try_file(self.manual_mirror_dir .. save_path(uri))
    end
 end
 
@@ -142,14 +161,24 @@ function This:output(args)
    end
 end
 
+This.uri_check = [[^[%a][%w-+.]*://^[^%s#?"';{}()]+[?#]?[^%s"';{}()]$]]
+local function check_in_uri(self, uri)
+   if string.find(uri, self:self_uri_pat()) then
+      print("Already a mirror itself", uri)
+   elseif string.find(uri, self.uri_check) then
+      print("Is this an okey uri?", uri)
+   else
+      return save_path(uri)
+   end
+end
+
 -- local lfs = require "lfs" -- Annoying, where is a `mkdir -p` equivalent..
 function This:mirror_uri_html(uri, html, override)
    assert(html)
-   if string.find(uri, self:self_uri_pat()) then
-      print("Excluded from mirror collection", uri)
-      return
-   end
-   local dir =  self.dir .. uri
+   local save_path = check_in_uri(self, uri)
+   if not save_path then return end
+
+   local dir =  self.mirror_dir .. save_path
    print("history.mirror", dir)
    os.execute("mkdir -p " .. dir)
    local file = dir .. "/index.html"
@@ -170,26 +199,37 @@ function This:mirror_uri_html(uri, html, override)
    end
 end
 
-This.get_cmd = "curl %s > %s"
-function This:mirror_uri(uri, dont_get)
-   local self_pat = self:self_uri_pat()
-   if  string.find(uri, self_pat) then -- Already viewing a mirror.
-      return uri, "already_mirror", self.dir .. "/" .. string.match(uri, self_pat .. "(.+)$")
-   end
+local function exec_format(...)
+   print("Exec:", string.format(...))
+   return os.execute(string.format(...))
+end
 
-   local dir =  self.dir .. uri
-   os.execute("mkdir -p " .. dir)
+This.get_cmd = [[curl "%s" > "%s"]]
+function This:mirror_uri(uri, dont_get)
+   local save_path = check_in_uri(self, uri)
+   if not save_path then return end
+
+   local dir =  self.mirror_dir .. save_path
+   exec_format([[mkdir -p "%s"]], dir)
    local append = string.match(uri, "^.+(/[^/]+)$")
    local file = dir .. append
    local no_file_p = (lfs.attributes(file, "size") or 0) == 0
   -- Size equal zero assume something wrong, re-get.
    if no_file_p and not dont_get then
-      local cmd = string.format(self.get_cmd, uri, file)
-      print("Fetching", cmd)
-      os.execute(cmd)
+      exec_format(self.get_cmd, uri, file)
       no_file_p = ((lfs.attributes(file, "size") or 0) == 0)
    end
    return self:base_uri() .. uri .. append, not no_file_p, file
+end
+
+This.mirror_uri_kr_cmd = [[wget -P "%s" -e robots=off --user-agent=one_page -k -p "%s"]]
+function This:mirror_uri_kr(uri)
+   local save_path = check_in_uri(self, uri)
+   if not save_path then return end
+
+   exec_format(self.get_cmd, self.manual_mirror_dir, uri)
+
+   return self:base_uri() .. uri .. append
 end
 
 return This
