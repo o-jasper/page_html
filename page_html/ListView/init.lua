@@ -179,7 +179,6 @@ end
 This.page_path = "page/list.htm"
 
 This.assets_served = {
-   ["css/master.css"]    = true,
    ["css/style.css"]    = true,
    ["css/ListView.css"] = true,
    ["js/common.js"]     = true,
@@ -200,10 +199,13 @@ function This:data_js_repl()
 end
 
 function This:output(args, ...)
-   if self.assets_served[args.rest_path] then
-      return self.assets:load(args.rest_path)
-   elseif args.rest_path == "js/data.js" then
-      return apply_subst(self.assets:load(args.rest_path), self:data_js_repl())
+   local rp = args.rest_path
+   if self.assets_served[rp] then
+      print(rp, string.match(rp, "[.]([^.]+)$"))
+      return self.assets:load(rp), "text/" .. string.match(rp, "[.]([^.]+)$")
+   elseif rp == "js/data.js" then
+      local ret = apply_subst(self.assets:load(rp), self:data_js_repl())
+      return ret, "text/javascript"
    else
       return apply_subst(self.assets:load(self.page_path), self:repl(args, ...))
    end
