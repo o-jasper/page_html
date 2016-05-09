@@ -57,7 +57,6 @@ local function try_file(file)
    end
 end
 local function save_path(uri)
-   print(uri)
    local protocol, rel = string.match(uri, "^([^:]+)://(.*)$")
    return protocol .. "/" .. rel
 end
@@ -170,12 +169,12 @@ function This:output(args)
    end
 end
 
-This.uri_check = [[^[%a][%w-+.]*://^[^%s#?"';{}()]+[?#]?[^%s"';{}()]$]]
+This.uri_check = [[^[%a][%w-+.]*://[^%s#?"';{}()]+[?#]?[^%s"';{}()]*$]]
 local function check_in_uri(self, uri)
    if string.find(uri, self:self_uri_pat()) then
       print("Already a mirror itself", uri)
    elseif string.find(uri, self.uri_check) then
-      print("Is this an okey uri?", uri)
+      print("Failed: uri didn't check out?", ":" .. uri ..":")
    else
       return save_path(uri)
    end

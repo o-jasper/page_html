@@ -1,10 +1,14 @@
 local default_geometry = "100%x100%"
 
--- TODO video-finished callback..
-local uri_check = [[^[%a][%w-+.]*://^[^%s#?"';{}()]+[?#]?[^%s"';{}()]$]]
+local uri_check = [[^[%a][%w-+.]*://[^%s#?"';{}()]+[?#]?[^%s"';{}()]*$]]
+
+--[[^[%a][%w-+.]*://[^%s]+$]]
 
 function mpv_cmd(uri, geometry)
-   if not string.find(uri, uri_check) then return "echo" end
+   if not string.find(uri, uri_check) then
+      print("Failed: uri didn't check out?", ":" .. uri ..":")
+      return "echo"
+   end
 
    -- Note if this works tell mpv about it?
    local yc = string.match(
@@ -18,10 +22,10 @@ function mpv_cmd(uri, geometry)
 
    local use_uri = string.match(uri, "^[^&]+") or uri
    if geometry == "fullscreen" then
-      return string.format("mpv --force-window --fs \"%s\" &", use_uri)
+      return "mpv --force-window --fs \"%s\" &", use_uri
    else
-      return string.format("mpv --force-window --geometry=%s \"%s\" &",
-                          geometry or default_geometry, use_uri)
+      local geom = geometry or default_geometry
+      return "mpv --force-window --geometry=%s \"%s\" &", geom, use_uri
    end
 end
 
