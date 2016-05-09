@@ -27,17 +27,15 @@ function This:init()
    ListView.init(self)
 end
 
-function This:extra_list_data()
-   local ret = ListView.extra_list_data(self)
+function This:extra_list()
    if self.enable_view_mirror then
       assert(self.data_dir)
       self.mirror_page = self.MirrorPage:new{
          data_dir = self.data_dir,
          name="history_mirrored", server = self.server,
       }
-      ret["history/mirror/"] = self.mirror_page
+      return { self.mirror_page }
    end
-   return ret
 end
 
 function This:el_repl(el, state)
@@ -46,8 +44,8 @@ end
 
 function This:_el_repl(el, state, repl)
    -- Local version of mirror.
-   repl.local_version = function(...)
-      return repl.insert_page_method("history_mirrored", "link_part")
+   repl.local_version = function(_, ...)
+      return repl.insert_page_method(nil, "history_mirrored", "link_part", ...)
    end
    return repl
 end

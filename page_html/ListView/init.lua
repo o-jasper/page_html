@@ -26,7 +26,6 @@ local text_time = require "page_html.util.text.time"
 
 This.table_wid = 3
 This.limit = {0, 50}
-This.master_css = "master"
 
 local html_escape = require "page_html.util.text.html_escape"
 
@@ -76,11 +75,11 @@ function This:el_repl(el, state)
    for k,v in pairs(el) do ret[k] = html_escape(v) end
 
    -- Base on other page objects.
-   ret.insert_page_method = function(name, method, ...)  -- Method provided by page.
-         local page = self.server.pages[name]
-         return page and page[method] and page[method](page, el, ...) or " "
+   ret.insert_page_method = function(_, name, method, ...)  -- Method provided by page.
+      local page = self.server.pages[name]
+      return page and page[method] and page[method](page, el, ...) or " "
    end
-   ret.insert_page = function(name, ...)  -- Insert entire page.
+   ret.insert_page = function(_, name, ...)  -- Insert entire page.
       return ret.insert_page_method(name, "output", el, ...)
    end
 
@@ -110,7 +109,6 @@ function This:el_repl(el, state)
       end
       return table.concat(rest_parts, "</tr><tr>")
    end
-
    return ret
 end
 
@@ -151,8 +149,6 @@ function This:repl(args)
    end
 
    local ret = {
-      master_css = self.master_css,
-
       name = self.name, title = self.name,
       list = function() return self:list_html(list()) end,
       cnt  = #list(),
@@ -169,54 +165,51 @@ function This:repl(args)
    ret.insert_page = function(name, ...)  -- Insert entire page.
       return ret.insert_page_method(name, "output", ...)
    end
+
+   ret.script = function(_, file)
+      return [[<script type="text/javascript" src="/{%name}/]] .. file .. [["></script>]]
+   end
+   ret.css = function(_, file)
+      return [[<link rel="stylesheet" href="/{%name}/]] .. file .. [[">]]
+   end
+
    return ret
 end
 
 This.page_path = "page/list.htm"
 
-function This:output(...)
-   return apply_subst(self.assets:load(self.page_path), self:repl(...))
-end
+This.assets_served = {
+   ["css/master.css"]    = true,
+   ["css/style.css"]    = true,
+   ["css/ListView.css"] = true,
+   ["js/common.js"]     = true,
+   ["js/manual_sql.js"] = true,
+   ["js/page.js"]   = true,
+   ["js/init.js"]   = true,
+}
 
-local StaticPage = require "page_html.StaticPage"
-
-function This:static_list(set)
-   local ret = {}
-   for k,v in pairs(set) do
-      if v == true then v = {} end
-      if not getmetatable(v) then  -- Otherwise it is it\s own entire object.
-         v.where = self.where
-         v.name = k
-         v = StaticPage:new(v)
-      end
-      table.insert(ret, v)
-   end
-   return ret
-end
-
-This.html_list_names = '["mirror", "linked_title"]'
-
-function This:extra_list_data()
+function This:data_js_repl()
    return {
-      ["css/master.css"]    = true,
-      ["css/style.css"]    = true,
-      ["css/ListView.css"] = true,
-      ["js/common.js"]     = true,
-      ["js/manual_sql.js"] = true,
-      ["js/page.js"]   = true,
-      ["js/data.js"]   = {sql_enabled = tostring(self.rpc_sql_enabled),
-                          list_names = self.html_list_names,
+      sql_enabled = tostring(self.rpc_sql_enabled),
+      list_names = self.html_list_names,
 
-                          repl=true, list_el_nameprep=self.list_el_nameprep,
-                          at_i = self.limit[2], search_term="", step_cnt=50,
-                          table_wid=self.table_wid},
-      ["js/init.js"]   = true,
+      repl=true, list_el_nameprep=self.list_el_nameprep,
+      at_i = self.limit[2], search_term="", step_cnt=50,
+      table_wid=self.table_wid
    }
 end
 
-function This:extra_list()
-   return self:static_list(self:extra_list_data())
+function This:output(args, ...)
+   if self.assets_served[args.rest_path] then
+      return self.assets:load(args.rest_path)
+   elseif args.rest_path == "js/data.js" then
+      return apply_subst(self.assets:load(args.rest_path), self:data_js_repl())
+   else
+      return apply_subst(self.assets:load(self.page_path), self:repl(args, ...))
+   end
 end
+
+This.html_list_names = '["mirror", "linked_title"]'
 
 function This:search(search_term, state)
    local form = self:form(search_term, state)

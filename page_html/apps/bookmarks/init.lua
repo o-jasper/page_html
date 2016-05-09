@@ -71,8 +71,8 @@ function This:_el_repl(el, state, repl)
    --return #tag_list() > 0 and self.pats.tag_row or " " end
 
    -- Local version of mirror.
-   repl.local_version = function(...)
-      return repl.insert_page_method("history_mirrored", "link_part")
+   repl.local_version = function(_, ...)
+      return repl.insert_page_method(nil, "history_mirrored", "link_part", ...)
    end
 
    repl.delete = [[<button hidden=true {%namesys delete}>&#10007;</button>]]

@@ -5,13 +5,12 @@
     <title>{%title}</title>
     <link rel="stylesheet" href="/css/{%master_css}.css">
 
-    <script type="text/javascript" src="/js/data.js"></script>
-
     <script type="text/javascript" src="/{%name}/PegasusJs/index.js"></script>
-    <script type="text/javascript" src="/js/common.js"></script>
 
-    <script type="text/javascript" src="/js/page.js"></script>
-    <script type="text/javascript" src="/js/manual_sql.js"></script>
+    {%script js/data.js}
+    {%script js/common.js}
+    {%script js/page.js}
+    {%script js/manual_sql.js}
 </head>
 <body>
 
@@ -26,7 +25,7 @@
 <table id="list">{%list}</table>
 <button id="moar_button" onclick="gui_search_extend();">MOAR</button>
 
-<script type="text/javascript" src="/js/init.js"></script>
+{%script js/init.js}
 <script type="text/javascript">rest_path = "{%rest_path}";</script>
 </body>
 </html>
