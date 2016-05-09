@@ -62,7 +62,8 @@ function This:have_mirror_fd(uri)
    if lfs.attributes(file, "mode") == "directory" then
       return io.open(file .. "/index.html"), "directory", nil, file
    else
-      return try_file(file) or try_file(self.manual_mirror_dir .. save_path(uri))
+      local fd = try_file(file) or try_file(self.manual_mirror_dir .. save_path(uri))
+      return fd, "file", nil, file
    end
 end
 
@@ -92,6 +93,7 @@ This.can_link_direct_file = false
 function This:output(args)
    local uri = args.rest_path
    local fd, msg, code, file = self:have_mirror_fd(uri)
+   if not fd then return "Don't have file " .. file end
    local attrs = lfs.attributes(file) or {}
 
    if attrs.mode == "file" and fd then
