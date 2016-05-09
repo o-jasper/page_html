@@ -117,7 +117,9 @@ function list_move(i, name, info, alt_fun, ev) {
         if(ev && !info.dont_prevent){ ev.preventDefault(); }
 
         var funs = info[name] || info;
+        var cur_i = i, cur_name = name;
         var cur = ge(info.nameprep + i + "_" + name);
+
         if( cur.no_result ){
             (alt_fun || funs.alt_fun || info.alt_fun ||
              function(){ alert("No:" + info.nameprep + i + "_" + name); })();
@@ -125,10 +127,12 @@ function list_move(i, name, info, alt_fun, ev) {
             cur.onfocus = function() {
                 cur.hidden = false;
                 focus_table_list(cur, false);  // Add the borders.
+                if(info.on_enter){ info.on_enter(info, cur, cur_i, cur_name); }
             }
             cur.onblur = function(){
                 cur.hidden = funs.hide_it;
                 focus_table_list(cur, true);  // Remove the borders.
+                if(info.on_leave){ info.on_leave(info, cur, cur_i, cur_name); }
             }
             cur.onkeydown = function(ev) {
                 if( !ev.ctrlKey ) { return; }
