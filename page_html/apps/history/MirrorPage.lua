@@ -46,12 +46,13 @@ local function try_file(file)
    if fd and fd:read(0) then
       return fd, msg, code
    else
-      fd:close()
+      if fd then fd:close() end
       return nil, msg, code
    end
 end
 local function save_path(uri)
-   local protocol, rel = string.match(uri, "^([^:]+://(.*)")
+   print(uri)
+   local protocol, rel = string.match(uri, "^([^:]+)://(.*)$")
    return protocol .. "/" .. rel
 end
 

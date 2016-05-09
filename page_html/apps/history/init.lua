@@ -25,14 +25,15 @@ This.MirrorPage = require "page_html.apps.history.MirrorPage"
 
 function This:init()
    ListView.init(self)
-   self.mirror_dir = self.data_dir .. "mirror/"
 end
 
 function This:extra_list_data()
    local ret = ListView.extra_list_data(self)
    if self.enable_view_mirror then
+      assert(self.data_dir)
       self.mirror_page = self.MirrorPage:new{
-         dir=self.mirror_dir, name="history_mirrored", server = self.server,
+         data_dir = self.data_dir,
+         name="history_mirrored", server = self.server,
       }
       ret["history/mirror/"] = self.mirror_page
    end
@@ -50,8 +51,6 @@ function This:_el_repl(el, state, repl)
    end
    return repl
 end
-
--- local lfs = require "lfs" -- Annoying, what is `mkdir -p` equivalent..
 
 function This:rpc_js()
    local ret = ListView.rpc_js(self)
