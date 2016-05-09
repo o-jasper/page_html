@@ -141,6 +141,14 @@ end
 
 This.direct_file_types = { png=true, jpg=true, jpeg=true, svg=true, pdf=true, ps=true }
 
+function This:fail_output(file, msg, code, repl)
+   repl = repl or {}
+   for k,v in pairs{ msg = msg, code = code or "(nil)" } do repl[k] = v end
+
+   local mm = self.mirror_msg
+   return apply_subst(mm.fail_pattern, repl)
+end
+
 function This:output(args)
    local mm = self.mirror_msg
    local uri = string.match(args.rest_path, "^(.+)/html/$")
@@ -153,23 +161,21 @@ function This:output(args)
          repl.img_file = "file://" .. file
          repl.img_arch = self:base_uri() .. uri
          return apply_subst(mm.base .. mm.image_pattern, repl)
-      else
-         for k,v in pairs{ msg = msg, code = code or "(nil)" } do repl[k] = v end
-         return apply_subst(mm.fail_pattern, repl)
       end
+   end
+   local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
+   if not fd then return self:fail_output(file, msg, code) end
+
+   local ret = fd:read("*a")
+   local tp = string.lower(string.match(file, "[.]([^.]+)$"))
+   local tp = self.direct_file_types[tp] and "application/" .. tp or nil
+   if tp then
+      local more = {  -- Make it go inline. (can always manually download.)
+         ["Content-Disposition"] = string.format("inline; filename=%q", file),
+      }
+      return ret, tp, more
    else
-      local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
-      local ret = fd:read("*a")
-      local tp = string.lower(string.match(file, "[.]([^.]+)$"))
-      local tp = self.direct_file_types[tp] and "application/" .. tp or nil
-      if tp then
-         local more = {  -- Make it go inline. (can always manually download.)
-            ["Content-Disposition"] = string.format("inline; filename=%q", file),
-         }
-         return ret, tp, more
-      else
-         return ret  -- TODO extract external referencing.
-      end
+      return ret  -- TODO extract external referencing.
    end
 end
 
