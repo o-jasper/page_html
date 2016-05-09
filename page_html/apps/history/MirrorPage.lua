@@ -173,7 +173,7 @@ This.uri_check = [[^[%a][%w-+.]*://[^%s#?"';{}()]+[?#]?[^%s"';{}()]*$]]
 local function check_in_uri(self, uri)
    if string.find(uri, self:self_uri_pat()) then
       print("Already a mirror itself", uri)
-   elseif string.find(uri, self.uri_check) then
+   elseif not string.find(uri, self.uri_check) then
       print("Failed: uri didn't check out?", ":" .. uri ..":")
    else
       return save_path(uri)
