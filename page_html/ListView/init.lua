@@ -5,17 +5,17 @@
 --  by the Free Software Foundation, either version 3 of the License, or
 --  (at your option) any later version.
 
-local This = require("page_html.util.Class"):class_derive{__name="ListView", name="ListView"}
+local GotAssets = require "page_html.GotAssets"
+local This = GotAssets:class_derive{__name="ListView", name="ListView"}
 
-This.Assets = require "page_html.Assets"
 This.ProduceList = require "Searcher.ProduceList"
 
 function This:init()
+   GotAssets.init(self)
+
    assert(self.data_dir, "Don't know where to put the files.")
    self.db_file = self.db_file or (self.data_dir .. "main.db")
 
-   self.assets_arg = self.assets_arg or { where = self.where }
-   self.assets = self.Assets:new(self.assets_arg)
    self.lister = self.ProduceList:new{
       Formulator = self.Formulator,
       db         = self.Db:new{ filename = self.db_file }

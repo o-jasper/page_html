@@ -1,15 +1,14 @@
-local This = require("page_html.util.Class"):class_derive{
+local GotAssets = require "page_html.GotAssets"
+
+local This = GotAssets:class_derive{
    name="userscripts", __name="page_html.apps.userscripts" }
 
 This.description = "Can load userscripts from here."
 
-This.Assets = require "page_html.Assets"
-
 This.where = {"page_html/apps/userscripts/", "page_html/", "page_html/ListView/"}
 
 function This:init()
-   self.assets_arg = self.assets_args or {where = This.where}
-   self.assets = self.Assets:new(self.assets_arg)
+   GotAssets.init(self)
 
    if not self.ge_prep then
       local prepfile = self.data_dir .. "/userscript_prep"

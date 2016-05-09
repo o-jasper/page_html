@@ -1,11 +1,16 @@
 -- TODO perhaps nice to make a version integrated with file viewer.
 
-local This = require("page_html.util.Class"):class_derive{__name="page_html.apps.MirrorPage"}
+local GotAssets = require "page_html.GotAssets"
+local This = GotAssets:class_derive{__name="page_html.apps.MirrorPage"}
 
 This.name = "history_mirrored"
 This.description = "Manages local copies."
 
+This.where = {"page_html/apps/history/"}
+
 function This:init()
+   GotAssets.init(self)
+
    self.mirror_dir = self.mirror_dir or self.data_dir .. "mirror/"
    self.manual_mirror_dir = self.manual_mirror_dir or self.data_dir .. "manual_mirror/"
 end

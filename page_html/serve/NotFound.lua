@@ -7,18 +7,13 @@
 
 local apply_subst = require "page_html.util.apply_subst"
 
-local This = require("page_html.util.Class"):class_derive{
+local GotAssets = require "page_html.GotAssets"
+local This = GotAssets:class_derive{
    name="page_not_found.html", __name="page_html.server.NotFound"}
 
 This.description = "Page shown when no page is found."
 
 This.where = { "page_html/serve/" }
-This.Assets = require "page_html.Assets"
-
-function This:init()
-   self.assets_arg = self.assets_arg or { where = self.where }
-   self.assets = self.Assets:new(self.assets_arg)
-end
 
 function This:repl(args)
    local self_list, args_list, page_list, extra_page_list = {}, {}, {}, {}
