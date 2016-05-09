@@ -139,6 +139,8 @@ function This:repl(file)
    return repl
 end
 
+This.direct_file_types = { png=true, jpg=true, jpeg=true, svg=true, pdf=true, ps=true }
+
 function This:output(args)
    local mm = self.mirror_msg
    local uri = string.match(args.rest_path, "^(.+)/html/$")
@@ -158,10 +160,16 @@ function This:output(args)
    else
       local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
       local ret = fd:read("*a")
-      local more = {  -- Make it go inline. (can always manually download.
-         ["Content-Disposition"] = string.format("inline; filename=%q", file),
-      }
-      return ret, "application/" .. string.match(file, "[.]([^.]+)$"), more
+      local tp = string.lower(string.match(file, "[.]([^.]+)$"))
+      local tp = self.direct_file_types[tp] and "application/" .. tp or nil
+      if tp then
+         local more = {  -- Make it go inline. (can always manually download.)
+            ["Content-Disposition"] = string.format("inline; filename=%q", file),
+         }
+         return ret, tp, more
+      else
+         return ret  -- TODO extract external referencing.
+      end
    end
 end
 
