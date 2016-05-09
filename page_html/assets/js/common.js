@@ -50,13 +50,15 @@ function textarea_update(te, after_keydown, config) {
 
 // Travelling through guis.
 function go_graph(to, ev, graph) {
-    if( typeof(to) == 'function' ) { to(ev); }
+    if( typeof(to) == 'function' ) { ev.preventDefault(); to(ev); }
     else if(to) {
         var got = maybe_ge(to);
-        if( !got.hidden ){ got.focus(); }
+        if( !got.hidden ){ ev.preventDefault(); got.focus(); }
         else{ follow_graph(graph)({target:got, keyCode:ev.keyCode, shiftKey:true}); }
     }
 }
+
+// TODO more configurability with regard to which keys do what.
 
 function follow_graph(graph) {
     return function(ev) {
@@ -110,8 +112,10 @@ function focus_table_list(el, out, prep) {
 
 // Basically here because list entries arent handy units.
 // (but i kindah want the vertical alignment of tables.)
-function list_move(i, name, info, alt_fun) {
+function list_move(i, name, info, alt_fun, ev) {
     if(name) {
+        if(ev && !info.dont_prevent){ ev.preventDefault(); }
+
         var funs = info[name] || info;
         var cur = ge(info.nameprep + i + "_" + name);
         if( cur.no_result ){
@@ -127,16 +131,20 @@ function list_move(i, name, info, alt_fun) {
                 focus_table_list(cur, true);  // Remove the borders.
             }
             cur.onkeydown = function(ev) {
+                if( !ev.ctrlKey ) { return; }
+
                 var kc = ev.keyCode, order = info.order;
                 var ol = order.length;
 
-                if(kc == 38){ list_move(i - 1, name, info, info.limit_u) }
-                else if(kc == 40){ list_move(i + 1, name, info, info.limit_d) }
-                else if(kc == 37){
-                    list_move(i, order[(funs.i - 1 + ol)%ol], info, info.limit_r);
+                if(kc == 38){
+                    list_move(i - 1, name, info, info.limit_u, ev);
+                } else if(kc == 40){
+                    list_move(i + 1, name, info, info.limit_d, ev);
+                } else if(kc == 37){
+                    list_move(i, order[(funs.i - 1 + ol)%ol], info, info.limit_r, ev);
                 }
                 else if(kc == 39){
-                    list_move(i, order[(funs.i + 1)%ol], info, info.limit_l);
+                    list_move(i, order[(funs.i + 1)%ol], info, info.limit_l, ev);
                 }
             }
             if(info.block_keyup){ cur.onkeyup = function(){} }
