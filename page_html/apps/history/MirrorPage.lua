@@ -31,13 +31,13 @@ local exec = require "page_html.util.exec"
 
 -- TODO this is surely too limited.
 This.mirror_msg = {
-   base = [[Other than outside assets, this a {%local_mirror}:{%is_top}<br>
+   base = [[Other than outside assets, this a {%local_mirror}:<!--{%is_top}--><br>
 <a href="{%uri}"><code>{%uri}</code></a><br>
 {%from_time}, size {%gist_size}]],
    pattern = [[{%subfiles}
 <hr>{%mirror}]],
    fail_pattern = [[Couldnt read; {%msg} <span style="color:gray">({%code})</span>
-<br>{%spell_it}]],
+<br>{%list_attrs}]],
    is_top = [[<span style="color:gray">(top of dir)</span>]],
 
    image_pattern = [[<br><a href="{%uri}">web</a>,
@@ -66,8 +66,9 @@ function This:have_mirror_fd(uri)
    if lfs.attributes(file, "mode") == "directory" then
       return io.open(file .. "/index.html"), "directory", nil, file
    else
-      local fd = try_file(file) or try_file(self.manual_mirror_dir .. save_path(uri))
-      return fd, "file", nil, file
+      local fd, msg, code = try_file(file)
+         or try_file(self.manual_mirror_dir .. save_path(uri))
+      return fd, msg or "(no msg)", code, file
    end
 end
 
@@ -94,25 +95,14 @@ local gist = require("page_html.util.text.number").gist
 
 This.can_link_direct_file = false
 
-function This:output(args)
-   local uri = args.rest_path
-   local fd, msg, code, file = self:have_mirror_fd(uri)
-   if not fd then return "Don't have file " .. file end
+function This:repl(file)
    local attrs = lfs.attributes(file) or {}
 
-   if attrs.mode == "file" and fd then
-      local str = fd:read("*a")
-      fd:close()
-      local more = {  -- Make it go inline. (can always manually download.
-         ["Content-Disposition"] = string.format("inline; filename=%q", file),
-      }
-      return str, "application/" .. string.match(file, "[.]([^.]+)$"), more
-   end
-
+   -- Some kind of page, make repl.
    local repl = {}
    for k,v in pairs(attrs or {}) do repl[k] = v end
 
-   function repl.spell_it ()
+   repl.list_attrs = function ()
       local ret = {"<table>"}
       for k,v in pairs(attrs or {}) do
          table.insert(ret, string.format("<tr><td>%s</td><td>%s</td></tr>", k,v))
@@ -146,26 +136,32 @@ function This:output(args)
    else
       repl.subfiles = " "
    end
+   return repl
+end
 
-   repl.uri = uri
-   repl.is_top = " "
+function This:output(args)
    local mm = self.mirror_msg
-   if fd then
-      repl.is_top = (code =="directory" and mm.is_top or "")
-      repl.mirror = fd:read("*a"),
-
-      fd:close()
-      return apply_subst(mm.base .. mm.pattern, repl)
-   elseif string.find(file, "/html/$") then
-      -- It is html-page-about for files to add stuff about.
-      repl.uri = string.match(uri, "^(.+)/[^/]+/html/$")
-      repl.img_file = "file://" .. string.match(file, "^(.+)/html/$")
-      attrs = lfs.attributes(string.match(file, "^(.+)/html/$")) or {}
-      repl.img_arch = self:base_uri() .. string.match(uri, "^(.+)/html/$")
-      return apply_subst(mm.base .. mm.image_pattern, repl)
-   else  -- Didn't work somehow.
-      for k,v in pairs{ msg = msg, code = code or "(nil)" } do repl[k] = v end
-      return apply_subst(mm.fail_pattern, repl)
+   local uri = string.match(args.rest_path, "^(.+)/html/$")
+   if uri then  -- It is a page with the thing in it.
+      local fd, msg, code, file = self:have_mirror_fd(uri)
+      local repl = self:repl(file)
+      if fd then  -- And can actually find the file.
+         fd:close()
+         repl.uri = string.match(uri, "^(.+)/[^/]*$")
+         repl.img_file = "file://" .. file
+         repl.img_arch = self:base_uri() .. uri
+         return apply_subst(mm.base .. mm.image_pattern, repl)
+      else
+         for k,v in pairs{ msg = msg, code = code or "(nil)" } do repl[k] = v end
+         return apply_subst(mm.fail_pattern, repl)
+      end
+   else
+      local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
+      local ret = fd:read("*a")
+      local more = {  -- Make it go inline. (can always manually download.
+         ["Content-Disposition"] = string.format("inline; filename=%q", file),
+      }
+      return ret, "application/" .. string.match(file, "[.]([^.]+)$"), more
    end
 end
 
