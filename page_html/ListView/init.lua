@@ -151,6 +151,8 @@ function This:repl(args)
    end
 
    local ret = {
+      sql_enabled = tostring(self.rpc_sql_enabled),
+
       master_css = self.master_css,
 
       name = self.name, title = self.name,
@@ -202,7 +204,8 @@ function This:extra_list_data()
       ["js/common.js"]     = true,
       ["js/manual_sql.js"] = true,
       ["js/page.js"]   = true,
-      ["js/data.js"]   = {repl=true, list_el_nameprep=self.list_el_nameprep,
+      ["js/data.js"]   = {sql_enabled = tostring(self.rpc_sql_enabled),
+                          repl=true, list_el_nameprep=self.list_el_nameprep,
                           at_i = self.limit[2], search_term="", step_cnt=50,
                           table_wid=self.table_wid},
       ["js/init.js"]   = true,
@@ -220,23 +223,30 @@ function This:search(search_term, state)
    return self:list_html_list(list, state, state.limit[1]), form:sql()
 end
 
-This.rpc_sql_enabled = true
+This.rpc_sql_enabled = false
 
 function This:rpc_js()
+   local function rpc_sql(sql_code)
+      local html_list = {}
+      if self.rpc_sql_enabled then
+         local list, state = self.lister.db:exec(sql_code), {}
+         for i, el in ipairs(list) do
+            local repl = self:el_repl(el, state)
+            repl.i = i
+            table.insert(html_list,
+                         apply_subst(self.assets:load("parts/raw.el.htm"), repl))
+         end
+      end
+      return html_list
+   end
+
    return {  -- Produces a bunch of results.
       rpc_search = function(...) return {self:search(...)} end,
-      rpc_sql = function(sql_code)
-         local html_list = {}
-         if self.rpc_sql_enabled then
-            local list, state = self.lister.db:exec(sql_code), {}
-            for i, el in ipairs(list) do
-               local repl = self:el_repl(el, state)
-               repl.i = i
-               table.insert(html_list,
-                            apply_subst(self.assets:load("parts/raw.el.htm"), repl))
-            end
+      rpc_sql = self.rpc_sql_enabled and rpc_sql or nil,
+      delete_id = function(id)
+         if type(id) == "number" then
+            self.lister.db:delete(id)
          end
-         return html_list
       end,
    }
 end

@@ -2,6 +2,7 @@ config = {
     list_el_nameprep : "{%list_el_nameprep}",
     sql_textarea : { max_rows:10, cols:90 },
     step_cnt : {%step_cnt},
+    sql_enabled : {%sql_enabled},
 }
 
 a = {working_short:"(w)", working_long:"<span class='working'>...working...</span>",

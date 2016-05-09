@@ -1,6 +1,8 @@
 
 function select_list_index(index) {
+    // To sql input if that is not hidden, otherwise to search input/
     var limit_u = function(){ ge(ge('sql').hidden ? 'search' : 'sql').focus(); }
+    // Extend if at bottom.
     var limit_d = function(){  gui_search_extend(); }
 
     cur_sel = [ge('list').rows[0]];
@@ -39,4 +41,9 @@ ge('sql').onkeydown = fg;
 ge('moar_button').onkeydown = fg;
 
 ge('search').focus();
-// visible_sql(false);  // uncomment to defaultly not show the sql.
+
+if( config.sql_enabled ){
+    ge('sql').hidden = true;
+    ge('sql_button').hidden = true;
+    ge('sql_button').disabled = true;
+}
