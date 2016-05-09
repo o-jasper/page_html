@@ -80,15 +80,17 @@ function currentPosFraction()
 
 // TODO separate each portion.
 
+var focus_from;  // Where the focus came from.(hopefully)
+
 function toggle_commandpanel(immediate) {
     selection = window.getSelection().toString();
     pos_frac  = currentPosFraction();
 
-    if( command_element ) {
+    var document = window.document;
+    if( command_element ) {  // Already exists, just toggle.
         command_element.hidden = !command_element.hidden;
     } else {
-        var document = window.document;
-
+// Doesnt exist yet, make and enable. TODO affects initial detection onhover? Nah?
         var element = command_element || document.createElement('div');
         command_element = element;
         element.id = '{%.prep}CommandPanel'
@@ -118,8 +120,9 @@ function toggle_commandpanel(immediate) {
     ge('command_immediate').checked = immediate;
     if( command_element.hidden ) {
         ge('command_input').blur();
-        // TODO kindah want to select the thing we left.
+        if( focus_from ) { focus_from.focus(); focus_from = null; }
     } else {
+        focus_from = document.activeElement;
         ge('command_input').focus();
     }
 }
