@@ -11,7 +11,7 @@ function select_list_index(index) {
         limit_d:limit_d, limit_u:limit_u,
         nameprep:config.list_el_nameprep,
         mirror:{i:0}, linked_title:{i:1},
-        order:(cur.sql_cmd ? ["whole"] : ["mirror", "linked_title"]),
+        order:(cur.sql_cmd ? ["whole"] : config.list_names),
         block_keyup:true,
     });
 }

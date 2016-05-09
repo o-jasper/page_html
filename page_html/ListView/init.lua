@@ -151,8 +151,6 @@ function This:repl(args)
    end
 
    local ret = {
-      sql_enabled = tostring(self.rpc_sql_enabled),
-
       master_css = self.master_css,
 
       name = self.name, title = self.name,
@@ -196,6 +194,8 @@ function This:static_list(set)
    return ret
 end
 
+This.html_list_names = '["mirror", "linked_title"]'
+
 function This:extra_list_data()
    return {
       ["css/master.css"]    = true,
@@ -205,6 +205,8 @@ function This:extra_list_data()
       ["js/manual_sql.js"] = true,
       ["js/page.js"]   = true,
       ["js/data.js"]   = {sql_enabled = tostring(self.rpc_sql_enabled),
+                          list_names = self.html_list_names,
+
                           repl=true, list_el_nameprep=self.list_el_nameprep,
                           at_i = self.limit[2], search_term="", step_cnt=50,
                           table_wid=self.table_wid},
