@@ -39,10 +39,18 @@ function gui_search_extend(search_term, cnt) {
     search_extend(search_term || cur.search_term || "", cnt || config.step_cnt || 50);
 }
 
+function delete_list_gui_section(i) {
+    var cur = ge('el_' + i), n=0;
+    while(cur && (cur.nodeName == "TR" || cur.nodeName == "#text")) {
+        cur = cur.nextSibling;
+        cur.hidden = true;
+    }
+}
+
 var marked_for_deletion = {}
 function gui_delete(i, id) {
     if( marked_for_deletion[i] ){
-        ge('el_' + i).hidden = true;
+        delete_list_gui_section(i);
         callback_delete_id([id]);
     } else {
         marked_for_deletion[i] = true;
