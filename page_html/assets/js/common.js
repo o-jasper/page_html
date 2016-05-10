@@ -117,22 +117,20 @@ function list_move(i, name, info, alt_fun, ev) {
         if(ev && !info.dont_prevent){ ev.preventDefault(); }
 
         var funs = info[name] || info;
-        var cur_i = i, cur_name = name;
         var cur = ge(info.nameprep + i + "_" + name);
 
         if( cur.no_result ){
+            // TODO instead, skip.
             (alt_fun || funs.alt_fun || info.alt_fun ||
              function(){ alert("No:" + info.nameprep + i + "_" + name); })();
         } else {
             cur.onfocus = function() {
                 cur.hidden = false;
                 focus_table_list(cur, false);  // Add the borders.
-                if(info.on_enter){ info.on_enter(info, cur, cur_i, cur_name); }
             }
             cur.onblur = function(){
                 cur.hidden = funs.hide_it;
                 focus_table_list(cur, true);  // Remove the borders.
-                if(info.on_leave){ info.on_leave(info, cur, cur_i, cur_name); }
             }
             cur.onkeydown = function(ev) {
                 if( !ev.ctrlKey ) { return; }
@@ -141,8 +139,12 @@ function list_move(i, name, info, alt_fun, ev) {
                 var ol = order.length;
 
                 if(kc == 38){
+                    if(info.on_leave){ info.on_leave(info, cur, i, name); }
+                    if(info.on_enter){ info.on_enter(info, cur, i - 1, name); }
                     list_move(i - 1, name, info, info.limit_u, ev);
                 } else if(kc == 40){
+                    if(info.on_leave){ info.on_leave(info, cur, i, name); }
+                    if(info.on_enter){ info.on_enter(info, cur, i + 1, name); }
                     list_move(i + 1, name, info, info.limit_d, ev);
                 } else if(kc == 37){
                     list_move(i, order[(funs.i - 1 + ol)%ol], info, info.limit_r, ev);
@@ -154,6 +156,7 @@ function list_move(i, name, info, alt_fun, ev) {
             if(info.block_keyup){ cur.onkeyup = function(){} }
             cur.onclick = funs.onclick || null;
             cur.hidden = false;
+            if(!cur.focus){ alert("Couldnt focus:" + info.nameprep + i + "_" + name); }
             cur.focus();
         }
     }

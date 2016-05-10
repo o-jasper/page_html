@@ -3,7 +3,6 @@ config = {
     sql_textarea : { max_rows:10, cols:90 },
     step_cnt : {%step_cnt},
     sql_enabled : {%sql_enabled},
-    list_names : {%list_names},
 }
 
 a = {working_short:"(w)", working_long:"<span class='working'>...working...</span>",

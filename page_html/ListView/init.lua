@@ -185,12 +185,12 @@ This.assets_served = {
    ["js/manual_sql.js"] = true,
    ["js/page.js"]   = true,
    ["js/init.js"]   = true,
+   ["js/init_list.js"]   = true,
 }
 
 function This:data_js_repl()
    return {
       sql_enabled = tostring(self.rpc_sql_enabled),
-      list_names = self.html_list_names,
 
       repl=true, list_el_nameprep=self.list_el_nameprep,
       at_i = self.limit[2], search_term="", step_cnt=50,
@@ -210,8 +210,6 @@ function This:output(args, ...)
       return apply_subst(self.assets:load(self.page_path), self:repl(args, ...))
    end
 end
-
-This.html_list_names = '["mirror", "linked_title"]'
 
 function This:search(search_term, state)
    local form = self:form(search_term, state)

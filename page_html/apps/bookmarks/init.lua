@@ -31,8 +31,6 @@ function This:el_repl(el, state)
    return self:_el_repl(el, state, ListView.el_repl(self, el, state))
 end
 
-This.html_list_names = '["delete", "mirror", "linked_title"]'
-
 This.pats = {
    text_row  = [[<tr><td colspan={%table_wid} class="bm_text">{%text}</td></tr>]],
    quote_row = [[<tr><td colspan={%table_wid} class="bm_quote">
@@ -75,7 +73,7 @@ function This:_el_repl(el, state, repl)
       return repl.insert_page_method(nil, "history_mirrored", "link_part", ...)
    end
 
-   repl.delete = [[<button hidden=true {%namesys delete}>&#10007;</button>]]
+   repl.delete = [[<button hidden=true {%namesys del}>&#10007;</button>]]
 
    return repl
 end
