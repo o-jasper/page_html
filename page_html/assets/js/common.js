@@ -121,8 +121,8 @@ function list_move(i, name, info, alt_fun, ev) {
 
         if( cur.no_result ){
             // TODO instead, skip.
-            (alt_fun || funs.alt_fun || info.alt_fun ||
-             function(){ alert("No:" + info.nameprep + i + "_" + name); })();
+            return (alt_fun || funs.alt_fun || info.alt_fun ||
+                    function(){ return true; })();
         } else {
             cur.onfocus = function() {
                 cur.hidden = false;
@@ -141,16 +141,20 @@ function list_move(i, name, info, alt_fun, ev) {
                 if(kc == 38){
                     if(info.on_leave){ info.on_leave(info, cur, i, name); }
                     if(info.on_enter){ info.on_enter(info, cur, i - 1, name); }
-                    list_move(i - 1, name, info, info.limit_u, ev);
+                    var k = i - 1;
+                    while(list_move(k, name, info, info.limit_u, ev)){ k -= 1; }
                 } else if(kc == 40){
                     if(info.on_leave){ info.on_leave(info, cur, i, name); }
                     if(info.on_enter){ info.on_enter(info, cur, i + 1, name); }
-                    list_move(i + 1, name, info, info.limit_d, ev);
+                    var k = i + 1;
+                    while(list_move(k, name, info, info.limit_d, ev)){ k += 1; }
                 } else if(kc == 37){
-                    list_move(i, order[(funs.i - 1 + ol)%ol], info, info.limit_r, ev);
+                    var k = funs.i - 1 + ol;
+                    while(list_move(i, order[k%ol], info, info.limit_r, ev)){ k -= 1; }
                 }
                 else if(kc == 39){
-                    list_move(i, order[(funs.i + 1)%ol], info, info.limit_l, ev);
+                    var k = funs.i + 1 + ol;
+                    while(list_move(i, order[k%ol], info, info.limit_l, ev)){ k += 1; }
                 }
             }
             if(info.block_keyup){ cur.onkeyup = function(){} }
