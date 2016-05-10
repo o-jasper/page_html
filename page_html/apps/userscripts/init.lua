@@ -42,6 +42,7 @@ function This:output(args)
             end
 
             local prep, asset = "// - " .. key .. "\n", assets:load(key)
+            assert(asset, "Could not find asset: " .. key)
             if string.match(key, "[.]css$") or string.match(key, "[.]htm") then
                return prep .. string.gsub(asset, "([^\n]+)",
                                           function(x) return [[h += "]] .. x .. [[";]] end)
