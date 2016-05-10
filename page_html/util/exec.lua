@@ -5,11 +5,12 @@ local function find_or(str, list)
 end
 
 local function probably_safe(str)
-   if string.find(str, "^mkdir[%s]") then  -- mkdir this particular form.
-      if not find_or(str, {[[^mkdir %-p "[^"%{%};]+"$]], [[^mkdir "[^"%{%};]+"$]]})then 
+   if string.find(str, "^mkdir[%s]") then  -- `mkdir` this particular form.
+      local only = {[[^mkdir %-p "[^"'%s{};]+"$]], [[^mkdir "[^"'%s{};]+"$]]}
+      if not find_or(str, only) then
          return false 
-      end
-   end
+      end  -- Never `rm`
+   elseif string.find(str, "^rm[%s]") then return false end
    return find_or(str, {"^echo$", "^echo[%s][%s%w]*$"})
 end
 
