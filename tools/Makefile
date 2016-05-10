@@ -2,6 +2,8 @@
 
 default: page_html_set builds/page_html_set.lua.0.0.tar.bz2
 
+build: builds/page_html_set.lua/page_html/
+
 page_html_set: builds/page_html_set.lua/ builds/page_html_set.lua/shatotal files userscripts
 
 builds/page_html_set.lua.0.0.tar.gz:

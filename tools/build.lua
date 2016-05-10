@@ -4,6 +4,7 @@ local figure_required = require "lib.figure_required"
 local build_dir = arg[2] or "builds/page_html_set/page_html/"
 os.execute("mkdir -p " .. build_dir)
 
+-- TODO remove excess files.
 local _, lfs = pcall(function() return require "lfs" end)
 for k,v in pairs(figure_required.file(arg[1])) do
    local dir, file = unpack(v)
