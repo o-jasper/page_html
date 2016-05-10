@@ -1,3 +1,4 @@
+
 function select_list_index(index) {
     // To sql input if that is not hidden, otherwise to search input/
     var limit_u = function(){ ge(ge('sql').hidden ? 'search' : 'sql').focus(); }
@@ -6,11 +7,19 @@ function select_list_index(index) {
 
     cur_sel = [ge('list').rows[0]];
 
-    list_move(index, (cur.sql_cmd ? "whole" : "linked_title"), {
+    var on_enter = function(info, cur, i, name) {
+        ge(info.nameprep + i + "_del").hidden = false;
+    }
+    var on_leave = function(info, cur, i, name) {
+        ge(info.nameprep + i + "_del").hidden = true;
+    }
+
+    list_move(index, (cur && cur.sql_cmd ? "whole" : "linked_title"), {
         limit_d:limit_d, limit_u:limit_u,
         nameprep:config.list_el_nameprep,
-        mirror:{i:0}, linked_title:{i:1},
-        order:(cur.sql_cmd ? ["whole"] : ["mirror", "linked_title"]),
+        order:(cur && cur.sql_cmd ? ["whole"] : ["del", "mirror", "linked_title"]),
+        del:{i:0}, mirror:{i:1}, linked_title:{i:2},
         block_keyup:true,
+        on_enter : on_enter, on_leave : on_leave
     });
 }

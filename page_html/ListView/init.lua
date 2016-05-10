@@ -60,7 +60,7 @@ function This:el_repl(el, state)
    add_ret{
       list_el_nameprep = (el.list_el_name or self.list_el_nameprep),
       namesys = namesys,
-      selectme = [[onclick="select_list_index({%i})"]],
+      selectme = [[id="el_{%i}" onclick="select_list_index({%i})"]],
    }
 
    if el.uri and (not el.title or el.title == "") then
@@ -109,6 +109,9 @@ function This:el_repl(el, state)
       end
       return table.concat(rest_parts, "</tr><tr>")
    end
+
+   ret.delete = [[<button onclick="gui_delete({%i}, {%id})" hidden=true {%namesys del}>&#10007;</button>]]
+
    return ret
 end
 
@@ -219,31 +222,36 @@ function This:search(search_term, state)
 end
 
 This.rpc_sql_enabled = false
+This.rpc_delete_enabled = true
 
 function This:rpc_js()
-   local function rpc_sql(sql_code)
-      local html_list = {}
-      if self.rpc_sql_enabled then
-         local list, state = self.lister.db:exec(sql_code), {}
-         for i, el in ipairs(list) do
-            local repl = self:el_repl(el, state)
-            repl.i = i
-            table.insert(html_list,
-                         apply_subst(self.assets:load("parts/raw.el.htm"), repl))
-         end
-      end
-      return html_list
-   end
-
-   return {  -- Produces a bunch of results.
+   local ret = {
       rpc_search = function(...) return {self:search(...)} end,
-      rpc_sql = self.rpc_sql_enabled and rpc_sql or nil,
-      delete_id = function(id)
+   }
+
+   if self.rpc_sql_enabled then
+      ret.rpc_sql = function (sql_code)
+         local html_list = {}
+         if self.rpc_sql_enabled then
+            local list, state = self.lister.db:exec(sql_code), {}
+            for i, el in ipairs(list) do
+               local repl = self:el_repl(el, state)
+               repl.i = i
+               table.insert(html_list,
+                            apply_subst(self.assets:load("parts/raw.el.htm"), repl))
+            end
+         end
+         return html_list
+      end
+   end
+   if self.rpc_delete_enabled then
+      ret.delete_id = function(id)
          if type(id) == "number" then
             self.lister.db:delete(id)
          end
-      end,
-   }
+      end
+   end
+   return ret
 end
 
 return This

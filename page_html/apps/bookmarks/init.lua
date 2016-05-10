@@ -73,8 +73,6 @@ function This:_el_repl(el, state, repl)
       return repl.insert_page_method(nil, "history_mirrored", "link_part", ...)
    end
 
-   repl.delete = [[<button hidden=true {%namesys del}>&#10007;</button>]]
-
    return repl
 end
 
