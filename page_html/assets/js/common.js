@@ -109,6 +109,7 @@ function focus_table_list(el, out, prep) {
     }
 }
 
+// NOTE function below works by returning true if need to skip over.
 
 // Basically here because list entries arent handy units.
 // (but i kindah want the vertical alignment of tables.)
@@ -140,14 +141,14 @@ function list_move(i, name, info, alt_fun, ev) {
 
                 if(kc == 38){
                     if(info.on_leave){ info.on_leave(info, cur, i, name); }
-                    if(info.on_enter){ info.on_enter(info, cur, i - 1, name); }
                     var k = i - 1;
                     while(list_move(k, name, info, info.limit_u, ev)){ k -= 1; }
+                    if(info.on_enter){ info.on_enter(info, cur, k, name); }
                 } else if(kc == 40){
                     if(info.on_leave){ info.on_leave(info, cur, i, name); }
-                    if(info.on_enter){ info.on_enter(info, cur, i + 1, name); }
                     var k = i + 1;
                     while(list_move(k, name, info, info.limit_d, ev)){ k += 1; }
+                    if(info.on_enter){ info.on_enter(info, cur, k, name); }
                 } else if(kc == 37){
                     var k = funs.i - 1 + ol;
                     while(list_move(i, order[k%ol], info, info.limit_r, ev)){ k -= 1; }
@@ -162,6 +163,7 @@ function list_move(i, name, info, alt_fun, ev) {
             cur.hidden = false;
             if(!cur.focus){ alert("Couldnt focus:" + info.nameprep + i + "_" + name); }
             cur.focus();
+            return ge('el_' + i).hidden;  // Skip over if whole thing is hidden.
         }
     }
 }
