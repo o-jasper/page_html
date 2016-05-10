@@ -39,6 +39,12 @@ function gui_search_extend(search_term, cnt) {
     search_extend(search_term || cur.search_term || "", cnt || config.step_cnt || 50);
 }
 
+function gui_delete(i, id) {
+    alert(i + "..." + id);
+    ge('el_' + i).hidden = true;
+    callback_delete_id([id]);
+}
+
 function search_anew(search_term, cnt) {
     var cnt = cnt || initial_cnt;
     cur = { at_i:0, search_term:search_term, done:false };

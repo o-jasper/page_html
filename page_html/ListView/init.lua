@@ -110,7 +110,7 @@ function This:el_repl(el, state)
       return table.concat(rest_parts, "</tr><tr>")
    end
 
-   ret.delete = [[<button onclick="gui_delete({%i}, {%id})" hidden=true {%namesys del}>&#10007;</button>]]
+   ret.delete = [[<button onclick="gui_delete({%i}, {%id});" hidden=true {%namesys del}>&#10007;</button>]]
 
    return ret
 end
