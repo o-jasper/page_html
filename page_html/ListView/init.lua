@@ -110,7 +110,8 @@ function This:el_repl(el, state)
       return table.concat(rest_parts, "</tr><tr>")
    end
 
-   ret.delete = [[<button onclick="gui_delete({%i}, {%id});" hidden=true {%namesys del}>&#10007;</button>]]
+   ret.delete = [[<button hidden=true {%namesys del}
+onclick="gui_delete({%i}, {%id});">&#10007;</button>]]
 
    return ret
 end
@@ -204,7 +205,6 @@ end
 function This:output(args, ...)
    local rp = args.rest_path
    if self.assets_served[rp] then
-      print(rp, string.match(rp, "[.]([^.]+)$"))
       return self.assets:load(rp), "text/" .. string.match(rp, "[.]([^.]+)$")
    elseif rp == "js/data.js" then
       local ret = apply_subst(self.assets:load(rp), self:data_js_repl())

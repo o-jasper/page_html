@@ -40,7 +40,6 @@ function gui_search_extend(search_term, cnt) {
 }
 
 function gui_delete(i, id) {
-    alert(i + "..." + id);
     ge('el_' + i).hidden = true;
     callback_delete_id([id]);
 }
