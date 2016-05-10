@@ -39,9 +39,15 @@ function gui_search_extend(search_term, cnt) {
     search_extend(search_term || cur.search_term || "", cnt || config.step_cnt || 50);
 }
 
+var marked_for_deletion = {}
 function gui_delete(i, id) {
-    ge('el_' + i).hidden = true;
-    callback_delete_id([id]);
+    if( marked_for_deletion[i] ){
+        ge('el_' + i).hidden = true;
+        callback_delete_id([id]);
+    } else {
+        marked_for_deletion[i] = true;
+        ge('list_el_' + i + "_del").style.backgroundColor = "red";
+    }
 }
 
 function search_anew(search_term, cnt) {
