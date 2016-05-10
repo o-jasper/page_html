@@ -152,14 +152,13 @@ function list_move(i, name, info, alt_fun, ev) {
                 } else if(kc == 37){
                     var k = funs.i - 1 + ol;
                     while(list_move(i, order[k%ol], info, info.limit_r, ev)){ k -= 1; }
-                }
-                else if(kc == 39){
+                } else if(kc == 39){
                     var k = funs.i + 1 + ol;
                     while(list_move(i, order[k%ol], info, info.limit_l, ev)){ k += 1; }
                 }
             }
             if(info.block_keyup){ cur.onkeyup = function(){} }
-            cur.onclick = funs.onclick || null;
+            cur.onclick = funs.onclick || cur.onclick;
             cur.hidden = false;
             if(!cur.focus){ alert("Couldnt focus:" + info.nameprep + i + "_" + name); }
             cur.focus();
