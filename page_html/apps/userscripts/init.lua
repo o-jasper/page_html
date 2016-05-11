@@ -69,7 +69,7 @@ function This:output(args)
       }
       for _, el in ipairs(bare_list) do
          table.insert(userscript_list,
-                      string.format([[{%%userscript %s}<td></td>%s]], unpack(el)))
+                      string.format([[{%%userscript %s}</td><td>%s]], unpack(el)))
       end
 
       local repl = { table="<table><tr><td>"  ..
