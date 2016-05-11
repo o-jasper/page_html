@@ -6,7 +6,7 @@ local This = GotAssets:class_derive{__name="page_html.apps.MirrorPage"}
 This.name = "history_mirrored"
 This.description = "Manages local copies."
 
-This.where = {"page_html/apps/history/"}
+This.where = {"page_html/apps/history/MirrorPage/"}
 
 function This:init()
    GotAssets.init(self)
@@ -28,24 +28,6 @@ local lfs = require "lfs"
 
 local apply_subst = require "page_html.util.apply_subst"
 local exec = require "page_html.util.exec"
-
--- TODO this is surely too limited.
-This.mirror_msg = {
-   base = [[Other than outside assets, this a {%local_mirror}:<!--{%is_top}--><br>
-<a href="{%uri}"><code>{%uri}</code></a><br>
-{%from_time}, size {%gist_size}]],
-   pattern = [[{%subfiles}
-<hr>{%mirror}]],
-   fail_pattern = [[Couldnt read; {%msg} <span style="color:gray">({%code})</span>
-<br>{%list_attrs}]],
-   is_top = [[<span style="color:gray">(top of dir)</span>]],
-
-   image_pattern = [[<br><a href="{%uri}">web</a>,
-<a href="{%img_arch}">archive</a>,
-<a href="{%img_file}">file</a>
-<hr>
-<img src="{%img_arch}"></img>]],
-}
 
 local function try_file(file)
    local fd, msg, code = io.open(file)
@@ -144,13 +126,10 @@ This.direct_file_types = { png=true, jpg=true, jpeg=true, svg=true, pdf=true, ps
 function This:fail_output(file, msg, code, repl)
    repl = repl or {}
    for k,v in pairs{ msg = msg, code = code or "(nil)" } do repl[k] = v end
-
-   local mm = self.mirror_msg
-   return apply_subst(mm.fail_pattern, repl)
+   return apply_subst(self.assets:load("failed.htm"), repl)
 end
 
 function This:output(args)
-   local mm = self.mirror_msg
    local uri = string.match(args.rest_path, "^(.+)/html/$")
    if uri then  -- It is a page with the thing in it.
       local fd, msg, code, file = self:have_mirror_fd(uri)
@@ -160,13 +139,13 @@ function This:output(args)
          repl.uri = string.match(uri, "^(.+)/[^/]*$")
          repl.img_file = "file://" .. file
          repl.img_arch = self:base_uri() .. uri
-         return apply_subst(mm.base .. mm.image_pattern, repl)
+         return apply_subst(self.assets("base.htm") .. self.assets("image.htm"), repl)
       end
    end
    local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
    if not fd then return self:fail_output(file, msg, code) end
 
-   local ret = fd:read("*a")
+   local ret = apply_substr(self.assets:load("base.htm"), self:repl(file)) .. fd:read("*a")
    local tp = string.lower(string.match(file, "[.]([^.]+)$"))
    local tp = self.direct_file_types[tp] and "application/" .. tp or nil
    if tp then
@@ -235,14 +214,14 @@ function This:mirror_uri(uri, dont_get)
    return self:base_uri() .. uri .. append, not no_file_p, file
 end
 
-This.mirror_uri_kr_cmd = [[wget -P "%s" -e robots=off --user-agent=one_page -k -p "%s"]]
+This.mirror_uri_kr_cmd = [[wget -P "%s" -e robots=off --user-agent=one_page_plz -k -p "%s"]]
 function This:mirror_uri_kr(uri)
    local save_path = check_in_uri(self, uri)
    if not save_path then return end
 
    exec(self.get_cmd, self.manual_mirror_dir, uri)
 
-   return self:base_uri() .. uri .. append
+   return self:base_uri() .. "/manual/" .. uri
 end
 
 return This
