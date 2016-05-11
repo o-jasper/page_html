@@ -14,8 +14,8 @@ var cmd_vid_fun = function(el) {
                      }
                  }
 
-                 if(tab.get_it) {
-                     GM_xmlhttpRequest({  // Get it this way.(hopefully..)
+                 if(tab.get_it) { // Get result asking to get it via the userscript.
+                     GM_xmlhttpRequest({
                          method:'GET', url:el.href,
                          onload:function(result_obj){
                              if( tab.view_it ) {
@@ -24,7 +24,7 @@ var cmd_vid_fun = function(el) {
                                       tab.view_it && on_get_success);
                              }
                          }})
-                 } else{ if( tab.view_it ) {
+                 } else{ if( tab.view_it ) {  // Asking to view it.
                      on_get_success();
                  } }
              }
