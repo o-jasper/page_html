@@ -11,14 +11,12 @@ function cmd_make_quickmark() {  // Try open as video.
     ge('command_extend').innerHTML = "working...";
 
     var is = iface_state;
-    var hover_uri = (is.hovered && find_a_href(is.hovered)) || is.hovered_href;
+    var hover_uri = is.hovered_href;
     if( (GM_getValue('cmd_make_quickmark_linklist') || "yes") != "yes" ) {
         cmd_make_quickmark_fun({href:hover_uri || document.documentURI});
     } else {  // NOTE the thing seems not very effective..
         // Get sorted list.
-        var list = find_cursor_closest_links(false, hover_uri);
-
-        list.unshift({ textContent:"cur page", href:document.documentURI });
+        var list = [{ textContent:"cur page", href:document.documentURI }];
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
 
         ge('command_extend').innerHTML = "<input id='{%.prep}cmd_qm_name' value='default'>";
