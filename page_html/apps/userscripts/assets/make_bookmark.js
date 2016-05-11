@@ -1,5 +1,7 @@
 // ---- Bookmarks.
-// TODO feel like maybe want bare tag-uri too? (just immediately select the tag?)
+
+// NOTE strongly suggest not editing,
+//  to be superseeded by apps/bookmarks/assets/js/bookmark_setup.js
 
 function make_bookmark() {
     var h = "";
