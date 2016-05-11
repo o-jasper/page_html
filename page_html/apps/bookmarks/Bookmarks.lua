@@ -112,10 +112,7 @@ end
 cmd_strs.get_id = "SELECT * FROM bookmarks WHERE id == ?"
 function This:get_id(id)
    local got = (self:cmd("get_id")(id) or {})[1]
-   got.tags = {}
-   for _, el in ipairs(self:cmd("get_tags_sorted")(id) or {}) do
-      table.insert(got.tags, el.name)
-   end
+   got.tags = self:get_tags(id)
    return got
 end
 

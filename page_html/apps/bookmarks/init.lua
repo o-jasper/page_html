@@ -16,7 +16,10 @@ This.Db         = require "page_html.apps.bookmarks.Bookmarks"
 This.where      = {"page_html/apps/bookmarks/", "page_html/ListView/", "page_html/"}
 
 This.table_wid = 4
-This.master_css = "master_bm"
+
+This.assets_served = { ["js/bookmark_setup.js"]=true }
+for k, v in pairs(ListView.assets_served) do This.assets_served[k] = v end
+
 
 function This:extra_list_data()
    local ret = ListView.extra_list_data(self)

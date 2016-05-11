@@ -259,9 +259,7 @@ function This:rpc_js()
             self.lister.db:delete(id)
          end
       end,
-      get_id = function(id)
-         return self.lister.db:cmd("get_id")(id)[1]
-      end,
+      get_id = function(id) return self.lister.db:get_id(id) end,
    }
    for k,v in pairs(self.rpc_enabled) do
       really[k] = v and ret[k] or nil

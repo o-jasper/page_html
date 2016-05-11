@@ -64,22 +64,19 @@ function gui_edit(i, id) {
         mod_el.innerHTML = config.edit_html.replace(/{%i}/g, i);
         mod_el.hidden = true;
         callback_get_id([id], function(ret) {
-            var str = ""
-            for(var k in ret){ str += k + ":" + ret[k] + "\n" }
-            ge(i + "_bm_uri").value   = ret.uri;
-            ge(i + "_bm_title").value = ret.title;
-            ge(i + "_bm_text").value  = ret.text;
-            ge(i + "_bm_quote").value = ret.quote;
-            //ge(i + "_bm_taglist") = ret.quote;  // TODO tags..
+            var top    = function(){ ge('list_el_' + i + "_edit").focus(); }
+            var bottom = function(){ ge('list_el_' + (i + 1) + "_edit").focus(); }
+            cmd_bm_setup(i + "_", ret, top, bottom,
+                         function(ret){
+                             var str = "";
+                             for(var k in ret){ str += k + " : " + ret[k] + "\n"; }
+                             alert(str);
+                         },
+                         function(){ alert("TODO: exitting"); })
         })
     }
     hide_list_gui_section(i, true, 2);
     mod_el.hidden = !mod_el.hidden;
-
-/*    var add = document.createElement('p');  // Decides it wants to be super annoying.
-    add.innerHTML = config.edit_html;
-    //ge('list').insertBefore(add, ge('el_' + i));
-    ge('el_' + i).children[2].appendChild(add);*/
 }
 
 function search_anew(search_term, cnt) {

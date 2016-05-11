@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{%title}</title>
+    {%css css/ListView.css}
+    {%css css/style.css}
+
+    <script type="text/javascript" src="/{%name}/PegasusJs/index.js"></script>
+
+    {%script js/data.js}
+    {%script js/common.js}
+    {%script js/page.js}
+    {%script js/manual_sql.js}
+    {%script js/bookmark_setup.js}
+</head>
+<body>
+
+<h3>{%title} (<span id="cnt">{%cnt}</span>)</h3>
+<input type="text" id="search" onsubmit="gui_search();">
+<button id="search_button" onclick="gui_search();">Go</button>
+<button id="visible_sql" onclick="visible_sql(ge('sql').hidden)">Sql off</button>
+<button id="sql_button" onclick="gui_sql_command();">Run Sql</button>
+
+<br><textarea id="sql">{%sql}</textarea>
+
+<table id="list">{%list}</table>
+<button id="moar_button" onclick="gui_search_extend();">MOAR</button>
+
+{%script js/init_list.js}
+{%script js/init.js}
+<script type="text/javascript">rest_path = "{%rest_path}";</script>
+</body>
+</html>

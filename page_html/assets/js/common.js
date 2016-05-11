@@ -52,7 +52,7 @@ function textarea_update(te, after_keydown, config) {
 function go_graph(to, ev, graph) {
     if( typeof(to) == 'function' ) { ev.preventDefault(); to(ev); }
     else if(to) {
-        var got = maybe_ge(to);
+        var got = maybe_ge((graph.extra_prep || "") + to);
         if( !got.hidden ){ ev.preventDefault(); got.focus(); }
         else{ follow_graph(graph)({target:got, keyCode:ev.keyCode, shiftKey:true}); }
     }
@@ -62,7 +62,8 @@ function go_graph(to, ev, graph) {
 
 function follow_graph(graph) {
     return function(ev) {
-        var kc = ev.keyCode, cur = graph[ev.target.id.substr(ge_prep.length)];
+        var strip_l = (graph.extra_prep ? graph.extra_prep.length : 0) + ge_prep.length;
+        var kc = ev.keyCode, cur = graph[ev.target.id.substr(strip_l)];
 
         if( !ev.ctrlKey ) {   //Always control key, its consistent.
             return;
