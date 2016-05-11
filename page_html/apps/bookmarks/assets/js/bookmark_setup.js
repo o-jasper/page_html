@@ -75,11 +75,11 @@ function cmd_bm_setup(prep, data, top, bottom, update_values, finished) {
                 tag_list.push(tag_els[i].textContent);
             }
         }
-        update_values({ uri   : ge(prep + 'bm_uri').value,
-                        title : ge(prep + 'bm_title').value,
-                        text  : ge(prep + 'bm_text').value,
-                        quote : ge(prep + 'bm_quote').value,
-                        tags : tag_list });
+        data.uri  = ge(prep + 'bm_uri').value;
+        data.text = ge(prep + 'bm_text').value;
+        data.quote = ge(prep + 'bm_quote').value;
+        data.tags  = tag_list;
+        update_values(data);
         finished();
     }
 

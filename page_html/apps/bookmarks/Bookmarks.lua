@@ -62,7 +62,7 @@ function This:enter(entry)
    if t == self.last_id then t = self.last_id + 1 end
    self.last_id = t
    self:cmd("enter")(t, entry.uri,entry.title,  entry.text,entry.quote,
-                     os.time(), entry.x, entry.y, "")
+                     entry.time or os.time(), entry.x, entry.y, entry.root_hash or "")
 
    for _, name in ipairs(entry.tags or {}) do
       self:cmd("enter_tag")(t, name)
@@ -79,14 +79,11 @@ cmd_strs._alter_entry =
 SET uri=?, title=?, text=?, quote=?, time=?, x=?, y=? root_hash = ? WHERE id = ?;]]
 
 function This:alter_entry(entry)
-   self:cmd("_alter_entry")(entry.uri, entry.text, entry.quote, entry.time,
-                            entry.x, entry.y, entry.root_hash, entry.id)
-
-   self:cmd("del_tags")(entry.id)  -- This part is dumb remove-and-re-add.
-   assert(type(entry.tags) == "table")
-   for _, tag in ipairs(entry.tags) do
-      self:cmd("enter_tag")(tag, entry.id)
-   end
+--   self:cmd("_alter_entry")(entry.uri, entry.title, entry.text, entry.quote, entry.time,
+--                            entry.x, entry.y, entry.root_hash, entry.id)
+   -- This part dumb remove-and-re-add.
+   self:cmd("del")(entry.id, entry.id)
+   self:enter(entry)
 end
 
 cmd_strs.get_tags        = "SELECT name FROM bookmark_tags WHERE to_id == ?;"
@@ -113,6 +110,7 @@ cmd_strs.get_id = "SELECT * FROM bookmarks WHERE id == ?"
 function This:get_id(id)
    local got = (self:cmd("get_id")(id) or {})[1]
    got.tags = self:get_tags(id)
+   got.id = id
    return got
 end
 

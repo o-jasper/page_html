@@ -234,8 +234,9 @@ end
 This.rpc_enabled = {
    rpc_search = true,
    rpc_sql = false,
-   delete = true,
+   delete_id = true,
    get_id = true,
+   update_id = true,
 }
 This.rpc_delete_enabled = true
 This.rpc_get_id_enabled = true
@@ -260,6 +261,7 @@ function This:rpc_js()
          end
       end,
       get_id = function(id) return self.lister.db:get_id(id) end,
+      update_id = function(data) self.lister.db:alter_entry(data) end,
    }
    for k,v in pairs(self.rpc_enabled) do
       really[k] = v and ret[k] or nil

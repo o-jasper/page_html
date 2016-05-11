@@ -42,9 +42,9 @@ function gui_search_extend(search_term, cnt) {
 function hide_list_gui_section(i, yes, not_n) {
     var cur = ge('el_' + i), n= not_n || 0;
     while(cur && (cur.nodeName == "TR" || cur.nodeName == "#text")) {
-        cur = cur.nextSibling;
         n -= 1;
         cur.hidden = yes && (n < 0);
+        cur = cur.nextSibling;
     }
 }
 
@@ -67,15 +67,15 @@ function gui_edit(i, id) {
             var top    = function(){ ge('list_el_' + i + "_edit").focus(); }
             var bottom = function(){ ge('list_el_' + (i + 1) + "_edit").focus(); }
             cmd_bm_setup(i + "_", ret, top, bottom,
-                         function(ret){
-                             var str = "";
-                             for(var k in ret){ str += k + " : " + ret[k] + "\n"; }
-                             alert(str);
-                         },
-                         function(){ alert("TODO: exitting"); })
+                         function(ret){ callback_update_id([ret]); },
+                         function(){
+                             hide_list_gui_section(i, false);
+                             mod_el.innerHTML = "";
+                             mod_el.hidden = true;
+                         })
         })
     }
-    hide_list_gui_section(i, true, 2);
+    hide_list_gui_section(i, true, 3);
     mod_el.hidden = !mod_el.hidden;
 }
 
