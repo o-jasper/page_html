@@ -138,6 +138,7 @@ local function finally_output(self, file, ret)
       }
       return ret, tp, more
    else
+      local ret = apply_subst(self.assets:load("base.htm"), self:repl(file)) .. ret
       return ret  -- TODO extract external referencing.
    end
 end
@@ -154,8 +155,9 @@ function This:output(args)
    local manual_uri = string.match(args.rest_path, "^/?manual/[%w+-]+://?(.+)$")
    if manual_uri then -- Manual one.
       local data = readall(io.open(self.manual_mirror_dir .. manual_uri))
+         or readall(io.open(self.manual_mirror_dir .. manual_uri .. "/index.html"))
       if data then
-         return finally_output(self, string.match(args.rest_path, "[^/]$"), data)
+         return finally_output(self, string.match(manual_uri, "[^/]*$"), data)
       end
    end
 
@@ -168,14 +170,14 @@ function This:output(args)
          repl.uri = string.match(uri, "^(.+)/[^/]*$")
          repl.img_file = "file://" .. file
          repl.img_arch = self:base_uri() .. uri
-         return apply_subst(self.assets("base.htm") .. self.assets("image.htm"), repl)
+         return apply_subst(self.assets:load("base.htm") ..
+                               self.assets:load("image.htm"), repl)
       end
    end
    local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
    if not fd then return self:fail_output(file, msg, code) end
 
-   local ret = apply_substr(self.assets:load("base.htm"), self:repl(file)) .. readall(fd)
-   return finally_output(self, file, ret)
+   return finally_output(self, file, readall(fd))
 end
 
 This.uri_check = [[^[%a][%w-+.]*://[^%s#?"';{}()]+[?#]?[^%s"';{}()]*$]]
