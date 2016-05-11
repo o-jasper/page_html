@@ -46,11 +46,9 @@ var selection, pos_frac;  // Holds selection, as otherwise lost due to focus cha
 var iface_state = {}
 
 document.onmouseover = function(ev){
-    var el = ge('CommandPanel'), is = iface_state;
-    if(!el || el.hidden){
-        is.hovered = ev.target;
-        is.hovered_href = is.hovered.href || is.hovered_href;
-    }
+    var is = iface_state;
+    is.hovered = ev.target;
+    is.hovered_href = is.hovered.href || is.hovered_href;
 
     is.x = ev.clientX - document.body.clientLeft;
 	  is.y = ev.clientY - document.body.clientTop;
