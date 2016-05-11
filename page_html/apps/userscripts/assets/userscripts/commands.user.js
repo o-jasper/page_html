@@ -184,8 +184,8 @@ funs.pydoc = cmd_opentab("View pydoc page",    'util/.pydoc');
 {%cmd_vid.js}
 funs.vid = cmd_vid;
 
-//{%cmd_mirror.js}
-//funs.mirror = cmd_mirror;
+{%cmd_mirror.js}
+funs.mirror = cmd_mirror;
 
 function cmd_fclip() {  // TODO cliboardData doesn't work?
     ge('command_extend').innerHTML = "Working...";

@@ -129,7 +129,36 @@ function This:fail_output(file, msg, code, repl)
    return apply_subst(self.assets:load("failed.htm"), repl)
 end
 
+local function finally_output(self, file, ret)
+   local tp = string.lower(string.match(file, "[.]([^.]+)$") or "")
+   local tp = self.direct_file_types[tp] and "application/" .. tp or nil
+   if tp then
+      local more = {  -- Make it go inline. (can always manually download.)
+         ["Content-Disposition"] = string.format("inline; filename=%q", file),
+      }
+      return ret, tp, more
+   else
+      return ret  -- TODO extract external referencing.
+   end
+end
+
+local function readall(fd)
+   if fd then
+      local ret = fd:read("*a")
+      fd:close()
+      return ret
+   end
+end
+
 function This:output(args)
+   local manual_uri = string.match(args.rest_path, "^/?manual/[%w+-]+://?(.+)$")
+   if manual_uri then -- Manual one.
+      local data = readall(io.open(self.manual_mirror_dir .. manual_uri))
+      if data then
+         return finally_output(self, string.match(args.rest_path, "[^/]$"), data)
+      end
+   end
+
    local uri = string.match(args.rest_path, "^(.+)/html/$")
    if uri then  -- It is a page with the thing in it.
       local fd, msg, code, file = self:have_mirror_fd(uri)
@@ -145,17 +174,8 @@ function This:output(args)
    local fd, msg, code, file = self:have_mirror_fd(args.rest_path)
    if not fd then return self:fail_output(file, msg, code) end
 
-   local ret = apply_substr(self.assets:load("base.htm"), self:repl(file)) .. fd:read("*a")
-   local tp = string.lower(string.match(file, "[.]([^.]+)$"))
-   local tp = self.direct_file_types[tp] and "application/" .. tp or nil
-   if tp then
-      local more = {  -- Make it go inline. (can always manually download.)
-         ["Content-Disposition"] = string.format("inline; filename=%q", file),
-      }
-      return ret, tp, more
-   else
-      return ret  -- TODO extract external referencing.
-   end
+   local ret = apply_substr(self.assets:load("base.htm"), self:repl(file)) .. readall(fd)
+   return finally_output(self, file, ret)
 end
 
 This.uri_check = [[^[%a][%w-+.]*://[^%s#?"';{}()]+[?#]?[^%s"';{}()]*$]]
@@ -214,12 +234,12 @@ function This:mirror_uri(uri, dont_get)
    return self:base_uri() .. uri .. append, not no_file_p, file
 end
 
-This.mirror_uri_kr_cmd = [[wget -P "%s" -e robots=off --user-agent=one_page_plz -k -p "%s"]]
+This.mirror_uri_kr_cmd = [[wget --convert-links -P "%s" -e robots=off --user-agent=one_page_plz -p "%s"]]
 function This:mirror_uri_kr(uri)
    local save_path = check_in_uri(self, uri)
    if not save_path then return end
 
-   exec(self.get_cmd, self.manual_mirror_dir, uri)
+   exec(self.mirror_uri_kr_cmd, self.manual_mirror_dir, uri)
 
    return self:base_uri() .. "/manual/" .. uri
 end
