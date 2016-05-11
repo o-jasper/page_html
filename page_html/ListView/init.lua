@@ -118,7 +118,7 @@ onclick="gui_edit({%i}, {%id});">&#9999;</button>]]
 
    ret.modify = ret.delete .. ret.edit
 
-   ret.modify_place = [[<span id="el_mod_{%i}"></span>]]
+   ret.modify_place = [[<span id="el_mod_{%i}" hidden=true></span>]]
 
    return ret
 end

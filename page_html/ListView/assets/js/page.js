@@ -65,7 +65,9 @@ function gui_edit(i, id) {
         mod_el.hidden = true;
         callback_get_id([id], function(ret) {
             var top    = function(){ ge('list_el_' + i + "_edit").focus(); }
-            var bottom = function(){ ge('list_el_' + (i + 1) + "_edit").focus(); }
+            var bottom = function(){
+                ge('list_el_' + (i + 1) + "_linked_title").focus();
+            }
             cmd_bm_setup(i + "_", ret, top, bottom,
                          function(ret){ callback_update_id([ret]); },
                          function(){

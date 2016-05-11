@@ -140,20 +140,22 @@ function list_move(i, name, info, alt_fun, ev) {
                 var kc = ev.keyCode, order = info.order;
                 var ol = order.length;
 
-                if(kc == 38){
+                if(kc == 38){ // Up.
                     if(info.on_leave){ info.on_leave(info, cur, i, name); }
                     var k = i - 1;
                     while(list_move(k, name, info, info.limit_u, ev)){ k -= 1; }
                     if(info.on_enter){ info.on_enter(info, cur, k, name); }
-                } else if(kc == 40){
-                    if(info.on_leave){ info.on_leave(info, cur, i, name); }
-                    var k = i + 1;
-                    while(list_move(k, name, info, info.limit_d, ev)){ k += 1; }
-                    if(info.on_enter){ info.on_enter(info, cur, k, name); }
-                } else if(kc == 37){
+                } else if(kc == 40){ // Down.
+                    if(!(info.alt_d && info.alt_d(info, cur, i, name, ev))){
+                        if(info.on_leave){ info.on_leave(info, cur, i, name); }
+                        var k = i + 1;
+                        while(list_move(k, name, info, info.limit_d, ev)){ k += 1; }
+                        if(info.on_enter){ info.on_enter(info, cur, k, name); }
+                    }
+                } else if(kc == 37){ // Left.
                     var k = funs.i - 1 + ol;
                     while(list_move(i, order[k%ol], info, info.limit_r, ev)){ k -= 1; }
-                } else if(kc == 39){
+                } else if(kc == 39){ // Right.
                     var k = funs.i + 1 + ol;
                     while(list_move(i, order[k%ol], info, info.limit_l, ev)){ k += 1; }
                 }
