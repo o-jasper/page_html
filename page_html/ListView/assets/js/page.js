@@ -39,23 +39,47 @@ function gui_search_extend(search_term, cnt) {
     search_extend(search_term || cur.search_term || "", cnt || config.step_cnt || 50);
 }
 
-function delete_list_gui_section(i) {
-    var cur = ge('el_' + i), n=0;
+function hide_list_gui_section(i, yes, not_n) {
+    var cur = ge('el_' + i), n= not_n || 0;
     while(cur && (cur.nodeName == "TR" || cur.nodeName == "#text")) {
         cur = cur.nextSibling;
-        cur.hidden = true;
+        n -= 1;
+        cur.hidden = yes && (n < 0);
     }
 }
 
 var marked_for_deletion = {}
 function gui_delete(i, id) {
     if( marked_for_deletion[i] ){
-        delete_list_gui_section(i);
+        hide_list_gui_section(i, true);
         callback_delete_id([id]);
     } else {
         marked_for_deletion[i] = true;
         ge('list_el_' + i + "_del").style.backgroundColor = "red";
     }
+}
+function gui_edit(i, id) {
+    var mod_el = ge("el_mod_" + i);
+    if( !mod_el.no_result && mod_el.children.length == 0 ) {
+        mod_el.innerHTML = config.edit_html.replace(/{%i}/g, i);
+        mod_el.hidden = true;
+        callback_get_id([id], function(ret) {
+            var str = ""
+            for(var k in ret){ str += k + ":" + ret[k] + "\n" }
+            ge(i + "_bm_uri").value   = ret.uri;
+            ge(i + "_bm_title").value = ret.title;
+            ge(i + "_bm_text").value  = ret.text;
+            ge(i + "_bm_quote").value = ret.quote;
+            //ge(i + "_bm_taglist") = ret.quote;  // TODO tags..
+        })
+    }
+    hide_list_gui_section(i, true, 2);
+    mod_el.hidden = !mod_el.hidden;
+
+/*    var add = document.createElement('p');  // Decides it wants to be super annoying.
+    add.innerHTML = config.edit_html;
+    //ge('list').insertBefore(add, ge('el_' + i));
+    ge('el_' + i).children[2].appendChild(add);*/
 }
 
 function search_anew(search_term, cnt) {

@@ -2,9 +2,10 @@
 {%start}
 <tr style="background:radial-gradient(circle closest-side at {%day_frac}% 50%, yellow, white);" {%selectme}>
   <td><span class="minor">{%i}</span></td><td><span class="hour_min">{%hour_min}</span></td>
-  <td>{%delete}{%local_version} {%linked_title}</td>
+  <td>{%modify}{%local_version} {%linked_title}</td>
   <td><span class="minor">(pos {%xp}%,{%yp}%)</span></td>
 </tr>
+<tr><td colspan={%table_wid}>{%modify_place}</td></tr>
 
 {%text_row}
 {%quote_row}

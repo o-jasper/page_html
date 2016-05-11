@@ -110,13 +110,20 @@ function This:strip(entry)  -- TODO not sure if useful.
 end
 
 cmd_strs.get_id = "SELECT * FROM bookmarks WHERE id == ?"
-function This:get_id(id) self:cmd("get_id")(id) end
+function This:get_id(id)
+   local got = (self:cmd("get_id")(id) or {})[1]
+   got.tags = {}
+   for _, el in ipairs(self:cmd("get_tags_sorted")(id) or {}) do
+      table.insert(got.tags, el.name)
+   end
+   return got
+end
 
 cmd_strs.get_root_hash = "SELECT * FROM bookmarks WHERE root_hash == ?"
-function This:get_root_hash(root_hash) self:cmd("get_root_hash")(root_hash) end
+function This:get_root_hash(root_hash) return self:cmd("get_root_hash")(root_hash) end
 
 cmd_strs.set_root_hash = "UPDATE bookmarks SET root_hash = ? WHERE id = ?;"
-function This:set_root_hash(id, root_hash) self:cmd("set_root_hash")(root_hash, id) end
+function This:set_root_hash(id, root_hash) return self:cmd("set_root_hash")(root_hash, id) end
 
 cmd_strs.get_quickmarks = [[SELECT * FROM bookmarks
 WHERE EXISTS (SELECT * FROM bookmark_tags WHERE name == ':quickmark')

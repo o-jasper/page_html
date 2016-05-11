@@ -4,17 +4,23 @@ var limit_u = function(){ ge(ge('sql').hidden ? 'search' : 'sql').focus(); }
 var limit_d = function(){  gui_search_extend(); }
 
 var on_enter = function(info, cur, i, name) {
-    ge(info.nameprep + i + "_del").hidden = false;
+    var prep = info.nameprep + i;
+    ge(prep + "_del").hidden = false;
+    ge(prep + "_edit").hidden = false;
+    ge("el_mod_" + i).hidden = false;
 }
 var on_leave = function(info, cur, i, name) {
-    ge(info.nameprep + i + "_del").hidden = true;
+    var prep = info.nameprep + i;
+    ge(prep + "_del").hidden = true;
+    ge(prep + "_edit").hidden = true;
+    ge("el_mod_" + i).hidden = true;
 }
 
 var info = {
     limit_d:limit_d, limit_u:limit_u,
     nameprep:config.list_el_nameprep,
-    order:(cur && cur.sql_cmd ? ["whole"] : ["del", "mirror", "linked_title"]),
-    del:{i:0}, mirror:{i:1}, linked_title:{i:2},
+    order:(cur && cur.sql_cmd ? ["whole"] : ["del", "edit", "mirror", "linked_title"]),
+    del:{i:0}, edit:{i:1}, mirror:{i:2}, linked_title:{i:3},
     block_keyup:true,
     on_enter : on_enter, on_leave : on_leave
 }

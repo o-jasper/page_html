@@ -113,6 +113,13 @@ function This:el_repl(el, state)
    ret.delete = [[<button hidden=true {%namesys del}
 onclick="gui_delete({%i}, {%id});">&#10007;</button>]]
 
+   ret.edit = [[<button hidden=true {%namesys edit}
+onclick="gui_edit({%i}, {%id});">&#9999;</button>]]
+
+   ret.modify = ret.delete .. ret.edit
+
+   ret.modify_place = [[<span id="el_mod_{%i}"></span>]]
+
    return ret
 end
 
@@ -194,11 +201,14 @@ This.assets_served = {
 
 function This:data_js_repl()
    return {
-      sql_enabled = tostring(self.rpc_sql_enabled),
+      sql_enabled = tostring(self.rpc_enabled.rpc_sql),
 
       repl=true, list_el_nameprep=self.list_el_nameprep,
       at_i = self.limit[2], search_term="", step_cnt=50,
-      table_wid=self.table_wid
+      table_wid=self.table_wid,
+
+      edit_html = string.gsub(self.assets:load("parts/make_bookmark.htm") or "",
+                              "([^\n]+)\n", function(x) return x .. " " end),
    }
 end
 
@@ -221,37 +231,42 @@ function This:search(search_term, state)
    return self:list_html_list(list, state, state.limit[1]), form:sql()
 end
 
-This.rpc_sql_enabled = false
+This.rpc_enabled = {
+   rpc_search = true,
+   rpc_sql = false,
+   delete = true,
+   get_id = true,
+}
 This.rpc_delete_enabled = true
+This.rpc_get_id_enabled = true
 
 function This:rpc_js()
-   local ret = {
+   local really, ret = {}, {
       rpc_search = function(...) return {self:search(...)} end,
-   }
-
-   if self.rpc_sql_enabled then
-      ret.rpc_sql = function (sql_code)
+      rpc_sql = function (sql_code)
          local html_list = {}
-         if self.rpc_sql_enabled then
-            local list, state = self.lister.db:exec(sql_code), {}
-            for i, el in ipairs(list) do
-               local repl = self:el_repl(el, state)
-               repl.i = i
-               table.insert(html_list,
-                            apply_subst(self.assets:load("parts/raw.el.htm"), repl))
-            end
+         local list, state = self.lister.db:exec(sql_code), {}
+         for i, el in ipairs(list) do
+            local repl = self:el_repl(el, state)
+            repl.i = i
+            table.insert(html_list,
+                         apply_subst(self.assets:load("parts/raw.el.htm"), repl))
          end
          return html_list
-      end
-   end
-   if self.rpc_delete_enabled then
-      ret.delete_id = function(id)
-         if type(id) == "number" then
+      end,
+      delete_id = function(id)
+         if self.rpc_delete_enabled and type(id) == "number" then
             self.lister.db:delete(id)
          end
-      end
+      end,
+      get_id = function(id)
+         return self.lister.db:cmd("get_id")(id)[1]
+      end,
+   }
+   for k,v in pairs(self.rpc_enabled) do
+      really[k] = v and ret[k] or nil
    end
-   return ret
+   return really
 end
 
 return This
