@@ -1,5 +1,5 @@
-local fmts = { escapeless = require "page_html.util.fmt.escapeless",
-               base64    = require "page_html.util.fmt.escapeless"
+local fmts = { escapeless = require "Searcher.escapeless",
+               base64    = require "page_html.util.fmt.base64"
 }
 
 for _ = 1,2 do
