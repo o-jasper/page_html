@@ -6,11 +6,15 @@ end
 
 local function probably_safe(str)
    if string.find(str, "^mkdir[%s]") then  -- `mkdir` this particular form.
-      local only = {[[^mkdir %-p "[^"'%s{};]+"$]], [[^mkdir "[^"'%s{};]+"$]]}
+      local only = {[[^mkdir %-p "[%w_+-./:]+"$]], [[^mkdir "[%w_+-./:]+"$]]}
       if not find_or(str, only) then
          return false 
       end  -- Never `rm`
-   elseif string.find(str, "^rm[%s]") then return false end
+   elseif find_or(str, {"^rm[%s]", "[$()]"}) then
+      return false
+   end
+
+
    return find_or(str, {"^echo$", "^echo[%s][%s%w]*$"})
 end
 
@@ -18,12 +22,11 @@ end
 return function(str, ...)
    local cmd = string.format(str, ...)
    local c = probably_safe(cmd)
-   if c == false then
+   if c == false then  -- Don't run this.
       print("AVOIDED", cmd)
       return
-   elseif c ~= true then
+   elseif c ~= true then  -- Okey enough to not mention.
       print("EXEC", cmd)
    end
-   local fd = io.popen(cmd)
-   return fd:read("*a")
+   os.execute(cmd)
 end
