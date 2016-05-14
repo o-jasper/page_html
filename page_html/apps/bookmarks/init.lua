@@ -28,8 +28,6 @@ function This:extra_list_data()
    return ret
 end
 
--- TODO extend the alt-list with position-percentages.
--- TODO also want tags to show.
 function This:el_repl(el, state)
    return self:_el_repl(el, state, ListView.el_repl(self, el, state))
 end
