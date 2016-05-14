@@ -35,7 +35,10 @@ userscripts: userscripts-make
 
 #..
 builds/page_html_set.lua/readme.md: src/readme.md
-	cp $< $@
+	cp $< $@ ; echo '\n# Made as-of git version\n' >> $@ ; git log -1 >> $@
+
+builds/page_html_set.lua/readme.md: ../todo.md
+	cp $< $@ ; echo '\n# Made as-of git version\n' >> $@
 
 builds/page_html_set.lua/shadir.sh: src/shadir.sh
 	cp $< $@

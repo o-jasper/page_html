@@ -10,16 +10,13 @@ and fitting them into concepts.
 
 ### Server
 
-* More docs in server.
+* Structure docs, and serve it via the server.
 
 * Some of the assets should do a proper html page with header, etcetera,
   instead of just bits of htm.
 
 * Other programs launched now are just waited out until finishing. I.e. can't do
   things while watching a video.
-  
-* `page_html.util.exec` could have an output log page.
-  (conflicts with previous one)
 
 * Directory browser, modified version for browsing mirrored data.
 
@@ -37,24 +34,27 @@ and fitting them into concepts.
 * Mirroring just does `document.body.innerHTML`, and is fairly awful.
   + Needs to be possible view the mirrored files without loading assets.
 
-### Mirorring
+* Quickmarks need to be better. Easy way to delete them and go-and-delete,
+  simpler display.
+
+### Mirroring
 
 * More wholesome approach to multiple mirrors.
 
 * Better control of when to mirror, and some good default options.
   (like one copy first, and from the second on one-a-day.)
 
-### Structure of the code/approach
-
+### Security
 * Stronger guards around the SQL table.
+
+* `page_html.util.exec` is a security concern. It does have filters on it.
+ 
+### Structure of the code/approach
 
 * Stronger principles(see also note)
 
 * Use stuff like [alt_require](https://github.com/o-jasper/alt_require.lua) to
   narrow down and describe what lua packages are able to do.
-
-* For at least some functions `page_html.util.exec` has, use another function
-  dedicated to, for instance, making a directory instead.
 
 * The "upstream" [Searcher](https://github.com/o-jasper/lua_Searcher) is
   outdated, have a much better approach now.(again related to note..)
@@ -62,8 +62,14 @@ and fitting them into concepts.
 ### Using programs
 
 * Mpv can be scriptable with lua, including playing http-server. It is an
-  alternative to feed videos that way, or add media-center-like stuff
-  **later on**.
+  alternative to feed videos that way.
+
+  Could try for something like `mpd` using `mpv` and a (lua)script for it.
+
+* `man`, `doc`, `pydoc` could go via server, or figure out why you can
+  run userscripts on local files.
+
+  `man` pages could also jut be nicer. And what about `info`?
 
 #### Luakit
 * (would-be-nice)Probably eventually try get luakit versions back online?
