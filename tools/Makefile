@@ -48,8 +48,9 @@ builds/page_html_set.lua/firejail.sh: src/firejail.sh
 builds/page_html_set.lua/plain.sh: src/plain.sh
 	cp $< $@
 
-builds/page_html_set.lua/page_html/run.lua: ../page_html/apps/init.lua
-	cp $< $@
+builds/page_html_set.lua/page_html/run.lua: ../page_html/apps/init.lua src/prep_run.lua
+	cp src/prep_run.lua $@
+	cat $< >> $@
 
 builds/page_html_set.lua/page_html/.init.lua:  # Sometimes needed?
 	touch $@
