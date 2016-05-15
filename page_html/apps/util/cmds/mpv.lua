@@ -2,8 +2,6 @@ local default_geometry = "100%x100%"
 
 local uri_check = [[^[%a][%w-+.]*://[^%s#?"';{}()]+[?#]?[^%s"';{}()]*$]]
 
---[[^[%a][%w-+.]*://[^%s]+$]]
-
 function mpv_cmd(uri, geometry)
    if not string.find(uri, uri_check) then
       print("Failed: uri didn't check out?", ":" .. uri ..":")
