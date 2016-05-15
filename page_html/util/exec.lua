@@ -1,32 +1,42 @@
+-- All `os.execute` should go through here. Tries to narrow stuff down.
+--
+-- TODO better if no script is involved in the first place.. Just feeding
+-- the strings into the program..
+
 local function find_or(str, list)
    for _, el in ipairs(list) do
-      if string.find(str, el) then return true end
+      if type(el) == "function" and el(str) or string.find(str, el) then
+         return true
+      end
    end
 end
 
-local function probably_safe(str)
-   if string.find(str, "^mkdir[%s]") then  -- `mkdir` this particular form.
-      local only = {[[^mkdir %-p "[%w_+-./:]+"$]], [[^mkdir "[%w_+-./:]+"$]]}
-      if not find_or(str, only) then
-         return false 
-      end  -- Never `rm`
-   elseif find_or(str, {"^rm[%s]", "[$()]"}) then
-      return false
-   end
+local perms = require "page_html.util.exec_allowed"
 
-
-   return find_or(str, {"^echo$", "^echo[%s][%s%w]*$"})
+for k,v in pairs(perms) do
+   -- Anti-typo-accidental-permissions.
+   assert(({whitelist_override=true, blacklist=true, no_print=true,
+            required=true, print_matched=true})[k],
+      string.format("%s(%s) is not a permissions option", k,type(k)))
+   assert(type(v) == "table", "%s of %s is not a table of strings/functions.", v, k)
 end
 
 -- Exec, hopefully a tad safer..
 return function(str, ...)
    local cmd = string.format(str, ...)
-   local c = probably_safe(cmd)
-   if c == false then  -- Don't run this.
-      print("AVOIDED", cmd)
-      return
-   elseif c ~= true then  -- Okey enough to not mention.
-      print("EXEC", cmd)
+
+   if not find_or(str, perms.whitelist_override or {}) then  -- Careful..
+      if find_or(str, perms.blacklist or {}) then
+         print("FAILED BLACKLIST", cmd)
+         return
+      elseif not find_or(str, perms.required) then
+         print("FAILED REQUIRED", cmd)
+         return
+      elseif find_or(str, perms.print_matched or {}) then
+         print("MATCHED", cmd)
+      elseif not find_or(str, perms.no_print or {}) then
+         print("EXEC", cmd)
+      end
    end
    os.execute(cmd)
 end
