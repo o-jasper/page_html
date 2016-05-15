@@ -17,14 +17,26 @@ local function any_pat(str, list)
    for _, el in ipairs(list) do if find(string.lower(str), el) then return true end end
 end
 
+local detectors = require "page_html.apps.util.mirror_image_detect"
+
 -- TODO need to take a part.
 return function(exclude)
    return function(server, uri, ...)
       if exclude and any_pat(uri, exclude) then return end
 
-      local m = any_pat(uri, indirect_pats)
-      local md = any_pat(uri, direct_pats)
-      if m or md then
+      local yes = any_pat(uri, indirect_pats) or any_pat(uri, direct_pats)
+      if not yes then
+         for k, fun in pairs(detectors) do
+            local new_uri = fun(uri)
+            if new_uri then
+               yes = true
+               uri = new_uri
+               break
+            end
+         end
+      end
+
+      if yes then
          -- Direct the mirror page to mirror the uri.
          local mirror_uri, success =
             server.pages.history_mirrored:mirror_uri(uri, mirror_on_userscript)
