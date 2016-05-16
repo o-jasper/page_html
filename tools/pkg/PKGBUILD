@@ -7,7 +7,7 @@
 # lib, as i
 
 pkgname=page_html_set.lua
-pkgver=0.0
+pkgver=0.0.1
 pkgrel=0
 pkgdesc="Userscript and lua server for bookmarks, history and a bunch of commands.(like watch-with-mpv)"
 arch=('i686' 'x86_64')
@@ -21,25 +21,25 @@ optdepends=('mpv: directly view videos with mpv'
             'wget: for downloading things')
 options=(!emptydirs)
 # Note:  no security here, make sure the md5sums/sha256sums are proper.
-source=("http://ojasper.nl/data/${pkgname}.${pkgver}.tar.bz2")
-md5sums=('080adbc53e0e6c667aaccda54612b353')
-sha256sums=('9ee6ab7aa4acedf31b5e9fa4deb28a0956610b64c273661d94e1069180118ce0')
+source=("http://ojasper.nl/data/${pkgname}.${pkgver}.tar.gz")
+md5sums=('3600b0ff47cbdd4c520e7d8be95ef222')
+sha256sums=('defcfc5ae356ca6806d5b267aa1f944ccf3ca36a3c12e28fbca077b6143dccae')
 
 # Note this is as-of the-commit-after-b9da82a82e975f1462921dad4501e5ca751fcedf
 
 build() {
   # Add "binary" that selects the proper lua packages.
   mkdir -p bin/
-  echo '#!/usr/bin/lua' > bin/page_html_set.lua
-  echo 'package.path="/usr/local/share/'${pkgname}'/page_html/?.lua;/usr/local/share/'${pkgname}'/page_html/?/init.lua"' >> bin/page_html_set.lua
-  echo '-- package.cpath should be fine' >> bin/page_html_set.lua
-  echo >> bin/page_html_set.lua
-  cat ${pkgname}/page_html/run.lua >> bin/page_html_set.lua
+  echo '#!/usr/bin/lua' > bin/page_html.lua
+  echo 'package.path="/usr/local/share/'${pkgname}'/page_html/?.lua;/usr/local/share/'${pkgname}'/page_html/?/init.lua"' >> bin/page_html.lua
+  echo '-- package.cpath should be fine' >> bin/page_html.lua
+  echo >> bin/page_html.lua
+  echo 'require "run"' >> bin/page_html.lua
 }
 
 package() {
   # The "executable"
-  install -D -m755 bin/page_html_set.lua ${pkgdir}/usr/bin/page_html_set.lua
+  install -D -m755 bin/page_html.lua ${pkgdir}/usr/bin/page_html.lua
   # Rest of the files. This PKGBUILD is a bit of a "dump it in"
   mkdir -p ${pkgdir}/usr/local/share/${pkgname}/
   find ${pkgname}/ -type f | while read line; do
