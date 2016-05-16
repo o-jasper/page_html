@@ -37,6 +37,8 @@ and fitting them into concepts.
 * Quickmarks need to be better. Easy way to delete them and go-and-delete,
   simpler display.
 
+* Automatically fix for correct port.
+
 ### Mirroring
 
 * More wholesome approach to multiple mirrors.
