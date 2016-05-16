@@ -94,41 +94,45 @@ end
 function This:rpc_js()
    local ret = ListView.rpc_js(self)
 
-   ret[".collect"] = function(uri, title, text, quote, tag_list, pos_frac)
-      local uri = self:uri_mod(uri)
+   local added = {
+      collect = function(uri, title, text, quote, tag_list, pos_frac)
+         local uri = self:uri_mod(uri)
 
-      print("bookmarks.collect", uri)
-      print(title, text, quote, #tag_list, unpack(pos_frac))
+         print("bookmarks.collect", uri)
+         print(title, text, quote, #tag_list, unpack(pos_frac))
 
-      self.lister.db:enter{
-         uri=uri, title=title, text=text, quote=quote, tags=tag_list,
-         x=pos_frac[1], y=pos_frac[2], creator="self",
-      }
-      return "OK"
-   end
+         self.lister.db:enter{
+            uri=uri, title=title, text=text, quote=quote, tags=tag_list,
+            x=pos_frac[1], y=pos_frac[2], creator="self",
+         }
+         return "OK"
+      end,
 
-   ret[".make_quickmark"] = function(uri, title, name, pos_frac)
-      self.lister.db:enter{ uri=uri, title=title, text=name, quote="",
-                            tags={":quickmark"}, x=pos_frac[1], y=pos_frac[2],
-                            creator="self" }
-   end
+      make_quickmark = function(uri, title, name, pos_frac)
+         self.lister.db:enter{ uri=uri, title=title, text=name, quote="",
+                               tags={":quickmark"}, x=pos_frac[1], y=pos_frac[2],
+                               creator="self" }
+      end,
 
-   -- Get quickmarks belonging to name.
-   ret[".get_quickmarks"] = function(name)
-      return self.lister.db:cmd("get_quickmarks")
-   end
-   ret[".get_quickmarks_html"] = function(name)  -- Get a list of such.
-      local list = self.lister.db:cmd("get_quickmarks")(name)
-      print("QM", name, #list)
-      return {self:list_html_list(list, {}, nil), list}
-   end
+      -- Get quickmarks belonging to name.
+      get_quickmarks = function(name)
+         return self.lister.db:cmd("get_quickmarks")
+      end,
+      get_quickmarks_html = function(name)  -- Get a list of such.
+         local list = self.lister.db:cmd("get_quickmarks")(name)
+         print("QM", name, #list)
+         return {self:list_html_list(list, {}, nil), list}
+      end,
+   }
 
-   ret[".lookup_area"] = function(uri, x, y, terms)
-      -- look up relevant bookmarks
-      return "TODO"
-   end
-      
-   ret[".search"] = function(terms)
+   for key, fun in pairs(added) do
+      ret["." .. key] = function(info, ...)
+         if self.disable_dumb_pw or info.dumb_pw == self.dumb_pw then
+            return fun(...)
+         else
+            print("Failed dumb pw for", "." .. key)
+         end
+      end
    end
 
    return ret

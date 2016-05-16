@@ -3,7 +3,7 @@
 var cmd_make_quickmark_fun = function(el) {
     //TODO
     send('bookmarks/.make_quickmark',
-         [el.href, document.title, ge('cmd_qm_name').value, pos_frac],
+         [{}, el.href, document.title, ge('cmd_qm_name').value, pos_frac],
          function(){ finish_commandpanel(); });
 }
 
@@ -46,7 +46,7 @@ var cmd_go_quickmark_fun = function(name) {
     if( quickmark_prev_name != name && name != "" ) {  // Only if changed.
         quickmark_prev_name = name;
         ge('cmd_qm_list').innerHTML = "getting...";
-        send('bookmarks/.get_quickmarks_html', [name],
+        send('bookmarks/.get_quickmarks_html', [{}, name],
              function(result_obj) {
                  var html_list = JSON.parse(result_obj.responseText)[0];
                  ge('cmd_qm_list_cnt').innerHTML = html_list.length;

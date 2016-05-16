@@ -20,6 +20,6 @@
 
 if( response.mirror && GM_getValue('direct.may_mirror', true) ) {
     send('history/.collect.mirror',
-         [location.origin + location.pathname + location.search,
+         [{}, location.origin + location.pathname + location.search,
           document.body.innerHTML]);
 }

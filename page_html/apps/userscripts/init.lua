@@ -7,24 +7,13 @@ This.description = "Can load userscripts from here."
 
 This.where = {"page_html/apps/userscripts/", "page_html/", "page_html/ListView/"}
 
+local file_or_random = require "page_html.util.file_or_random"
+
 function This:init()
    GotAssets.init(self)
 
    if not self.ge_prep then
-      local prepfile = self.data_dir .. "/userscript_prep"
-      local fd = io.open(prepfile)
-      if fd then
-         self.ge_prep = fd:read("*a")
-      else
-         local large = math.floor(256^5)  -- Just for uniqueness.(really, overkill
-         math.randomseed(os.time() + math.floor(large*os.clock()))
-         local function r() return math.random(large) end
-         self.ge_prep = string.format("R%x%x_", r(),r())
-
-         fd = io.open(prepfile, "w")  -- Write it down.
-         fd:write(self.ge_prep)
-         fd:close()
-      end
+      self.ge_prep = file_or_random(self.data_dir .. "/userscript_prep")
    end
 end
 
@@ -56,8 +45,11 @@ function This:output(args)
          end
          local ret = apply_subst(ret, setmetatable({}, {__index=index}),
                                  256, "{%%([%w_/]*[.][%w_./]+)[%s]*([^}]*)}")
-         local ret = string.gsub(ret, "{%%port}",
-                                 (self.server or {}).port or self.port or 9090)
+         local ret = string.gsub(
+            ret, "{%%([%a_]+)}",
+            { port=(self.server or {}).port or self.port or 9090,
+              dumb_pw = self.dumb_pw,
+         })
          return ret, "text/javascript"
       else
          return "No such userscript: " .. args.rest_path

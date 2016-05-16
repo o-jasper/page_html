@@ -13,10 +13,10 @@ end
 
 local detectors = require "page_html.apps.util.mirror_image_detect"
 
-local function mirror_and_return(server, uri, pref_append, ...)
+local function mirror_and_return(info, uri, pref_append, ...)
    -- Direct the mirror page to mirror the uri.
    local mirror_uri, success =
-      server.pages.history_mirrored:mirror_uri(uri, mirror_on_userscript)
+      info.server.pages.history_mirrored:mirror_uri(uri, mirror_on_userscript)
 
    local ret = {m_uri=mirror_uri, view_it=success and view_it,
                 pref_uri = pref_append and (mirror_uri .. pref_append) or nil}
@@ -30,13 +30,13 @@ end
 
 -- TODO need to take a part.
 return function(exclude)
-   return function(server, uri, ...)
+   return function(info, uri, ...)
       if exclude and any_pat(uri, exclude) then return end
 
       for k, fun in pairs(detectors) do
          local new_uri, pref_append = fun(uri)
          if new_uri then
-            return mirror_and_return(server, new_uri, pref_append, ...)
+            return mirror_and_return(info, new_uri, pref_append, ...)
          end
       end
    end

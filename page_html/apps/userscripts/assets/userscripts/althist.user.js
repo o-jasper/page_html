@@ -18,46 +18,15 @@
 {%js/pegasus_send.js}
 {%figure_server.js}
 
-send('history/.collect', [document.documentURI, document.title || ""],
+send('history/.collect', [{}, document.documentURI, document.title || ""],
      function(response_data) {
-         // TODO kindah want to figure out the nature of the links/anchors,
-         // and try keep track of "what is going on".
-         // But the position info might not carry enough information.
-
-         // TODO finished loading?
          var response = JSON.parse(response_data.responseText);
 
          // NOTE: mirroring done in rather dumb way, as you can see.
          //  just knowing CSS would make it better a bunch.
          if( response.mirror && GM_getValue('may_mirror', true) ) {
              send('history/.collect.mirror',
-                  [location.origin + location.pathname + location.search,
+                  [{}, location.origin + location.pathname + location.search,
                    document.body.innerHTML]);
          }
-/*       if( response.anchors && GM_getValue("may_anchors", true) ) {
-         }
-         if( response.links && GM_getValue("may_links", true) ) {
-         }
-         if( response.links && GM_getValue("may_images", true) ) {
-         }
-         // document.applets
-         // document.cookie
-         if( response.links && GM_getValue("may_scripts", true) ) {
-             var s = document.scripts;
-             var list = [];
-             for(var i in s ){
-                 list.push([s[i].src, s[i].innerHTML]);
-             }
-             send("scripts", [data.uri, list]);
-         }
-         // document.forms
-         // document.referrer // Want to control this thing?
-*/
      });
-
-
-/*
-function on_ready() {
-}
-
-document.addEventListener("click", on_ready);*/

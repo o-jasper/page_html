@@ -1,2 +1,5 @@
 var server_url = GM_getValue('server', "http://localhost:{%port}/");
-function send(on_name, data, onload){ pegasus_send(server_url, on_name, data, onload); }
+function send(on_name, data, onload){
+    data[0].dumb_pw = "{%dumb_pw}";
+    pegasus_send(server_url, on_name, data, onload);
+}

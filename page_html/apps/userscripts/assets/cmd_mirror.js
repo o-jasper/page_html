@@ -3,7 +3,7 @@
 var cmd_mirror_fun = function(el) {
     ge('cmd_mirror_say').innerHTML =
         "working...<code class='minor'>(" + el.href + ")</code>";
-    send('util/.mirror', [el.href],
+    send('util/.mirror', [{}, el.href],
          function(result_obj) {
              var tab = JSON.parse(result_obj.responseText);
              if( tab && tab.view_it ) {

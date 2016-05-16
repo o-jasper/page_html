@@ -3,7 +3,7 @@
 var cmd_vid_fun = function(el) {
     ge('cmd_vid_say').innerHTML =
         "working...<code class='minor'>(" + el.href + ")</code>";
-    send('util/.vid', [el.href],
+    send('util/.vid', [{}, el.href],
          function(result_obj) {
              var tab = JSON.parse(result_obj.responseText);
              if( tab ) {
@@ -20,7 +20,7 @@ var cmd_vid_fun = function(el) {
                          onload:function(result_obj){
                              if( tab.view_it ) {
                                  send('history/.collect.mirror',
-                                      [el.href, result_obj.responseText],
+                                      [{}, el.href, result_obj.responseText],
                                       tab.view_it && on_get_success);
                              }
                          }})

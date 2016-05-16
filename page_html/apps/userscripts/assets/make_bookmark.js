@@ -52,7 +52,8 @@ function make_bookmark() {
             }
         }
         send('bookmarks/.collect',
-             [ge('cmd_bm_uri').value,
+             [{},
+              ge('cmd_bm_uri').value,
               ge('cmd_bm_title').value,
               ge('cmd_bm_text').value,
               ge('cmd_bm_quote').value,

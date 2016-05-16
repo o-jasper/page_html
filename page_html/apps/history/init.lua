@@ -52,17 +52,29 @@ end
 
 function This:rpc_js()
    local ret = ListView.rpc_js(self)
-   ret[".collect"] = function(uri, title)
-      print("history.collect", uri)
-      self.lister.db:update{uri=uri, title=title}
-      return { mirror=true }
-   end
 
+   local added = {
+      collect = function(uri, title)
+         print("history.collect", uri)
+         self.lister.db:update{uri=uri, title=title}
+         return { mirror=true }
+      end,
+   }
    -- Fairly rudimentary mirror.
    -- TODO move to the mirroring page?
    if self.enable_mirror then
-      ret[".collect.mirror"] = function(uri, innerHTML)
+      added["collect.mirror"] = function(uri, innerHTML)
          self.mirror_page:mirror_uri_html(uri, innerHTML)
+      end
+   end
+
+   for key, fun in pairs(added) do
+      ret["." .. key] = function(info, ...)
+         if self.disable_dumb_pw or info.dumb_pw == self.dumb_pw then
+            return fun(...)
+         else
+            print("Failed dumb pw for", "." .. key)
+         end
       end
    end
 
