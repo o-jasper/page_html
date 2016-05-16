@@ -54,8 +54,11 @@ function This:output(args)
                return prep .. "ASSET " .. key .. "NOT FOUND"
             end
          end
-         return apply_subst(ret, setmetatable({}, {__index=index}),
-                            256, "{%%([%w_/]*[.][%w_./]+)[%s]*([^}]*)}"), "text/javascript"
+         local ret = apply_subst(ret, setmetatable({}, {__index=index}),
+                                 256, "{%%([%w_/]*[.][%w_./]+)[%s]*([^}]*)}")
+         local ret = string.gsub(ret, "{%%port}",
+                                 (self.server or {}).port or self.port or 9090)
+         return ret, "text/javascript"
       else
          return "No such userscript: " .. args.rest_path
       end

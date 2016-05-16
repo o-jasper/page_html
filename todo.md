@@ -37,8 +37,6 @@ and fitting them into concepts.
 * Quickmarks need to be better. Easy way to delete them and go-and-delete,
   simpler display.
 
-* Automatically fix for correct port.
-
 ### Mirroring
 
 * More wholesome approach to multiple mirrors.
@@ -51,7 +49,7 @@ and fitting them into concepts.
 
 * `page_html.util.exec` is a security concern. It does have filters on it.
 
-* Try things that might make abuses via the browser, less effective.
+* Try things that might make abuses via the browser less effective.
 
   Like rate-limiting, requiring non-http verification of unlocking features?
  
