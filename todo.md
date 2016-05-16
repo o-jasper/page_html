@@ -48,16 +48,30 @@ and fitting them into concepts.
 * Stronger guards around the SQL table.
 
 * `page_html.util.exec` is a security concern. It does have filters on it.
+
+* Try things that might make abuses via the browser, less effective.
+
+  Like rate-limiting, requiring non-http verification of unlocking features?
  
 ### Structure of the code/approach
 
 * Stronger principles(see also note)
 
+  + Including the silly distinction between assets and `require`-able code?
+    (at least separate into `assets/` though)
+  + Probably need way to more succinctly access stuff.
+
 * Use stuff like [alt_require](https://github.com/o-jasper/alt_require.lua) to
   narrow down and describe what lua packages are able to do.
 
+  + And then also be able to review that easily.
+
 * The "upstream" [Searcher](https://github.com/o-jasper/lua_Searcher) is
   outdated, have a much better approach now.(again related to note..)
+
+* Add ability to have multiple good defaults.
+
+* Luajit-sql doesn't work yet. (and other implementations of sql)
 
 ### Using programs
 
