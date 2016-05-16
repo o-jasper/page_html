@@ -14,6 +14,8 @@
 // @version     0.0.2
 // @grant       GM_getValue
 // @grant       GM_setValue
+// @grant       GM_deleteValue
+// @grant       GM_listValues
 // @grant       GM_registerMenuCommand
 // @grant       GM_xmlhttpRequest
 // @grant       GM_openInTab
@@ -192,6 +194,9 @@ function cmd_fclip() {  // TODO cliboardData doesn't work?
     })
 }
 funs.fclip = cmd_fclip;
+
+{%cmd_values.js}
+funs.values = cmd_values;
 
 // Keydown listener.
 
