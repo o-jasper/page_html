@@ -1,135 +1,150 @@
-# This is page_html things packaged together
-Userscripts talk to lua server, implementing via that:(using sqlite)
+---
+layout: post
+title:  "Finally put together page_html"
+date:   2016-05-16 2:16
+categories: Programs
+---
 
-* History.
-* Mirroring `document.InnerHTML` (written in files)
-* Bookmarks.(There is a half-finished "comments" thing in there too)
+**Finally** put together
+[page_html](https://github.com/o-jasper/page_html/#html-page-and-asset-system),
+so that linux/unix users don't have to gather the whole bunch git repos of and
+configure lua to load it properly. I also fixed some annoyances.
 
-This is currently developed at
-[github.com/o-jasper/page_html](https://github.com/o-jasper/page_html).
-**I would not rate it ready for general consumption**, at least, by people
-who mind the instructions, or maybe even just windows users. It is not tested
-on windows, but the linux/unix commands probably won't work there.
+It has userscripts talking to the server. One main one is
+`commands.user.js`, which is a commands panel that can be brought up with
+Control-";". The below also represents the features it brings:
 
-There are some annoyances, listed below. Still also some things i feel are
-better, like bookmarking feels smoother to me. And it makes use of the
-selection to defaultly fill a "quote" field. As does searching
-history/bookmarks. Don't know why firefox doesn't do these things similar as
-this.
+* Bookmarks, using `bm` in the command interface userscript. Has a searchable
+  listing in:
+  [`http://localhost:9090/bookmarks`](http://localhost:9090/bookmarks)
+  <p>Entries can be deleted/altered there aswel. No entering new ones there yet.</p>
 
-There are some other things:
+* Browsing history. Has a searching history:
+  [`http://localhost:9090/history`](http://localhost:9090/history).
 
-* Running `mpv` on files, done by the `vid` command.
+* The userscripts that implement the history/commands can be obtained in
+  [`http://localhost:9090/userscripts`](http://localhost:9090/userscripts).
+  <p>They've been tested with firefox on [Greasemonkey](http://greasespot.net/).</p>
 
-  Later on i *mis*appropriated for selecting (non-video)images, and pdfs to
-  mirror aswel. Saves organizing your files; they're at places analogous to
-  the web. And you can bookmark them aswel.
+* Mirroring using `document.innerHTML`, crude, but then javascript doesn't seem
+  to have good options here. Runs all the time the corresponding userscript is
+  enabled.
 
-  Unfortunately, it isn't entirely effective. Currently arxiv says it is
-  "forbidden". Perhaps curl or something needs to be used itself.
+* `mirror` mirrors manually in another way;
+  <p>
+  `wget --convert-links -P "%s" -e robots=off --user-agent=one_page_plz -p "%s"`</p>
 
-* `man` commands gets man pages. `doc` command searches for other document
-  files.
+* `vid` command runs [`mpv`](http://mpv.io)(if that exists) on the hovered/current
+  uri.
+  <p>It doubles as command to mirror images and pdfs. Saves having to organize
+  those files when you download them. Viewing them with pdf.js, you can also
+  bookmark them.</p>
 
-* `syms` allows you to write HTML symbols, they'll be pastable.
+* `syms` allows for easily getting a html symbol in your clipboard.
 
-### Requirements.
+* `qm` and `gqm` do quickmarks, but it isn't what i want, the list doesn't
+  traverse easily enough, and needs to be easy way to "delete-and-go" for
+  quickmark functionality.
 
-Requires [lua](http://www.lua.org/) itself,
-[lua-sqlite-bindings](http://www.keplerproject.org/luasql/),
-[lua-socket](https://github.com/diegonehab/luasocket). Linux distros will
-usually have them in their repositories, expect that it just works if you
-install the appropriate packages. Perhaps in the future `.so` and
-`.DLL`s will accompany this. I may not, or i might use the code in another
-way, have my own bookmarks to put in that case, so that should be there then.
+It has keyboard(arrow) navigation everywhere. Control-arrows moves around.
 
-Afaics, the rest is packaged-in.
-"The rest" includes [Pegasus](https://github.com/EvandroLG/pegasus.lua/),
-and projects of mine like [PegasusJs](https://github.com/o-jasper/PegasusJs),
-[storebin](https://github.com/o-jasper/storebin).
+### Some screenshots
+Note that is shows SQL, it can also run it.
+(Note: that may be a security concern, defaultly turned it off in lua)
+But you can just throw in search terms in the input
+above. Something like `tags:something` should also work.
 
-### To run:
+<img src="/blog/parts/page_html_screens/2016-04-29:22:01:35.png"
+title="Screenshot of bookmarks with symbol-getter">
+<img src="/blog/parts/page_html_screens/2016-04-29:22:03:16.png"
+title="Screenshot of bookmark command.">
+<img src="/blog/parts/page_html_screens/2016-04-29:22:00:54.png"
+title="Screenshot of browser history.">
 
-    cd $DIRECTORY_OF_THIS_FILE
-    sh plain.sh
-    # sh firejail.sh  # if you have that.
+#### Getting it
+The file is at
+[ojasper.nl/data/data/page\_html\_set.lua.0.0.1.tar.gz](http://ojasper.nl/data/page_html_set.lua.0.0.1.tar.gz),
+contains instructions. Basically run one of the shellscripts from its own directory.
 
-Commented out currently uses firejail in a very basic manner. Defaultly it
-runs on `9090`, first argument of the shellscripts can set that.
+Windows isn't particularly supported suspect it is a matter of the correct
+lua-socket `.DLL` being loadable, and then running lua with packages available, but i
+am not sure.(careful with `.DLL`s you trust)
 
+for those with Arch Linux, there is an
+[PKGBUILD](https://github.com/o-jasper/page_html/tree/master/tools/pkg/PKGBUILD).
+With that, running `page_html.lua` defaultly it runs on port `9090` that can be
+specified, but then you have to update the userscripts to read the right port aswel.
 
-If the port is `9090`, `http://localhost:9090/history` is the history and
-`http://localhost:9090/bookmarks` the bookmarks.
+Once running, [`http://localhost:9090/userscripts`](http://localhost:9090/userscripts)
+contains the userscripts, [Greasemonkey](http://www.greasespot.net/) can load them by
+just visiting the files. Haven't tested other userscript implementations.
 
-### To use
-Your browser needs the `userscripts/`. Particularly `althist.user.js` and
-`commands.user.js`.
+The `PKGBUILD` does not follow etiquette properly. It just writes down
+`/usr/bin/page_html.lua` with a `package.path` loading the lua from
+`/usr/local/share/page_html.lua/` which just contains the same as the `tar.gz`.
+In the future `PKGBUILD`s should be done better.
+(afaics, its not particularly bothersome to anyone?)
 
-For firefox [Greasemonkey](http://www.greasespot.net/) is an addon for
-userscripts.
+#### Customizing
+There is some room for it;
 
-`althist.user.js` just records the history. Disable the userscript to
-disable it.
+* `~/.page_html/assets/$PAGE_NAME/assets/` can contain extra assets for said
+  page.
 
-With `commands.user.js` userscript loaded and enabled, Control-";" should
-bring it up. Note that
+* `~/.page_html/lua/` is looked in first; you can replace lua files, particularly:
 
-**Note: currently does not keep track of private mode.** Userscripts cannot
-readily detect it. Sorry, this is pretty annoying.
+  + `page_html.util.exec_allowed` patterns controlling limitations on `os.execute`.
+  + `page_html.apps.util.cmds` contains the commands avaiable from util.
+    <p>However, no way to readily add any to the command-interface yet
+        (though you could modify)</p>
+  + `page_html.apps.util.mirror_image_detect` recognizes files for
+    downloading-as-local mirror.
+  + `page_html.run` where lua enters.
 
-### Notes:
-`shasums` and `shatotal` serve little purpose, can be used to check if things
-are as-distributed.
+Nice modifications can be sent as pull-requests.
 
-It creates a `~/.page_html/`; `~/.page_html/data/main.db` is a sqlite database
-with bookmarks and hitstory and `~/.page_html/data/mirror/` contains mirrored
-`.innerHTML` and mirrored pdfs/images.
-(if using it with firejail, these files are in that sandbox, of course!)
+### Not quite there yet
+There are many things that should be improved.. Like:
 
-### TODO/Known annoyances (may still put them in issues)
+* No private browsing detection.
+  [Recently made easy](http://www.greasespot.net/2016/04/greasemonkey-38-release.html),
+  hopefully.
 
-* I try to make things keyboard-navigable. But it isn't perfect, because of
-  overlap with what the widgets need in keyboard events and what i want.
-
-  TODO try just control-arrow equates keyboard-navigable.
-
-#### Commands panel
-
-* ... placing can be annoying if you're still reading while trying
-  to figure what to put in bookmark-description, for instance.
-
-* ... takes CSS of page.
-
-* ... element ids could overlap with those in the page. This affects
-  the history and bookmarks page currently! (downright bug)
+* Command-panel:
+  + Doesn't keep out external CSS
+  + Placing not perfect, and not movable or any such.
+  + Should be easier to add your own commands.
   
-* ... doesn't give focus back after you're done with it.
+* Mirrorer only keeps automatic/manual mirroring separate. A more wholesome
+  approach would be better. Also viewing it, would be nice to just essentially
+  browse the directories.
 
-* ... should be easier to extend with your own commands, and 
+* Server itself should provide more docs.
 
-#### Other
+Those things probably most directly affect experience but then the below are
+important too.
 
-* Mirrorer always overwrites. Terrible if a page disappears, and the discovery
-  also deletes your record >< How to solve it efficiently, though..
-  (do it inefficient?)
+* Use stuff like [alt_require](https://github.com/o-jasper/alt_require.lua) to
+  narrow down what lua packages are able to do.
 
-* No private-browsing detection. See it can do it, in 3.8.
+* Use `page_html.util.exec` less.(at least it all goes through there now)
 
-* Poor hovered-detection.
+* The `Formulator` thing generating lua seems to work fine, I have a much better
+  way to do all the database stuff.
 
-* Userscripts, man-pages etcetera could be served up by server. Or have both
-  options. Userscripts seem to have limitations in that they cannot operate on
-  files.
+[Hardly exhaustive](https://github.com/o-jasper/page_html/blob/develop/todo.md),
+of course!
 
-* It doesn't hold back, it'd be better if stuff like `os.execute` was used less
-  in the code.
+### Scratching the surface
+Finally, there are more tools a browser can have, and these could clearly be far
+more customizable. It is a ghost of the functionality i want to have.
+I want the bookmarks to be sharable to different levels from between-friends to
+completely public. And preferably not with a single way of transferring the data.
 
-* Really not sure how much sense this makes, might be better to make packages for
-  package managers. Related to below though, just don't quite think it ready.
+I have been thinking about a overarching approach to fit that into. Applying it
+seemed like waiting too long to release it, but fixing the things ignores the
+new approach, so just got rid of annoyances and did the low-hanging fruits.
 
-* The database and searching in it is essentially obsolete, i can do better now.
-  (related to below)
-
-Finally, there are more tools a browser can have. Scratching the surface, even of just
-what i can imagine. However, i have been thinking about a overarching approach,
-to which this would be fit into.
+The new approach is
+[like this post](http://ojasper.nl/blog/software/2015/11/12/libre_bus.html)
+changed and worked out further. Later i'll post about the approach.
