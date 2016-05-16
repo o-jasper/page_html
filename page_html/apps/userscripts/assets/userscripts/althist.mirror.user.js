@@ -18,7 +18,7 @@
 {%js/pegasus_send.js}
 {%figure_server.js}
 
-if( response.mirror && GM_getValue('direct.may_mirror', true) ) {
+if( response.mirror && (GM_getValue('direct.may_mirror', "true") == "true") ) {
     send('history/.collect.mirror',
          [{}, location.origin + location.pathname + location.search,
           document.body.innerHTML]);

@@ -1,5 +1,8 @@
 // TODO make it a mirror thing.
 
+default_value('mirror.new_tab', "true");
+default_value('mirror.list', "true");
+
 var cmd_mirror_fun = function(el) {
     ge('cmd_mirror_say').innerHTML =
         "working...<code class='minor'>(" + el.href + ")</code>";
@@ -8,7 +11,7 @@ var cmd_mirror_fun = function(el) {
              var tab = JSON.parse(result_obj.responseText);
              if( tab && tab.view_it ) {
                  var uri = tab.pref_uri || tab.m_uri;
-                 if(GM_getValue('new_tab_own_mirror') || uri != document.documentURI){
+                 if(GM_getValue('mirror.new_tab')=="true" && uri != document.documentURI){
                      GM_openInTab(uri);
                  }
              }
@@ -20,9 +23,7 @@ function cmd_mirror() {
     ge('command_extend').textContent = "working...";
 
     var hover_uri = iface_state.hovered_href;
-    if( (GM_getValue('cmd_mirror_linklist') || "yes") != "yes" ) {
-        cmd_mirror_fun({href:hover_uri || document.documentURI});
-    } else {  // NOTE the thing seems not very effective..
+    if( GM_getValue('mirror.list') == "yes" ) {
         // Get sorted list.  (closest links aren't good enough..)
         var list = [];
         list.unshift({ textContent:"cur page", href:document.documentURI });
@@ -36,5 +37,7 @@ function cmd_mirror() {
             if(ev.keyCode == 40){ ge('cmd_mirror_0').focus(); }
         }
         ge('cmd_mirror_0').focus();
+    } else {
+        cmd_mirror_fun({href:hover_uri || document.documentURI});
     }
 }

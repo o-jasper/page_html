@@ -1,4 +1,6 @@
-// --- Running videos
+// --- Quick bookmarks (not good enough!)
+
+default_value('qm.linklist', 'true');
 
 var cmd_make_quickmark_fun = function(el) {
     //TODO
@@ -10,11 +12,8 @@ var cmd_make_quickmark_fun = function(el) {
 function cmd_make_quickmark() {  // Try open as video.
     ge('command_extend').innerHTML = "working...";
 
-    var is = iface_state;
-    var hover_uri = is.hovered_href;
-    if( (GM_getValue('cmd_make_quickmark_linklist') || "yes") != "yes" ) {
-        cmd_make_quickmark_fun({href:hover_uri || document.documentURI});
-    } else {  // NOTE the thing seems not very effective..
+    var hover_uri = iface_state.hovered_href;
+    if( GM_getValue('qm.linklist') == "true" ) {
         // Get sorted list.
         var list = [{ textContent:"cur page", href:document.documentURI }];
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
@@ -38,6 +37,8 @@ function cmd_make_quickmark() {  // Try open as video.
             if(ev.keyCode == 40){ ge('cmd_vid_0').focus(); }
         }
         ge('cmd_qm_name').focus();
+    } else {
+        cmd_make_quickmark_fun({href:hover_uri || document.documentURI});
     }
 }
 

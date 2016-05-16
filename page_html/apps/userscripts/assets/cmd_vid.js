@@ -1,3 +1,6 @@
+default_value('vid.linklist', 'true')
+default_value('vid.new_tab', 'true')
+
 // --- Running videos
 
 var cmd_vid_fun = function(el) {
@@ -9,7 +12,7 @@ var cmd_vid_fun = function(el) {
              if( tab ) {
                  var on_get_success = function(){
                      var uri = tab.pref_uri || tab.m_uri;
-                     if(GM_getValue('new_tab_own_mirror') || uri != document.documentURI){
+                     if(GM_getValue('vid.new_tab') == "true" && uri != document.documentURI){
                          GM_openInTab(uri);
                      }
                  }
@@ -36,9 +39,7 @@ function cmd_vid() {  // Try open as video.
     ge('command_extend').textContent = "working...";
 
     var hover_uri = iface_state.hovered_href;
-    if( (GM_getValue('cmd_vid_linklist') || "yes") != "yes" ) {
-        cmd_vid_fun({href:hover_uri || document.documentURI});
-    } else {  // NOTE the thing seems not very effective..
+    if( GM_getValue('vid.linklist') == "true" ) {
         // Get sorted list.  (closest links aren't good enough..)
         var list = [{ textContent:"cur page", href:document.documentURI }];
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
@@ -51,5 +52,7 @@ function cmd_vid() {  // Try open as video.
             if(ev.keyCode == 40){ ge('cmd_vid_0').focus(); }
         }
         ge('cmd_vid_0').focus();
+    } else {
+        cmd_vid_fun({href:hover_uri || document.documentURI});
     }
 }

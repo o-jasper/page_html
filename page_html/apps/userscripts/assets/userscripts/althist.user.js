@@ -15,6 +15,8 @@
 // @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
+// Note: no access to `GM_setValue`, so no `default_value`.
+
 {%js/pegasus_send.js}
 {%figure_server.js}
 
@@ -24,7 +26,7 @@ send('history/.collect', [{}, document.documentURI, document.title || ""],
 
          // NOTE: mirroring done in rather dumb way, as you can see.
          //  just knowing CSS would make it better a bunch.
-         if( response.mirror && GM_getValue('may_mirror', true) ) {
+         if( response.mirror && GM_getValue('may_mirror', "true") == "true" ) {
              send('history/.collect.mirror',
                   [{}, location.origin + location.pathname + location.search,
                    document.body.innerHTML]);

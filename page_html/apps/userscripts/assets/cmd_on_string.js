@@ -1,3 +1,4 @@
+default_value('on_string.width', "80")
 
 function cmd_on_string(fun, button_str, dont_finish) {
     return function() {
@@ -16,7 +17,7 @@ function cmd_on_string(fun, button_str, dont_finish) {
         var code_el = ge('cmd_js_code');
 
         code_el.rows = Math.max(code_el.value.split("\n").length, 0);
-        code_el.cols = GM_getValue('reasonable_width', 80);
+        code_el.cols = Number(GM_getValue('on_string.width'));
 
         var cs = ge('cmd_submit');
 

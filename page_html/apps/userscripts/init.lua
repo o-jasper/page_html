@@ -49,6 +49,8 @@ function This:output(args)
             ret, "{%%([%a_]+)}",
             { port=(self.server or {}).port or self.port or 9090,
               dumb_pw = self.dumb_pw,
+              lua_enabled = "false",  -- TODO sync with whether util has them enabled.
+              js_enabled = "false",
          })
          return ret, "text/javascript"
       else

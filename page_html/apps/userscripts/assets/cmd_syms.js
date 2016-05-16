@@ -1,4 +1,6 @@
-if( GM_getValue('cmd_syms', true) ) {
+default_value("syms.enabled", "true")
+
+if( GM_getValue('syms.enabled') == "true" ) {
     funs.syms = function() {
         var h = "<br><input id='{%.prep}cmd_sym_val'>"
         h += "<br><span id='{%.prep}cmd_sym_output'></span>";

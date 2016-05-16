@@ -11,14 +11,17 @@
 // @description Commands hub
 // @include     *
 // @include     file://*
-// @version     0.0
+// @version     0.0.2
 // @grant       GM_getValue
+// @grant       GM_setValue
 // @grant       GM_registerMenuCommand
 // @grant       GM_xmlhttpRequest
 // @grant       GM_openInTab
 // @grant       GM_setClipboard
 // @grant       GM_addStyle
 // ==/UserScript==
+
+{%default_value.js}
 
 {
     var h = "";
@@ -50,17 +53,9 @@ document.onmouseover = function(ev){
     is.hovered = ev.target;
     is.hovered_href = is.hovered.href || is.hovered_href;
 
-    is.x = ev.clientX - document.body.clientLeft;
-	  is.y = ev.clientY - document.body.clientTop;
+//    is.x = ev.clientX - document.body.clientLeft;
+//	  is.y = ev.clientY - document.body.clientTop;
 }
-/*
-if( (GM_getValue('cmd_track_cursor') || "yes") == "yes" ) {
-    var is = iface_state;
-    document.onmousemove = function(ev) {
-        is.x = ev.pageX;
-        is.y = ev.pageY;
-    }
-} */
 
 function currentPosFraction()
 {
@@ -145,13 +140,15 @@ funs.gqm = cmd_go_quickmark;
 
 {%cmd_on_string.js}
 
+default_value('js.enabled', '{%js_enabled}');
 // --- Javascript/lua evaluation.
-if( GM_getValue('cmd_js', false) ) {
+if( GM_getValue('js.enabled') == 'true' ) {
     funs.js  = cmd_on_string(function(str){ alert(eval(str)) }, "Run js");
 }
 
+default_value('lua.enabled', '{%lua_enabled}');
 // NOTE: doesnt work at this point!
-if( GM_getValue('cmd_lua', false) ) {
+if( GM_getValue('lua.enabled', false) ) {
     funs.lua = cmd_on_string(function(str){
         send('util/.run_lua', [{}, str], function(result_obj) {
             var result = JSON.decode(result_obj.responseText);
