@@ -25,7 +25,7 @@ function values_act() {
 function cmd_values() {
     var str = '<input id="{%.prep}list_search">'
     str += '<input id="{%.prep}values_set">'
-    str += '<button id="{%.prep}values_button">Delete&rarr;fill to set</button>';
+    str += '<button id="{%.prep}values_button">Delete&larr;fill to set</button>';
     str += '<table id="{%.prep}values_list_table">'
     str += values_figure_table("") + '</table>';
     ge('command_extend').innerHTML = str;
