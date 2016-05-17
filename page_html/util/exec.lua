@@ -32,7 +32,8 @@ return function(str, ...)
       elseif not find_or(str, perms.required) then
          print("FAILED REQUIRED", cmd)
          return
-      elseif find_or(str, perms.print_matched or {}) then
+      end
+      if find_or(str, perms.print_matched or {}) then
          print("MATCHED", cmd)
       elseif not find_or(str, perms.no_print or {}) then
          print("EXEC", cmd)
