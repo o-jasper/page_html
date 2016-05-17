@@ -85,8 +85,8 @@ function toggle_commandpanel(immediate) {
     if( command_element ) {  // Already exists, just toggle.
         command_element.hidden = !command_element.hidden;
     } else {
-// Doesnt exist yet, make and enable. TODO affects initial detection onhover? Nah?
-        var element = command_element || document.createElement('div');
+// Doesnt exist yet, make and enable.
+        var element = document.createElement('div');
         command_element = element;
         element.id = '{%.prep}CommandPanel'
 

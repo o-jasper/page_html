@@ -1,4 +1,5 @@
-:focus{border:0.2em solid black;}
+tr:focus{border:0.2em solid black;}
+td:focus{border:0.2em solid black;}
 
 /* Panel itself. */
 #{%.prep}CommandPanel{
@@ -13,8 +14,8 @@
     z-index:10000000000000;
 }
 /* Bookmark stuff */
-#{.%prep}cmd_bm_uri{ width:100% }
-#{.%prep}cmd_bm_title{ width:100% }
+#{%.prep}cmd_bm_uri{ width:100% }
+#{%.prep}cmd_bm_title{ width:100% }
 
 /* Symbol output */
 #{%.prep}cmd_sym_output{ font-size:300%; }
