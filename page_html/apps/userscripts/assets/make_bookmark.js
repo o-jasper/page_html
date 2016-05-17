@@ -13,8 +13,9 @@ function make_bookmark() {
     // NOTE: otherwise need to escape stuff.(which would be silly)
     ge('cmd_bm_title').value = document.title;
 
+    below_cmd_input = 'cmd_bm_uri';
     var graph = {
-        command_input : { d :'cmd_bm_uri' },
+        //command_input : { d :'cmd_bm_uri' },
         cmd_bm_uri    : { d :'cmd_bm_title', u : 'command_input' },
         cmd_bm_title  : { d :'cmd_bm_text',  u : 'cmd_bm_uri' },
         cmd_bm_text   : { d :'cmd_bm_quote', u : 'cmd_bm_title' },
@@ -35,7 +36,6 @@ function make_bookmark() {
     };
     var fg = follow_graph(graph);
 
-    ge('command_input').onkeydown = fg;
     ge('cmd_bm_uri').onkeydown = fg;
     ge('cmd_bm_title').onkeydown = fg;
     var config = { max_rows:20, cols:90 }

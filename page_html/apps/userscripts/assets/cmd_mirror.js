@@ -23,7 +23,7 @@ function cmd_mirror() {
     ge('command_extend').textContent = "working...";
 
     var hover_uri = iface_state.hovered_href;
-    if( GM_getValue('mirror.list') == "yes" ) {
+    if( GM_getValue('mirror.list') == "true" ) {
         // Get sorted list.  (closest links aren't good enough..)
         var list = [];
         list.unshift({ textContent:"cur page", href:document.documentURI });
@@ -31,11 +31,10 @@ function cmd_mirror() {
 
         ge('command_extend').innerHTML =
             "<span id='{%.prep}cmd_mirror_say'></span><span id='{%.prep}cmd_mirror_extend'></span>";
-        produce_action_list(ge('cmd_mirror_extend'), list, null, cmd_mirror_fun, 'cmd_input');
+        produce_action_list(ge('cmd_mirror_extend'), list, null,
+                            cmd_mirror_fun, 'command_input');
 
-        ge('command_input').onkeydown = function(ev) {
-            if(ev.keyCode == 40){ ge('cmd_mirror_0').focus(); }
-        }
+        below_cmd_input = 'cmd_mirror_0';
         ge('cmd_mirror_0').focus();
     } else {
         cmd_mirror_fun({href:hover_uri || document.documentURI});

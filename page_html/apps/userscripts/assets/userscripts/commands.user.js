@@ -74,6 +74,7 @@ function currentPosFraction()
 }
 
 var focus_from;  // Where the focus came from.(hopefully)
+below_cmd_input = null;
 
 function toggle_commandpanel(immediate) {
     selection = window.getSelection().toString();
@@ -108,6 +109,13 @@ function toggle_commandpanel(immediate) {
                 }
             }
         }
+        var inp_onkeydown = function(ev) {
+            if(below_cmd_input && ev.ctrlKey ){
+                var kc = ev.keyCode;
+                if( kc == 40 ){ ge(below_cmd_input).focus(); }
+            }
+        }
+        ge('command_input').onkeydown = inp_onkeydown;
     }
     ge('command_immediate').checked = immediate;
     if( command_element.hidden ) {
@@ -122,7 +130,6 @@ function toggle_commandpanel(immediate) {
 function finish_commandpanel() {
     ge('command_extend').innerHTML = ""; // Clean up.
     ge('command_input').value = "";
-    ge('command_input').onkeydown = null;
     toggle_commandpanel(); // Turn off.
 }
 

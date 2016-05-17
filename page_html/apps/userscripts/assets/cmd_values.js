@@ -30,6 +30,7 @@ function cmd_values() {
     str += values_figure_table("") + '</table>';
     ge('command_extend').innerHTML = str;
 
+    below_cmd_input = 'list_search';
     var search_keyup = function(ev){
         ge('values_list_table').innerHTML = values_figure_table(ge('list_search').value);
         if( ev.ctrlKey ){

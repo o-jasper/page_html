@@ -82,13 +82,13 @@ function cmd_go_quickmark() {
         });
     }
 
-    var graph = { command_input:{ r:'cmd_qm_name',   d:'cmd_qm_name' },
+    var graph = { //command_input:{ r:'cmd_qm_name',   d:'cmd_qm_name' },
                   cmd_qm_name : { l:'command_input', u:'command_input',
                                   d:d
                                 }
                 };
+    below_cmd_input = 'cmd_qm_name';
     var fg = follow_graph(graph);
-    ge('command_input').onkeydown = fg;
     name_el.onkeydown = fg;
 
     quickmark_prev_name = null;  // Force re-do.

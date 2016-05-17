@@ -6,13 +6,13 @@ function cmd_on_string(fun, button_str, dont_finish) {
             "<br><button id='{%.prep}cmd_submit'>" + button_str + "</button>";
 
         var graph = {
-            command_input : { d:'cmd_js_code' },
+            //command_input : { d:'cmd_js_code' },
             cmd_js_code   : { u:'command_input', d:'cmd_submit'},
             cmd_submit    : { u:'cmd_js_code' }
         }
         var fg = follow_graph(graph);
 
-        ge('command_input').onkeydown = fg;
+        below_cmd_input = 'cmd_js_code';
 
         var code_el = ge('cmd_js_code');
 
