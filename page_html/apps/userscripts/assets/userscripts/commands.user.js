@@ -11,7 +11,7 @@
 // @description Commands hub
 // @include     *
 // @include     file://*
-// @version     0.0.2
+// @version     0.0.3
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
