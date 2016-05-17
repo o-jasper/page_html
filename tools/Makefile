@@ -1,17 +1,17 @@
 # Super-LOC-inefficient makefile.
 
-default: page_html_set builds/page_html_set.lua.0.0.1.tar.gz
+default: page_html_set builds/page_html_set.lua.0.0.2.tar.gz
 
 build: builds/page_html_set.lua/page_html/
 
 page_html_set: builds/page_html_set.lua/ builds/page_html_set.lua/shatotal files userscripts
 
-release: builds/page_html_set.lua.0.0.1.tar.gz
+release: builds/page_html_set.lua.0.0.2.tar.gz
 
-builds/page_html_set.lua.0.0.1.tar.gz:
-	cd builds/; tar -czf page_html_set.lua.0.0.1.tar.gz page_html_set.lua/
-builds/page_html_set.lua.0.0.1.tar.bz2:
-	cd builds/; tar -cjf page_html_set.lua.0.0.1.tar.bz2 page_html_set.lua/
+builds/page_html_set.lua.0.0.2.tar.gz:
+	cd builds/; tar -czf page_html_set.lua.0.0.2.tar.gz page_html_set.lua/
+builds/page_html_set.lua.0.0.2.tar.bz2:
+	cd builds/; tar -cjf page_html_set.lua.0.0.2.tar.bz2 page_html_set.lua/
 
 files: builds/page_html_set.lua/readme.md builds/page_html_set.lua/todo.md \
 	builds/page_html_set.lua/firejail.sh builds/page_html_set.lua/plain.sh \
