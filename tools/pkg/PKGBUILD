@@ -24,8 +24,8 @@ optdepends=('mpv: directly view videos with mpv'
 options=(!emptydirs)
 # Note:  no security here, make sure the md5sums/sha256sums are proper.
 source=("http://ojasper.nl/data/${pkgname}.${pkgver}.tar.gz")
-md5sums=('3600b0ff47cbdd4c520e7d8be95ef222')
-sha256sums=('defcfc5ae356ca6806d5b267aa1f944ccf3ca36a3c12e28fbca077b6143dccae')
+md5sums=('491d34c0c37962fbab9d22476b53721b')
+sha256sums=('b1e5e717d957fac519693c271433643e2321d366c52d676e169d5cd464f555b1')
 
 # Note this is as-of the-commit-after-b9da82a82e975f1462921dad4501e5ca751fcedf
 
