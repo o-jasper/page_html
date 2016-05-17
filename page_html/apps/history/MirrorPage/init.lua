@@ -220,14 +220,15 @@ end
 
 This.call_progs = {
    curl = [[curl "{%uri}" > "{%file}"]],
-   wget_kr = [[wget --convert-links -P "{%uri}" -e robots=off --user-agent={%user_agent} -p "{%dirc}"]],
+   wget_kr = [[wget --convert-links -P "{%dir}" -e robots=off --user-agent="{%user_agent}" -p "{%uri}"]],
 
 -- Note: has somewhat of a signature. Perhaps better to put on separate Tor instance.
    tor_curl = [[torify curl "{%uri}" > "{%file}"]],
-   tor_wget_kr = [[torify wget --convert-links -P "{%uri}" -e robots=off --user-agent={%user_agent} -p "{%dir}"]],
+   tor_wget_kr = [[torify wget --convert-links -P "{%dir}" -e robots=off --user-agent="{%user_agent}" -p "{%uri}"]],
 }
 -- (https://stackoverflow.com/questions/17182553/sites-not-accepting-wget-user-agent-header)
-This.user_agent = [[Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0]]
+-- [[Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0]]
+This.user_agent = "benice"
 
 This.mirror_cmd_name = "curl"
 
