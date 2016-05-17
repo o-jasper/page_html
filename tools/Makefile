@@ -13,7 +13,7 @@ builds/page_html_set.lua.0.0.1.tar.gz:
 builds/page_html_set.lua.0.0.1.tar.bz2:
 	cd builds/; tar -cjf page_html_set.lua.0.0.1.tar.bz2 page_html_set.lua/
 
-files: builds/page_html_set.lua/readme.md \
+files: builds/page_html_set.lua/readme.md builds/page_html_set.lua/todo.md \
 	builds/page_html_set.lua/firejail.sh builds/page_html_set.lua/plain.sh \
   builds/page_html_set.lua/page_html/.init.lua \
 	builds/page_html_set.lua/page_html/run.lua \
@@ -37,10 +37,10 @@ userscripts: userscripts-make
 
 #..
 builds/page_html_set.lua/readme.md: src/readme.md
-	cp $< $@ ; echo '\n# Made as-of git version\n' >> $@ ; git log -1 >> $@
+	cp $< $@ ; echo "**# Made as-of git version*" | tr '*' '\n' >> $@ ; git log -1 >> $@
 
-builds/page_html_set.lua/readme.md: ../todo.md
-	cp $< $@ ; echo '\n# Made as-of git version\n' >> $@
+builds/page_html_set.lua/todo.md: ../todo.md
+	cp $< $@
 
 builds/page_html_set.lua/shadir.sh: src/shadir.sh
 	cp $< $@
