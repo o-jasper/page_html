@@ -7,7 +7,7 @@
 # lib, as i
 
 pkgname=page_html_set.lua
-pkgver=0.0.2
+pkgver=0.0.3
 pkgrel=0
 pkgdesc="Userscript and lua server for bookmarks, history and a bunch of commands.(like watch-with-mpv)"
 arch=('i686' 'x86_64')
@@ -24,8 +24,8 @@ optdepends=('mpv: directly view videos with mpv'
 options=(!emptydirs)
 # Note:  no security here, make sure the md5sums/sha256sums are proper.
 source=("http://ojasper.nl/data/${pkgname}.${pkgver}.tar.gz")
-md5sums=('491d34c0c37962fbab9d22476b53721b')
-sha256sums=('b1e5e717d957fac519693c271433643e2321d366c52d676e169d5cd464f555b1')
+md5sums=('a89f76a0d3c0af0258a4ebc937167f7a')
+sha256sums=('1a8527a4a22d11190180daf5b4fa9cb0d7100f8de4f0ef2b223db0a8ca4a8244')
 
 # Note this is as-of the-commit-after-b9da82a82e975f1462921dad4501e5ca751fcedf
 
