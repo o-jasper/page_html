@@ -1,5 +1,5 @@
 return function(file, n)
-   local str, fd = "", io.open(file)
+   local str, fd = "S", io.open(file)
    if fd then
       str = fd:read("*a")
       fd:close()
@@ -15,6 +15,7 @@ return function(file, n)
 
       local fd = io.open(file, "w")
       fd:write(str)
+      fd:close()
    end
    return str
 end
