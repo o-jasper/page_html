@@ -15,9 +15,9 @@ return {
       [[^man %-%-html="cat %%s > .+" .+$]],
       [[^bash %-c "cd ,+; pydoc %-w .+"$]],
       [[^curl ".+" > ".+"$]],
-      [[^wget %-%-convert%-links %-P ".+" %-e robots=off %-%-user%-agent=one_page_plz %-p ".+"$]],
+      [[^wget %-%-convert%-links %-P ".+" %-e robots=off %-%-user%-agent="benice" %-p ".+"$]],
       [[^torify curl ".+" > ".+"$]],
-      [[^torify wget %-%-convert%-links %-P ".+" %-e robots=off %-%-user%-agent=one_page_plz %-p ".+"$]],
+      [[^torify wget %-%-convert%-links %-P ".+" %-e robots=off %-%-user%-agent="benice" %-p ".+"$]],
 
       [[^mpv %-%-force%-window %-%-fs ".+" &$]],
       [[^mpv %-%-force%-window %-%-geometry=[%wx%%]+ ".+" &$]],
