@@ -46,11 +46,10 @@ function cmd_vid() {  // Try open as video.
 
         ge('command_extend').innerHTML =
             "<span id='{%.prep}cmd_vid_say'></span><span id='{%.prep}cmd_vid_extend'></span>";
-        produce_action_list(ge('cmd_vid_extend'), list, null, cmd_vid_fun, 'cmd_input');
+        produce_action_list(ge('cmd_vid_extend'), list, null,
+                            cmd_vid_fun, 'command_input');
 
-        ge('command_input').onkeydown = function(ev) {
-            if(ev.keyCode == 40){ ge('cmd_vid_0').focus(); }
-        }
+        below_cmd_input = 'cmd_vid_0';
         ge('cmd_vid_0').focus();
     } else {
         cmd_vid_fun({href:hover_uri || document.documentURI});

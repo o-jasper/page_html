@@ -34,8 +34,8 @@ function cmd_mirror() {
         produce_action_list(ge('cmd_mirror_extend'), list, null,
                             cmd_mirror_fun, 'command_input');
 
-        below_cmd_input = 'cmd_mirror_0';
-        ge('cmd_mirror_0').focus();
+        below_cmd_input = 'cmd_vid_0';
+        ge('cmd_vid_0').focus();
     } else {
         cmd_mirror_fun({href:hover_uri || document.documentURI});
     }
