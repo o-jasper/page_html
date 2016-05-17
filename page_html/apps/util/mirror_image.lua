@@ -14,9 +14,10 @@ end
 local detectors = require "page_html.apps.util.mirror_image_detect"
 
 local function mirror_and_return(info, uri, pref_append, ...)
+   local cmd_name = string.match(info.extra or "", [[;tor=true;]]) and "tor_curl"
    -- Direct the mirror page to mirror the uri.
    local mirror_uri, success =
-      info.server.pages.history_mirrored:mirror_uri(uri, mirror_on_userscript)
+      info.server.pages.history_mirrored:mirror_uri(uri, mirror_on_userscript, cmd_name)
 
    local ret = {m_uri=mirror_uri, view_it=success and view_it,
                 pref_uri = pref_append and (mirror_uri .. pref_append) or nil}

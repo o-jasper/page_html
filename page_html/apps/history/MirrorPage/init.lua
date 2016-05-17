@@ -218,8 +218,18 @@ function This:mirror_uri_html(uri, html, override)
    end
 end
 
-This.get_cmd = [[curl "%s" > "%s"]]
-function This:mirror_uri(uri, dont_get)
+This.call_progs = { -- TODO make them patters instead of %s}
+   curl = [[curl "%s" > "%s"]],
+   wget_kr = [[wget --convert-links -P "%s" -e robots=off --user-agent=one_page_plz -p "%s"]],
+
+-- Note: has somewhat of a signature. Perhaps better to put on separate Tor instance.
+   tor_curl = [[torify curl "%s" > "%s"]],
+   tor_wget_kr = [[torify wget --convert-links -P "%s" -e robots=off --user-agent=one_page_plz -p "%s"]],
+}
+
+This.mirror_cmd_name = "curl"
+
+function This:mirror_uri(uri, dont_get, cmd_name)
    local save_path = check_in_uri(self, uri)
    if not save_path then return end
 
@@ -230,18 +240,19 @@ function This:mirror_uri(uri, dont_get)
    local no_file_p = (lfs.attributes(file, "size") or 0) == 0
   -- Size equal zero assume something wrong, re-get.
    if no_file_p and not dont_get then
-      exec(self.get_cmd, uri, file)
+      exec(self.call_progs[cmd_name or self.mirror_cmd_name], uri, file)
       no_file_p = ((lfs.attributes(file, "size") or 0) == 0)
    end
    return self:base_uri() .. uri .. append, not no_file_p, file
 end
 
-This.mirror_uri_kr_cmd = [[wget --convert-links -P "%s" -e robots=off --user-agent=one_page_plz -p "%s"]]
-function This:mirror_uri_kr(uri)
+This.mirror_kr_cmd_name = "wget_kr"
+
+function This:mirror_uri_kr(uri, cmd_name)
    local save_path = check_in_uri(self, uri)
    if not save_path then return end
 
-   exec(self.mirror_uri_kr_cmd, self.manual_mirror_dir, uri)
+   exec(self.call_progs[cmd_name or self.mirror_kr_cmd_name], self.manual_mirror_dir, uri)
 
    return self:base_uri() .. "/manual/" .. uri
 end
