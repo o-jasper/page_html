@@ -22,8 +22,8 @@ for k,v in pairs(perms) do
 end
 
 -- Exec, hopefully a tad safer..
-return function(str, ...)
-   local cmd = string.format(str, ...)
+return function(str, first, ...)
+   local cmd = first and string.format(str, first, ...) or str
 
    if not find_or(str, perms.whitelist_override or {}) then  -- Careful..
       if find_or(str, perms.blacklist or {}) then

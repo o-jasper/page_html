@@ -218,14 +218,16 @@ function This:mirror_uri_html(uri, html, override)
    end
 end
 
-This.call_progs = { -- TODO make them patters instead of %s}
-   curl = [[curl "%s" > "%s"]],
-   wget_kr = [[wget --convert-links -P "%s" -e robots=off --user-agent=one_page_plz -p "%s"]],
+This.call_progs = {
+   curl = [[curl "{%uri}" > "{%file}"]],
+   wget_kr = [[wget --convert-links -P "{%uri}" -e robots=off --user-agent={%user_agent} -p "{%dirc}"]],
 
 -- Note: has somewhat of a signature. Perhaps better to put on separate Tor instance.
-   tor_curl = [[torify curl "%s" > "%s"]],
-   tor_wget_kr = [[torify wget --convert-links -P "%s" -e robots=off --user-agent=one_page_plz -p "%s"]],
+   tor_curl = [[torify curl "{%uri}" > "{%file}"]],
+   tor_wget_kr = [[torify wget --convert-links -P "{%uri}" -e robots=off --user-agent={%user_agent} -p "{%dir}"]],
 }
+-- (https://stackoverflow.com/questions/17182553/sites-not-accepting-wget-user-agent-header)
+This.user_agent = [[Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0]]
 
 This.mirror_cmd_name = "curl"
 
@@ -240,7 +242,8 @@ function This:mirror_uri(uri, dont_get, cmd_name)
    local no_file_p = (lfs.attributes(file, "size") or 0) == 0
   -- Size equal zero assume something wrong, re-get.
    if no_file_p and not dont_get then
-      exec(self.call_progs[cmd_name or self.mirror_cmd_name], uri, file)
+      exec(apply_subst(self.call_progs[cmd_name or self.mirror_cmd_name],
+                       {uri=uri, file=file, user_agent=self.user_agent}))
       no_file_p = ((lfs.attributes(file, "size") or 0) == 0)
    end
    return self:base_uri() .. uri .. append, not no_file_p, file
@@ -252,7 +255,8 @@ function This:mirror_uri_kr(uri, cmd_name)
    local save_path = check_in_uri(self, uri)
    if not save_path then return end
 
-   exec(self.call_progs[cmd_name or self.mirror_kr_cmd_name], self.manual_mirror_dir, uri)
+   exec(apply_subst(self.call_progs[cmd_name or self.mirror_kr_cmd_name], 
+                    {uri=uri, dir=self.manual_mirror_dir, user_agent=self.user_agent}))
 
    return self:base_uri() .. "/manual/" .. uri
 end
