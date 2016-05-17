@@ -54,6 +54,7 @@ document.onmouseover = function(ev){
     var is = iface_state;
     is.hovered = ev.target;
     is.hovered_href = is.hovered.href || is.hovered_href;
+    is.hovered_src  = is.hovered.src || is.hovered_src;
 
 //    is.x = ev.clientX - document.body.clientLeft;
 //	  is.y = ev.clientY - document.body.clientTop;

@@ -13,10 +13,12 @@ function cmd_make_quickmark() {  // Try open as video.
     ge('command_extend').innerHTML = "working...";
 
     var hover_uri = iface_state.hovered_href;
+    var hover_src = iface_state.hovered_src;
     if( GM_getValue('qm.linklist') == "true" ) {
         // Get sorted list.
         var list = [{ textContent:"cur page", href:document.documentURI }];
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
+        if(hover_src){ list.push({ textContent:"img src", href:hover_src }); }
 
         ge('command_extend').innerHTML = "<input id='{%.prep}cmd_qm_name' value='default'>";
         produce_action_list(ge('command_extend'), list, null, cmd_make_quickmark_fun,
@@ -38,7 +40,7 @@ function cmd_make_quickmark() {  // Try open as video.
         }
         ge('cmd_qm_name').focus();
     } else {
-        cmd_make_quickmark_fun({href:hover_uri || document.documentURI});
+        cmd_make_quickmark_fun({href:hover_uri || hover_src || document.documentURI});
     }
 }
 

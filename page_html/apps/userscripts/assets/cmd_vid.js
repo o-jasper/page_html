@@ -39,10 +39,12 @@ function cmd_vid() {  // Try open as video.
     ge('command_extend').textContent = "working...";
 
     var hover_uri = iface_state.hovered_href;
+    var hover_src = iface_state.hovered_src;
     if( GM_getValue('vid.linklist') == "true" ) {
         // Get sorted list.  (closest links aren't good enough..)
         var list = [{ textContent:"cur page", href:document.documentURI }];
         if(hover_uri){ list.unshift({ textContent:"hovered", href:hover_uri }); }
+        if(hover_src){ list.push({ textContent:"img src", href:hover_src }); }
 
         ge('command_extend').innerHTML =
             "<span id='{%.prep}cmd_vid_say'></span><span id='{%.prep}cmd_vid_extend'></span>";
@@ -52,6 +54,6 @@ function cmd_vid() {  // Try open as video.
         below_cmd_input = 'cmd_vid_0';
         ge('cmd_vid_0').focus();
     } else {
-        cmd_vid_fun({href:hover_uri || document.documentURI});
+        cmd_vid_fun({href:hover_uri || hover_src || document.documentURI});
     }
 }
