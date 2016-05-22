@@ -3,7 +3,7 @@ local mirror_image = require "page_html.apps.util.mirror_image"
 local view_it = true
 
 return function(info, uri, ...)
-   local ret = mirror_image{}(server, uri, ...)
+   local ret = mirror_image{}(info, uri, ...)
    if ret then return ret end
    -- Mirror it as a page.
    local mirrorer = info.server.pages.history_mirrored
