@@ -29,9 +29,9 @@ local function mirror_and_return(info, uri, pref_append, ...)
    end
 end
 
--- TODO need to take a part.
 return function(exclude)
    return function(info, uri, ...)
+      -- TODO might be better to do excluding on the other end.
       if exclude and any_pat(uri, exclude) then return end
 
       for k, fun in pairs(detectors) do
